@@ -1,0 +1,112 @@
+﻿<Window x:Class="WpfApp9_MyFinances.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:local="clr-namespace:WpfApp9_MyFinances"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    
+
+    <TabControl>
+        <TabItem Header="Wallet">
+            <Border Padding="7" BorderThickness="4" Background="DimGray">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="85*"></ColumnDefinition>
+                        <ColumnDefinition Width="15*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="10*"></RowDefinition>
+                        <RowDefinition Height="80*"></RowDefinition>
+                        <RowDefinition Height="10*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <DataGrid
+                        Grid.Row="1"
+                        AutoGenerateColumns="False" 
+                        IsReadOnly="True" 
+                        ItemsSource="{Binding Path=PaymentMethods}"
+                        SelectedItem=""
+                        ColumnWidth="*"
+                        Background="AliceBlue"
+                        AlternatingRowBackground="GhostWhite">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="FontFamily" Value="Times New Roman"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="New Transaction" Command="{Binding Path}"></MenuItem>
+                                <MenuItem Header="Show Transactions" Command="{Binding Path}"></MenuItem>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" Width="7*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Path=Title}" Width="30*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Balance" Binding="{Binding Path=CurrentBalance, StringFormat='C', ConverterCulture='uk-UA'}" Width="18*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="IsCash" Binding="{Binding Path=IsCash}" Width="10*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="35*"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Grid.Column="2" Grid.Row="1">
+                        <Button Margin="2,0,2,0">Add</Button>
+                        <TextBlock>Total cashless:</TextBlock>
+                        <TextBlock>1233,50</TextBlock>
+                        <TextBlock>Total in cash:</TextBlock>
+                        <TextBlock>239,00</TextBlock>
+                        <TextBlock>Total:</TextBlock>
+                        <TextBlock>1472,50</TextBlock>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </TabItem>
+        <TabItem Header="Categories">
+            <Border Padding="7" BorderThickness="4" Background="DimGray">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*"></ColumnDefinition>
+                        <ColumnDefinition Width="50*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20*"></RowDefinition>
+                        <RowDefinition Height="80*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <ListView Grid.Column="0" Grid.Row="1"
+                              ItemsSource="{Binding Path=CategoriesExpItems}"
+                              SelectedItem="{}" 
+                              SelectedIndex="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TreeViewItem
+                                Header="{Binding Header}"
+                                ItemsSource="{Binding Path=Items}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <!--<TreeView Grid.Column="0" Grid.Row="1"
+                              ItemTemplate="{}"
+                              ItemSource="{}"
+                              SelectedItemChanged=""
+                              Name="ddd">
+                    </TreeView>-->
+
+
+
+                </Grid>
+            </Border>
+        </TabItem>
+    </TabControl>
+    
+</Window>
