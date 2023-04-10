@@ -10,7 +10,10 @@ namespace WpfApp9_MyFinances.ViewModels;
 
 public class IncomeViewModel : NotifyPropertyChangedBase
 {
-    public IncomeViewModel() { }
+    public IncomeViewModel() 
+    {
+        Model= new Income();    
+    }
     public IncomeViewModel(Income income)
     {
         Model = income;
@@ -123,4 +126,5 @@ public class IncomeViewModel : NotifyPropertyChangedBase
 
         return Model.Id.Equals((obj as IncomeViewModel).Model.Id);
     }
+    public string OperationTypeName => "Income";
 }

@@ -10,7 +10,10 @@ namespace WpfApp9_MyFinances.ViewModels;
 
 public class TransferViewModel : NotifyPropertyChangedBase
 {
-    public TransferViewModel() { }
+    public TransferViewModel() 
+    {
+        Model = new Transfer();
+    }
     public TransferViewModel(Transfer transfer) 
     {
         Model = transfer;
@@ -75,6 +78,15 @@ public class TransferViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(ToId));
         }
     }
+    public DateTime DateOfTransfer
+    {
+        get => Model.DateOfTransfer;
+        set
+        {
+            Model.DateOfTransfer = value;
+            OnPropertyChanged(nameof(DateOfTransfer));
+        }
+    }
     public override bool Equals(object? obj)
     {
         if (obj == null)
@@ -84,4 +96,5 @@ public class TransferViewModel : NotifyPropertyChangedBase
 
         return Model.Id.Equals((obj as TransferViewModel).Model.Id);
     }
+    public string OperationTypeName => "Transfer";
 }

@@ -8,7 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Input;
 using WpfApp9_MyFinances.Models;
+using WpfApp9_MyFinances.Windows;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace WpfApp9_MyFinances.ViewModels;
@@ -112,4 +114,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             //OnPropertyChanged(nameof(CategoriesExp));
         }
     }
+    public ICommand AddTransaction => new RelayCommand(x =>
+    {
+        var window = new AddTransaction();
+        window.ShowDialog();
+
+    }, x => true);
 }

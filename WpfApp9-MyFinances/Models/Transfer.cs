@@ -14,6 +14,7 @@ public partial class Transfer
     public int ToId { get; set; }
 
     public decimal Amount { get; set; }
+    public DateTime DateOfTransfer { get; set; }
 
     public virtual PaymentMethod From { get; set; } = null!;
 

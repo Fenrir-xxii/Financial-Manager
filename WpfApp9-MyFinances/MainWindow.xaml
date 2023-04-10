@@ -69,6 +69,7 @@
                         <TextBlock>Total:</TextBlock>
                         <TextBlock>1472,50</TextBlock>
                     </StackPanel>
+                    <Button Grid.Column="0" Grid.Row="2" Margin="50,5,50,5" Command="{Binding Path=AddTransaction}">New Transaction</Button>
                 </Grid>
             </Border>
         </TabItem>

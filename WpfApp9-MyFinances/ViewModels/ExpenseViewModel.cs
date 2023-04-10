@@ -10,7 +10,10 @@ namespace WpfApp9_MyFinances.ViewModels;
 
 public class ExpenseViewModel : NotifyPropertyChangedBase
 {
-    public ExpenseViewModel() { }
+    public ExpenseViewModel() 
+    {
+        Model = new Expense();
+    }
     public ExpenseViewModel(Expense expense)
     {
         Model= expense;
@@ -142,4 +145,5 @@ public class ExpenseViewModel : NotifyPropertyChangedBase
 
         return Model.Id.Equals((obj as ExpenseViewModel).Model.Id);
     }
+    public string OperationTypeName => "Expense";
 }
