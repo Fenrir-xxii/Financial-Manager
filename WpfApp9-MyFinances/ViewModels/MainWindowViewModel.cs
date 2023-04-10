@@ -36,6 +36,9 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PaymentMethods));
             OnPropertyChanged(nameof(CategoriesExp));
             OnPropertyChanged(nameof(CategoriesExpItems));
+            OnPropertyChanged(nameof(TotalInCash));
+            OnPropertyChanged(nameof(TotalInCashless));
+            OnPropertyChanged(nameof(TotalMoney));
         });
     }
     private Database3MyFinancesContext _db;
@@ -114,10 +117,33 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             //OnPropertyChanged(nameof(CategoriesExp));
         }
     }
+    public decimal TotalInCash
+    {
+        get
+        {
+            return _allPaymentMethods.Where(x => x.IsCash == true).Sum(x => x.CurrentBalance);
+        }
+    }
+    public decimal TotalInCashless
+    {
+        get
+        {
+            return _allPaymentMethods.Where(x => x.IsCash == false).Sum(x => x.CurrentBalance);
+        }
+    }
+    public decimal TotalMoney
+    {
+        get
+        {
+            return _allPaymentMethods.Sum(x => x.CurrentBalance);
+        }
+    }
     public ICommand AddTransaction => new RelayCommand(x =>
     {
         var window = new AddTransaction();
         window.ShowDialog();
-
+        OnPropertyChanged(nameof(TotalInCash));
+        OnPropertyChanged(nameof(TotalInCashless));
+        OnPropertyChanged(nameof(TotalMoney));
     }, x => true);
 }

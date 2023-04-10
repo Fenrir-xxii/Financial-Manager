@@ -21,7 +21,7 @@ public partial class Expense
 
     public int CategoryId { get; set; }
 
-    public string SubCategoryTitle { get; set; } = null!;
+    public string? SubCategoryTitle { get; set; }
 
     public virtual CategoriesExp Category { get; set; } = null!;
 
@@ -29,5 +29,5 @@ public partial class Expense
 
     public virtual Provider? Provider { get; set; }
 
-    public virtual SubcategoriesExp SubcategoriesExp { get; set; } = null!;
+    public virtual SubcategoriesExp? SubcategoriesExp { get; set; }
 }
