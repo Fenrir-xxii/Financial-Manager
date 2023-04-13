@@ -77,33 +77,130 @@
             <Border Padding="7" BorderThickness="4" Background="DimGray">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50*"></ColumnDefinition>
-                        <ColumnDefinition Width="50*"></ColumnDefinition>
+                        <ColumnDefinition Width="60*"></ColumnDefinition>
+                        <ColumnDefinition Width="40*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="20*"></RowDefinition>
-                        <RowDefinition Height="80*"></RowDefinition>
+                        <RowDefinition Height="15*"></RowDefinition>
+                        <RowDefinition Height="85*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <ListView Grid.Column="0" Grid.Row="1"
+                    <TabControl Grid.Column="0" Grid.Row="1">
+                        <TabItem Header="Expenses">
+                            <ListView
                               ItemsSource="{Binding Path=CategoriesExpItems}"
+                              SelectedItem="{}" 
+                              SelectedIndex="0">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TreeViewItem
+                                Header="{Binding Header}"
+                                ItemsSource="{Binding Path=Items}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </TabItem>
+                        <TabItem Header="Income">
+                            <ListView
+                              ItemsSource="{Binding Path=CategoriesIncItems}"
+                              SelectedItem="{}" 
+                              SelectedIndex="0">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TreeViewItem
+                                Header="{Binding Header}"
+                                ItemsSource="{Binding Path=Items}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </TabItem>
+                    </TabControl>
+                    <Grid Grid.Row="2" Grid.Column="2" Background="GhostWhite">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="10*"></RowDefinition>
+                            <RowDefinition Height="80*"></RowDefinition>
+                            <RowDefinition Height="10*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"></ColumnDefinition>
+                            <ColumnDefinition Width="90*"></ColumnDefinition>
+                            <ColumnDefinition Width="5*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="1">Add new category</TextBlock>
+                        <StackPanel Grid.Row="1" Grid.Column="1">
+                            <TextBlock>Choose Category Type:</TextBlock>
+                            <ComboBox ItemsSource="{Binding Path=CategoryTypes}" SelectedItem="{Binding Path=SelectedOperationType}">
+                            </ComboBox>
+                            <TextBlock></TextBlock>
+                            <TextBlock>Title of category:</TextBlock>
+                            <TextBox Text="{Binding TitleOfNewCategory, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                            <TextBlock></TextBlock>
+                            <CheckBox IsChecked="{Binding Path=IsNewCategoryASubcategory, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Path=IsCategoryTypeExp}">Is subcategory</CheckBox>
+                            <TextBlock>Choose Main category:</TextBlock>
+                            <ComboBox ItemsSource="{Binding Path=CategoriesExp}" SelectedItem="{Binding Path=SelectedMainCategoryExpForSub}" IsEnabled="{Binding Path=IsNewCategoryASubcategory}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <TextBlock></TextBlock>
+                            <Button Command="{Binding Path=CheckTitleOfNewCategory}">Check Title</Button>
+                            <TextBlock></TextBlock>
+                            <Button Command="{Binding Path=AddNewCategory}">Add</Button>
+                            
+                        </StackPanel>
+                        
+                    </Grid>
+
+
+
+                </Grid>
+            </Border>
+        </TabItem>
+        <TabItem Header="Providers">
+            <Border Padding="7" BorderThickness="4" Background="DimGray">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60*"></ColumnDefinition>
+                        <ColumnDefinition Width="40*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="15*"></RowDefinition>
+                        <RowDefinition Height="85*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <ListView Grid.Row="1"
+                              ItemsSource="{Binding Path=Providers}"
                               SelectedItem="{}" 
                               SelectedIndex="0">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <TreeViewItem
-                                Header="{Binding Header}"
-                                ItemsSource="{Binding Path=Items}"/>
+                                <TextBlock Text="{Binding Path=Title}"></TextBlock>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <!--<TreeView Grid.Column="0" Grid.Row="1"
-                              ItemTemplate="{}"
-                              ItemSource="{}"
-                              SelectedItemChanged=""
-                              Name="ddd">
-                    </TreeView>-->
+                    <Grid Grid.Row="2" Grid.Column="2" Background="GhostWhite">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="10*"></RowDefinition>
+                            <RowDefinition Height="80*"></RowDefinition>
+                            <RowDefinition Height="10*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"></ColumnDefinition>
+                            <ColumnDefinition Width="90*"></ColumnDefinition>
+                            <ColumnDefinition Width="5*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="1">Add new provider</TextBlock>
+                        <StackPanel Grid.Row="1" Grid.Column="1">
+                            <TextBlock>Title of provider:</TextBlock>
+                            <TextBox Text="{Binding TitleOfNewProvider, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                            <TextBlock></TextBlock>
+                            <Button Command="{Binding Path=CheckTitleOfNewProvider}">Check Title</Button>
+                            <TextBlock></TextBlock>
+                            <Button Command="{Binding Path=AddNewProvider}">Add</Button>
 
+                        </StackPanel>
 
+                    </Grid>
 
                 </Grid>
             </Border>
