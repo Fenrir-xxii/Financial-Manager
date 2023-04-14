@@ -6,10 +6,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using WpfApp9_MyFinances.Models;
+using WpfApp9_MyFinances.Windows;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
@@ -328,25 +330,8 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
     }, x => true);
     public ICommand CancelTransaction => new RelayCommand(x =>
     {
-        //this.Close();
+        //Application.Current.Windows[1].Close();
+        var window = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive);
+        window?.Close();
     }, x => true);
-    //public decimal ExpenceAmount
-    //{
-    //    get 
-    //    {
-    //        decimal amount = 0;
-    //        if (ExpenseTransaction.Amount > 0)
-    //        {
-    //            amount = ExpenseTransaction.Amount;
-    //        }
-    //        return amount;
-    //    }
-    //    set
-    //    {
-    //        ExpenceAmount= value;
-    //        //ExpenseTransaction.Amount = value;
-    //        OnPropertyChanged(nameof(ExpenceAmount));
-    //        OnPropertyChanged(nameof(PlannedBalance));
-    //    }
-    //}
 }

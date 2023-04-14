@@ -65,7 +65,8 @@
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
                                     <TextBlock>Amount:</TextBlock>
-                                    <TextBox Text="{Binding Path=ExpenseTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                    <!--<TextBox Text="{Binding Path=ExpenseTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
+                                    <wpfx:DecimalUpDown Value="{Binding Path=ExpenseTransaction.Amount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0"/>
                                     <TextBlock>Category:</TextBlock>
                                     <ComboBox ItemsSource="{Binding Path=CategoriesExp}" SelectedItem="{Binding Path=SelectedCategoryExp}">
                                         <ComboBox.ItemTemplate>
@@ -124,7 +125,8 @@
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
                                     <TextBlock>Amount:</TextBlock>
-                                    <TextBox Text="{Binding Path=IncomeTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                    <wpfx:DecimalUpDown Value="{Binding Path=IncomeTransaction.Amount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0"/>
+                                    <!--<TextBox Text="{Binding Path=IncomeTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
                                     <TextBlock>Category:</TextBlock>
                                     <ComboBox ItemsSource="{Binding Path=CategoriesInc}" SelectedItem="{Binding Path=SelectedCategoryInc}">
                                         <ComboBox.ItemTemplate>
@@ -174,8 +176,8 @@
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
                                     <TextBlock>Amount:</TextBlock>
-                                    <TextBox Text="{Binding Path=TransferTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                                    
+                                    <!--<TextBox Text="{Binding Path=TransferTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
+                                    <wpfx:DecimalUpDown Value="{Binding Path=TransferTransaction.Amount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0"/>
                                     <TextBlock>Description / comment:</TextBlock>
                                     <TextBox Text="{Binding Path=TransferTransaction.Description}"></TextBox>
                                     <TextBlock>

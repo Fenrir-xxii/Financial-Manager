@@ -96,6 +96,16 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PaymentMethods));
         }
     }
+    private PaymentMethodViewModel _selectedPaymentMethod;
+    public PaymentMethodViewModel SelectedPaymentMethod
+    {
+        get => _selectedPaymentMethod;
+        set
+        {
+            _selectedPaymentMethod = value;
+            OnPropertyChanged(nameof(SelectedPaymentMethod));
+        }
+    }
     private List<CategoriesExp> _allCategoriesExp;
     public ObservableCollection<CategoryExpViewModel> CategoriesExp
     {
@@ -158,7 +168,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         set
         {
             CategoriesInc = value;
-            OnPropertyChanged(nameof(CategoriesExp));
+            OnPropertyChanged(nameof(CategoriesInc));
             //OnPropertyChanged(nameof(CategoriesExpItems));
         }
     }
@@ -329,6 +339,11 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             _db.CategoriesIncs.Add(newCategory);    
         }
         _db.SaveChanges();
+        UpdateCategories();
+        OnPropertyChanged(nameof(CategoriesExp));
+        OnPropertyChanged(nameof(CategoriesExpItems));
+        OnPropertyChanged(nameof(CategoriesInc));
+        OnPropertyChanged(nameof(CategoriesIncItems));
 
     }, x => _validNameOfNewCategory);
     private bool _validNameOfNewCategory;
@@ -389,8 +404,16 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         var newProvider = new Provider { Title = _titleOfNewProvider };
         _db.Providers.Add(newProvider);
         _db.SaveChanges();
+        UpdateProviders();
+        OnPropertyChanged(nameof(Providers));
 
     }, x => ValidNameOfNewProvider);
+    public ICommand ShowAllTransactions => new RelayCommand(x =>
+    {
+        var window = new AllTransactions(SelectedPaymentMethod);
+        window.ShowDialog();
+
+    }, x => true);
     public decimal TotalInCash
     {
         get
@@ -419,5 +442,30 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         OnPropertyChanged(nameof(TotalInCash));
         OnPropertyChanged(nameof(TotalInCashless));
         OnPropertyChanged(nameof(TotalMoney));
+        OnPropertyChanged(nameof(PaymentMethods));
     }, x => true);
+    public void UpdateCategories()
+    {
+        _allCategoriesExp.Clear();
+        _allCategoriesInc.Clear();
+        CategoriesExp.Clear();
+        CategoriesInc.Clear();
+        Task.Run(async () =>
+        {
+            _allCategoriesExp = await LoadCategoriesExpAsync();
+            _allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
+            _allCategoriesInc = await LoadCategoriesIncAsync();
+            _allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
+        }).Wait();
+    }
+    public void UpdateProviders()
+    {
+        _allProviders.Clear();
+        Providers.Clear();
+        Task.Run(async () =>
+        {
+            _allProviders = await LoadProvidersAsync();
+            _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
+        }).Wait();
+    }
 }
