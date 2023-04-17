@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LiveCharts.Wpf;
+using LiveCharts;
+using Microsoft.EntityFrameworkCore;
 using My.BaseViewModels;
 using System;
 using System.Collections.Generic;
@@ -28,6 +30,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _allCategoriesInc = new List<CategoriesInc>();
         _categoriesIncItems= new ObservableCollection<TreeViewItem>();
         _allProviders = new List<Provider>();
+        _allExpenses = new List<Expense>();
         _categoryTypes = new List<string> { "Expense", "Income" };
         _selectedOperationType = String.Empty;
         _titleOfNewCategory = String.Empty;
@@ -46,6 +49,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             _allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
             _allProviders = await LoadProvidersAsync();
             _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
+            _allExpenses = await LoadExpensesAsync();
+            _allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
             //_allCategoriesExp.ForEach(c => CategoriesExpItems.Add(new TreeViewItem { Header = c.Title }));
 
             OnPropertyChanged(nameof(PaymentMethods));
@@ -54,9 +59,15 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(CategoriesInc));
             OnPropertyChanged(nameof(CategoriesIncItems));
             OnPropertyChanged(nameof(Providers));
+            OnPropertyChanged(nameof(Expenses));
             OnPropertyChanged(nameof(TotalInCash));
             OnPropertyChanged(nameof(TotalInCashless));
             OnPropertyChanged(nameof(TotalMoney));
+            OnPropertyChanged(nameof(CategoriesChartValue));
+            OnPropertyChanged(nameof(Labels));
+            OnPropertyChanged(nameof(ChartCategories));
+            OnPropertyChanged(nameof(ChartCategoriesPie));
+            
         });
     }
     private Database3MyFinancesContext _db;
@@ -76,6 +87,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     public async Task<List<Provider>> LoadProvidersAsync()
     {
         return await _db.Providers.ToListAsync();
+    }
+    public async Task<List<Expense>> LoadExpensesAsync()
+    {
+        return await _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e=> e.Provider).ToListAsync();
     }
     private List<PaymentMethod> _allPaymentMethods;
 
@@ -223,6 +238,21 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             Providers= value;
             OnPropertyChanged(nameof(Providers));
+        }
+    }
+    private List<Expense> _allExpenses;
+    public ObservableCollection<ExpenseViewModel> Expenses
+    {
+        get
+        {
+            var collection = new ObservableCollection<ExpenseViewModel>();
+            _allExpenses.ForEach(e => collection.Add(new ExpenseViewModel(e)));
+            return collection;
+        }
+        set
+        {
+            Expenses = value;
+            OnPropertyChanged(nameof(Expenses));    
         }
     }
     private string _selectedOperationType;
@@ -439,10 +469,16 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         var window = new AddTransaction();
         window.ShowDialog();
+        UpdateExpenses();
+        //TO-DO updateIncomes and transfers
         OnPropertyChanged(nameof(TotalInCash));
         OnPropertyChanged(nameof(TotalInCashless));
         OnPropertyChanged(nameof(TotalMoney));
         OnPropertyChanged(nameof(PaymentMethods));
+        OnPropertyChanged(nameof(CategoriesChartValue));
+        OnPropertyChanged(nameof(Labels));
+        OnPropertyChanged(nameof(ChartCategories));
+        OnPropertyChanged(nameof(ChartCategoriesPie));
     }, x => true);
     public void UpdateCategories()
     {
@@ -468,4 +504,90 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
         }).Wait();
     }
+    public void UpdateExpenses()
+    {
+        _allExpenses.Clear();
+        Expenses.Clear();
+        Task.Run(async () =>
+        {
+            _allExpenses = await LoadExpensesAsync();
+            _allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
+        }).Wait();
+    }
+
+    public ChartValues<int> CategoriesChartValue
+    {
+        get
+        {
+            var collection = new ChartValues<int>();
+            var groups =  Expenses.GroupBy(x => x.CategoryId);
+            foreach (var group in groups)
+            {
+                collection.Add(group.Count());
+            }
+            return collection;
+        }
+        set
+        {
+
+        }
+    }
+    public ObservableCollection<string> Labels
+    {
+        get
+        {
+            var collection = new ObservableCollection<string>(Expenses.GroupBy(x => x.Category.Title).Select(g => g.Key));
+            return collection;
+        }
+    }
+    public SeriesCollection ChartCategories
+    {
+        get
+        {
+            var collection = new SeriesCollection();
+            var chart = new ColumnSeries()
+            {
+                Values = CategoriesChartValue,
+                Title = "Expenses count",
+            };
+            collection.Add(chart);
+            return collection;
+        }
+    }
+    public Func<double, string> Formatter { get; set; } = value => String.Format("{0:0.##}", value).ToString();
+
+    public SeriesCollection ChartCategoriesPie
+    {
+        get
+        {
+            var collection = new SeriesCollection();
+            
+
+            var groups = Expenses.GroupBy(x => x.CategoryId);
+            foreach (var group in groups)
+            {
+                var pie = new PieSeries
+                {
+                    //Title = group.Key.ToString(), //.Title,
+                    Title = Expenses.FirstOrDefault(x => x.CategoryId==group.Key).Category.Title,
+                    //Values = new ChartValues<int>
+                    //    {
+                    //        group.Count(),
+                    //    },
+                    Values = new ChartValues<decimal>
+                        {
+                            group.Sum(x => x.Amount),
+                        },
+                    DataLabels = true,
+                    LabelPoint = labelPoint
+                };
+                collection.Add(pie);
+            }
+            return collection;
+        }
+    }
+
+    Func<ChartPoint, string> labelPoint = chartPoint =>
+        string.Format("{0:#.00} ({1:P2})", chartPoint.Y, chartPoint.Participation);
+
 }

@@ -90,7 +90,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             _selectedPaymentMethod = value;
             OnPropertyChanged(nameof(SelectedPaymentMethod));
-            OnPropertyChanged(nameof(PlannedBalance));
+            OnPropertyChanged(nameof(PlannedBalanceExp));
             OnPropertyChanged(nameof(PaymentMethodsForTransfer));
         }
     }
@@ -242,6 +242,17 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             //OnPropertyChanged(nameof(PlannedBalance));
         }
     }
+    public decimal ExpenseAmount
+    {
+        get => _expenseTransaction.Amount;
+        set
+        {
+            ExpenseTransaction.Amount = value;
+            OnPropertyChanged(nameof(ExpenseAmount));
+            OnPropertyChanged(nameof(PlannedBalanceExp));
+        }
+    }
+
     private IncomeViewModel _incomeTransaction;
     public IncomeViewModel IncomeTransaction
     {
@@ -252,6 +263,16 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IncomeTransaction));
         }
     }
+    public decimal IncomeAmount
+    {
+        get => _incomeTransaction.Amount;
+        set
+        {
+            IncomeTransaction.Amount = value;
+            OnPropertyChanged(nameof(IncomeAmount));
+            OnPropertyChanged(nameof(PlannedBalanceInc));
+        }
+    }
     private TransferViewModel _transferTransaction;
     public TransferViewModel TransferTransaction
     {
@@ -260,6 +281,17 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             _transferTransaction = value;
             OnPropertyChanged(nameof(TransferTransaction));
+        }
+    }
+    public decimal TransferAmount
+    {
+        get => _transferTransaction.Amount;
+        set
+        {
+            TransferTransaction.Amount = value;
+            OnPropertyChanged(nameof(TransferAmount));
+            OnPropertyChanged(nameof(PlannedBalanceSenderTfr));
+            OnPropertyChanged(nameof(PlannedBalanceReceiverTfr));
         }
     }
     private List<string> _operationTypes;
@@ -282,7 +314,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedOperationType));
         }
     }
-    public decimal PlannedBalance
+    public decimal PlannedBalanceExp
     {
         get
         {
@@ -295,8 +327,59 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         }
         set
         {
-            PlannedBalance= value;
-            OnPropertyChanged(nameof(PlannedBalance));
+            PlannedBalanceExp= value;
+            OnPropertyChanged(nameof(PlannedBalanceExp));
+        }
+    }
+    public decimal PlannedBalanceInc
+    {
+        get
+        {
+            decimal balance = 0;
+            if (SelectedPaymentMethod != null)
+            {
+                balance = SelectedPaymentMethod.CurrentBalance - IncomeTransaction.Amount;
+            }
+            return balance;
+        }
+        set
+        {
+            PlannedBalanceInc = value;
+            OnPropertyChanged(nameof(PlannedBalanceInc));
+        }
+    }
+    public decimal PlannedBalanceSenderTfr
+    {
+        get
+        {
+            decimal balance = 0;
+            if (SelectedPaymentMethod != null)
+            {
+                balance = SelectedPaymentMethod.CurrentBalance - TransferTransaction.Amount;
+            }
+            return balance;
+        }
+        set
+        {
+            PlannedBalanceSenderTfr = value;
+            OnPropertyChanged(nameof(PlannedBalanceSenderTfr));
+        }
+    }
+    public decimal PlannedBalanceReceiverTfr
+    {
+        get
+        {
+            decimal balance = 0;
+            if (SelectedPaymentMethod != null)
+            {
+                balance = SelectedPaymentMethodForTransfer.CurrentBalance + TransferTransaction.Amount;
+            }
+            return balance;
+        }
+        set
+        {
+            PlannedBalanceReceiverTfr = value;
+            OnPropertyChanged(nameof(PlannedBalanceReceiverTfr));
         }
     }
     public ICommand SaveTransactionExp => new RelayCommand(x =>
@@ -308,25 +391,63 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             ExpenseTransaction.Subcategory= SelectedSubCategoryExp;
         }
-        _db.Add(ExpenseTransaction.Model);
-        _db.SaveChanges();
+        try
+        {
+            _db.Add(ExpenseTransaction.Model);
+            _db.SaveChanges();
+        }
+        catch(Exception e)
+        {
+            MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        foreach (Window item in Application.Current.Windows)
+        {
+            if (item.DataContext == this) item.Close();
+        }
+        //Application.Current.Windows[];
+        //Application.Current.Windows[windowId].Close();
     }, x => true);
     public ICommand SaveTransactionInc => new RelayCommand(x =>
     {
         IncomeTransaction.PaymentMethod = SelectedPaymentMethod;
         IncomeTransaction.Provider = SelectedProvider;
         IncomeTransaction.Category = SelectedCategoryInc;
-        
-        _db.Add(IncomeTransaction.Model);
-        _db.SaveChanges();
+
+        try
+        {
+            _db.Add(IncomeTransaction.Model);
+            _db.SaveChanges();
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        foreach (Window item in Application.Current.Windows)
+        {
+            if (item.DataContext == this) item.Close();
+        }
     }, x => true);
     public ICommand SaveTransactionTransf => new RelayCommand(x =>
     {
         TransferTransaction.From = SelectedPaymentMethod;
         TransferTransaction.To = SelectedPaymentMethodForTransfer;
 
-        _db.Add(TransferTransaction.Model);
-        _db.SaveChanges();
+        try
+        {
+            _db.Add(TransferTransaction.Model);
+            _db.SaveChanges();
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        foreach (Window item in Application.Current.Windows)
+        {
+            if (item.DataContext == this) item.Close();
+        }
     }, x => true);
     public ICommand CancelTransaction => new RelayCommand(x =>
     {

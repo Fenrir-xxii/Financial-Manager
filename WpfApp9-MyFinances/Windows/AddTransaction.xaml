@@ -66,7 +66,7 @@
                                     </ComboBox>
                                     <TextBlock>Amount:</TextBlock>
                                     <!--<TextBox Text="{Binding Path=ExpenseTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
-                                    <wpfx:DecimalUpDown Value="{Binding Path=ExpenseTransaction.Amount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0"/>
+                                    <wpfx:DecimalUpDown Value="{Binding Path=ExpenseAmount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0"/>
                                     <TextBlock>Category:</TextBlock>
                                     <ComboBox ItemsSource="{Binding Path=CategoriesExp}" SelectedItem="{Binding Path=SelectedCategoryExp}">
                                         <ComboBox.ItemTemplate>
@@ -87,7 +87,7 @@
                                     <TextBox Text="{Binding Path=ExpenseTransaction.Description}"></TextBox>
                                     <TextBlock>
                                     <TextBlock>Planned balance: </TextBlock>
-                                    <TextBlock Text="{Binding Path= PlannedBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBlock>
+                                    <TextBlock Text="{Binding Path= PlannedBalanceExp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='C', ConverterCulture='uk-UA'}"></TextBlock>
                                     </TextBlock>
                                 </StackPanel>
                                 <StackPanel Grid.Row="2">
@@ -125,7 +125,7 @@
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
                                     <TextBlock>Amount:</TextBlock>
-                                    <wpfx:DecimalUpDown Value="{Binding Path=IncomeTransaction.Amount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0"/>
+                                    <wpfx:DecimalUpDown Value="{Binding Path=IncomeAmount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0"/>
                                     <!--<TextBox Text="{Binding Path=IncomeTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
                                     <TextBlock>Category:</TextBlock>
                                     <ComboBox ItemsSource="{Binding Path=CategoriesInc}" SelectedItem="{Binding Path=SelectedCategoryInc}">
@@ -140,7 +140,7 @@
                                     <TextBox Text="{Binding Path=IncomeTransaction.Description}"></TextBox>
                                     <TextBlock>
                                     <TextBlock>Planned balance: </TextBlock>
-                                    <TextBlock Text="{Binding Path= PlannedBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBlock>
+                                    <TextBlock Text="{Binding Path= PlannedBalanceInc, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='C', ConverterCulture='uk-UA'}"></TextBlock>
                                     </TextBlock>
                                 </StackPanel>
                                 <StackPanel Grid.Row="2">
@@ -177,16 +177,16 @@
                                     </ComboBox>
                                     <TextBlock>Amount:</TextBlock>
                                     <!--<TextBox Text="{Binding Path=TransferTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
-                                    <wpfx:DecimalUpDown Value="{Binding Path=TransferTransaction.Amount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0"/>
+                                    <wpfx:DecimalUpDown Value="{Binding Path=TransferAmount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0"/>
                                     <TextBlock>Description / comment:</TextBlock>
                                     <TextBox Text="{Binding Path=TransferTransaction.Description}"></TextBox>
                                     <TextBlock>
                                     <TextBlock>Planned balance of sender: </TextBlock>
-                                    <TextBlock Text="{Binding Path= PlannedBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBlock>
+                                    <TextBlock Text="{Binding Path=PlannedBalanceSenderTfr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='C', ConverterCulture='uk-UA'}"></TextBlock>
                                     </TextBlock>
                                     <TextBlock>
                                     <TextBlock>Planned balance of receiver: </TextBlock>
-                                    <TextBlock Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBlock>
+                                    <TextBlock Text="{Binding Path=PlannedBalanceReceiverTfr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='C', ConverterCulture='uk-UA'}"></TextBlock>
                                     </TextBlock>
                                 </StackPanel>
                                 <StackPanel Grid.Row="2">
