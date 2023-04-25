@@ -8,6 +8,11 @@ using WpfApp9_MyFinances.Models;
 
 namespace WpfApp9_MyFinances.ModelsForWpfOnly;
 
+public enum TransactionType
+{
+    EXPENSE=0, INCOME, TRANSFER
+}
+    
 public class FinancialTransaction
 {
     public FinancialTransaction() { }
@@ -18,6 +23,8 @@ public class FinancialTransaction
         Title= expense.Title;
         BalanceBefore = expense.PaymentMethod.GetBalanceForDate(DateOfTransaction);
         BalanceAfter = BalanceBefore + Amount;
+        TransactionId = expense.Id;
+        TransactionType = TransactionType.EXPENSE;
     }
     public FinancialTransaction(Income income)
     {
@@ -26,6 +33,8 @@ public class FinancialTransaction
         Title = income.Title;
         BalanceBefore = income.PaymentMethod.GetBalanceForDate(DateOfTransaction);
         BalanceAfter = BalanceBefore + Amount;
+        TransactionId = income.Id;
+        TransactionType = TransactionType.INCOME;
     }
     public FinancialTransaction(Transfer transfer, bool isIncome)
     {
@@ -36,6 +45,8 @@ public class FinancialTransaction
             Title = "Incoming transfer";
             BalanceBefore = transfer.To.GetBalanceForDate(DateOfTransaction);
             BalanceAfter = BalanceBefore + Amount;
+            TransactionId = transfer.Id;
+            TransactionType = TransactionType.TRANSFER;
         }
         else
         {
@@ -44,6 +55,8 @@ public class FinancialTransaction
             Title = "Outcoming Transfer";
             BalanceBefore = transfer.From.GetBalanceForDate(DateOfTransaction);
             BalanceAfter = BalanceBefore + Amount;
+            TransactionId = transfer.Id;
+            TransactionType = TransactionType.TRANSFER;
         }
         //Amount = -transferFrom.Amount;
         //DateOfTransaction = transferFrom.DateOfTransfer;
@@ -61,4 +74,8 @@ public class FinancialTransaction
     public DateTime DateOfTransaction { get; set; }
     [NotMapped]
     public string Title { get; set; }
+    [NotMapped]
+    public int TransactionId { get; set; }
+    [NotMapped]
+    public TransactionType TransactionType { get; set; }
 }

@@ -83,7 +83,7 @@ public class ExpenseViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(CategoryId));
         }
     }
-    public string SubCategoryTitle
+    public string? SubCategoryTitle
     {
         get => Model.SubCategoryTitle;
         set
@@ -125,13 +125,13 @@ public class ExpenseViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(ProviderId));
         }
     }
-    public SubcategoryExpViewModel Subcategory
+    public SubcategoryExpViewModel? Subcategory
     {
         get => new SubcategoryExpViewModel { Model = Model.SubcategoriesExp };
         set
         {
-            Model.SubcategoriesExp = value.Model;
-            Model.SubCategoryTitle= value.Model.Title;
+            Model.SubcategoriesExp = value == null? null : value.Model;
+            Model.SubCategoryTitle = value == null? null : value.Model.Title;
             OnPropertyChanged(nameof(Subcategory));
             OnPropertyChanged(nameof(SubCategoryTitle));
         }

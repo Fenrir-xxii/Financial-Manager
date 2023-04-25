@@ -1,6 +1,7 @@
 ﻿using My.BaseViewModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,16 @@ public class CategoryExpViewModel : NotifyPropertyChangedBase
         {
             Model.Title = value;
             OnPropertyChanged(nameof(Title));
+        }
+    }
+    public ObservableCollection<SubcategoryExpViewModel> Subcategories
+    {
+        get
+        {
+            var collection = new ObservableCollection<SubcategoryExpViewModel>();
+            Model.SubcategoriesExps.ToList().ForEach(s => collection.Add(new SubcategoryExpViewModel(s)));
+            
+            return collection;
         }
     }
     public override bool Equals(object? obj)

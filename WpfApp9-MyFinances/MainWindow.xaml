@@ -210,8 +210,10 @@
         </TabItem>
         <TabItem Header="Statistics">
             <TabControl>
-                <TabItem Header="Columns">
-                    <lvc:CartesianChart Series="{Binding ChartCategories}" LegendLocation="Right" Background="#222E31" Foreground="White">
+                <TabItem Header="Expenses">
+                    <TabControl>
+                        <TabItem Header="Columns">
+                            <lvc:CartesianChart Series="{Binding ChartCategoriesExp}" LegendLocation="Right" Background="#222E31" Foreground="White">
                         <lvc:CartesianChart.SeriesColors>
                             <lvc:ColorsCollection>
                                 <Color>Orange</Color>
@@ -234,7 +236,7 @@
                             </lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Title="&#x0a;Categories" Labels="{Binding Labels}" Foreground="White">
+                                    <lvc:Axis Title="&#x0a;Categories" Labels="{Binding LabelsExp}" Foreground="White">
                                 <lvc:Axis.Separator>
                                     <lvc:Separator StrokeThickness="0" StrokeDashArray="0">
                                         <lvc:Separator.Stroke>
@@ -246,18 +248,71 @@
                         </lvc:CartesianChart.AxisX>
                     </lvc:CartesianChart>
                 </TabItem>
-                <TabItem Header="Pie">
-                    <lvc:PieChart LegendLocation="Right" Background="CadetBlue" DataClick="Chart_OnDataClick" Hoverable="False" DataTooltip="{x:Null}"
-                        Series="{Binding ChartCategoriesPie}">
-                        <lvc:PieChart.Resources>
-                            <Style TargetType="lvc:PieSeries">
-                                <Setter Property="Foreground" Value="Black"></Setter>
-                                <Setter Property="StrokeThickness" Value="1"></Setter>
-                                <Setter Property="Stroke" Value="DarkGray"></Setter>
-                            </Style>
-                        </lvc:PieChart.Resources>
-                    </lvc:PieChart>
-                                  
+                        <TabItem Header="Pie">
+                            <lvc:PieChart LegendLocation="Right" Background="CadetBlue" DataClick="Chart_OnDataClick" Hoverable="False" DataTooltip="{x:Null}"
+                        Series="{Binding ChartCategoriesExpPie}">
+                                <lvc:PieChart.Resources>
+                                    <Style TargetType="lvc:PieSeries">
+                                        <Setter Property="Foreground" Value="Black"></Setter>
+                                        <Setter Property="StrokeThickness" Value="1"></Setter>
+                                        <Setter Property="Stroke" Value="DarkGray"></Setter>
+                                    </Style>
+                                </lvc:PieChart.Resources>
+                            </lvc:PieChart>
+                        </TabItem>
+                    </TabControl>
+                </TabItem>
+                <TabItem Header="Incomes">
+                    <TabControl>
+                        <TabItem Header="Columns">
+                            <lvc:CartesianChart Series="{Binding ChartCategoriesInc}" LegendLocation="Right" Background="#222E31" Foreground="White">
+                                <lvc:CartesianChart.SeriesColors>
+                                    <lvc:ColorsCollection>
+                                        <Color>Orange</Color>
+                                    </lvc:ColorsCollection>
+                                </lvc:CartesianChart.SeriesColors>
+                                <lvc:CartesianChart.DataTooltip>
+                                    <lvc:DefaultTooltip Background="Black">
+
+                                    </lvc:DefaultTooltip>
+                                </lvc:CartesianChart.DataTooltip>
+                                <lvc:CartesianChart.AxisY>
+                                    <lvc:Axis Title="Expense count&#x0a; " LabelFormatter="{Binding Formatter}" Foreground="White">
+                                        <lvc:Axis.Separator>
+                                            <lvc:Separator StrokeThickness="2" StrokeDashArray="4" Step="1">
+                                                <lvc:Separator.Stroke>
+                                                    <SolidColorBrush Color="#404F56" />
+                                                </lvc:Separator.Stroke>
+                                            </lvc:Separator>
+                                        </lvc:Axis.Separator>
+                                    </lvc:Axis>
+                                </lvc:CartesianChart.AxisY>
+                                <lvc:CartesianChart.AxisX>
+                                    <lvc:Axis Title="&#x0a;Categories" Labels="{Binding LabelsInc}" Foreground="White">
+                                        <lvc:Axis.Separator>
+                                            <lvc:Separator StrokeThickness="0" StrokeDashArray="0">
+                                                <lvc:Separator.Stroke>
+                                                    <SolidColorBrush Color="#404F56" />
+                                                </lvc:Separator.Stroke>
+                                            </lvc:Separator>
+                                        </lvc:Axis.Separator>
+                                    </lvc:Axis>
+                                </lvc:CartesianChart.AxisX>
+                            </lvc:CartesianChart>
+                        </TabItem>
+                        <TabItem Header="Pie">
+                            <lvc:PieChart LegendLocation="Right" Background="CadetBlue" DataClick="Chart_OnDataClick" Hoverable="False" DataTooltip="{x:Null}"
+                        Series="{Binding ChartCategoriesIncPie}">
+                                <lvc:PieChart.Resources>
+                                    <Style TargetType="lvc:PieSeries">
+                                        <Setter Property="Foreground" Value="Black"></Setter>
+                                        <Setter Property="StrokeThickness" Value="1"></Setter>
+                                        <Setter Property="Stroke" Value="DarkGray"></Setter>
+                                    </Style>
+                                </lvc:PieChart.Resources>
+                            </lvc:PieChart>
+                        </TabItem>
+                    </TabControl>
                 </TabItem>
             </TabControl>
         </TabItem>

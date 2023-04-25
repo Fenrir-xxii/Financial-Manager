@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media;
 using WpfApp9_MyFinances.Models;
 using WpfApp9_MyFinances.ModelsForWpfOnly;
+using WpfApp9_MyFinances.Windows;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
@@ -61,6 +63,19 @@ public class FinancialTransactionViewModel : NotifyPropertyChangedBase
         {
             Model.BalanceAfter = value;
             OnPropertyChanged(nameof(BalanceAfter));
+        }
+    }
+    public int TransactionId
+    {
+        get => Model.TransactionId;
+    }
+    public TransactionType TransactionType
+    {
+        get => Model.TransactionType;
+        set
+        {
+            Model.TransactionType = value;
+            OnPropertyChanged(nameof(TransactionType));
         }
     }
     public Brush TransactionColor

@@ -395,12 +395,13 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             _db.Add(ExpenseTransaction.Model);
             _db.SaveChanges();
+            MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch(Exception e)
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        
         foreach (Window item in Application.Current.Windows)
         {
             if (item.DataContext == this) item.Close();
@@ -418,12 +419,13 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             _db.Add(IncomeTransaction.Model);
             _db.SaveChanges();
+            MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception e)
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        
         foreach (Window item in Application.Current.Windows)
         {
             if (item.DataContext == this) item.Close();
@@ -438,12 +440,13 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             _db.Add(TransferTransaction.Model);
             _db.SaveChanges();
+            MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception e)
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+       
         foreach (Window item in Application.Current.Windows)
         {
             if (item.DataContext == this) item.Close();

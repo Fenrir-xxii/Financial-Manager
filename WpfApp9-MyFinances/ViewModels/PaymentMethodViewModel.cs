@@ -6,8 +6,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 using WpfApp9_MyFinances.Models;
 using WpfApp9_MyFinances.ModelsForWpfOnly;
+using WpfApp9_MyFinances.Windows;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
@@ -144,8 +147,8 @@ public class PaymentMethodViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Transactions));
         }
     }
-    private FinancialTransaction _selectedTransaction;
-    public FinancialTransaction SelectedTransaction
+    private FinancialTransactionViewModel _selectedTransaction;
+    public FinancialTransactionViewModel SelectedTransaction
     {
         get => _selectedTransaction;
         set
@@ -154,6 +157,100 @@ public class PaymentMethodViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedTransaction));
         }
     }
+    public ICommand EditTransaction => new RelayCommand(x =>
+    {
+        switch (SelectedTransaction.TransactionType)
+        {
+            case TransactionType.EXPENSE:
+                {
+                    var transaction = _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                    var subWindow = new EditTransaction(transaction, _db); // pass model of transaction (expense, income or transfer)
+                    subWindow.ShowDialog();
+                    //update
+                    break;
+                }
+            case TransactionType.INCOME:
+                {
+                    var transaction = _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                    var subWindow = new EditTransaction(transaction, _db);
+                    subWindow.ShowDialog();
+                    //update
+                    break;
+                }
+            case TransactionType.TRANSFER:
+                {
+                    var transaction = _db.Transfers.Include(t => t.From).Include(t=> t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId); //include
+                    var subWindow = new EditTransaction(transaction, _db);
+                    subWindow.ShowDialog();
+                    //update
+                    break;
+                }
+            default:
+                {
+                    //messageBox no selected ityem
+                    break;
+                }
+        }
+
+        //var window = new EditTransaction(); // pass model of transaction (expense, income or transfer) or just pass SelectedTransaction Id
+        //window.ShowDialog();
+
+    }, x => SelectedTransaction != null);
+    public ICommand DeleteTransaction => new RelayCommand(x =>
+    {
+        switch (SelectedTransaction.TransactionType)
+        {
+            case TransactionType.EXPENSE:
+                {
+                   
+                    try
+                    {
+                         var transaction = _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                        _db.Expenses.Remove(transaction);
+                        _db.SaveChanges();
+                        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }catch(Exception ex)
+                    {
+                        MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    
+                    break;
+                }
+            case TransactionType.INCOME:
+                {
+                    try
+                    {
+                        var transaction = _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                        _db.Incomes.Remove(transaction);
+                        _db.SaveChanges();
+                        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }catch (Exception ex)
+                    {
+                        MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    break;
+                }
+            case TransactionType.TRANSFER:
+                {
+                    try
+                    {
+                        var transaction = _db.Transfers.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                        _db.Transfers.Remove(transaction);
+                        _db.SaveChanges();
+                        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }catch (Exception ex)
+                    {
+                        MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    break;
+                }
+            default:
+                {
+                    break;
+                }
+        }
+
+    }, x => SelectedTransaction !=null);
     public override bool Equals(object? obj)
     {
         if (obj == null)

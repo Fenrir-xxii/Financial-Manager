@@ -31,6 +31,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _categoriesIncItems= new ObservableCollection<TreeViewItem>();
         _allProviders = new List<Provider>();
         _allExpenses = new List<Expense>();
+        _allIncomes = new List<Income>();
         _categoryTypes = new List<string> { "Expense", "Income" };
         _selectedOperationType = String.Empty;
         _titleOfNewCategory = String.Empty;
@@ -51,6 +52,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
             _allExpenses = await LoadExpensesAsync();
             _allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
+            _allIncomes = await LoadIncomesAsync();
+            _allIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
             //_allCategoriesExp.ForEach(c => CategoriesExpItems.Add(new TreeViewItem { Header = c.Title }));
 
             OnPropertyChanged(nameof(PaymentMethods));
@@ -60,13 +63,14 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(CategoriesIncItems));
             OnPropertyChanged(nameof(Providers));
             OnPropertyChanged(nameof(Expenses));
+            OnPropertyChanged(nameof(Incomes));
             OnPropertyChanged(nameof(TotalInCash));
             OnPropertyChanged(nameof(TotalInCashless));
             OnPropertyChanged(nameof(TotalMoney));
-            OnPropertyChanged(nameof(CategoriesChartValue));
-            OnPropertyChanged(nameof(Labels));
-            OnPropertyChanged(nameof(ChartCategories));
-            OnPropertyChanged(nameof(ChartCategoriesPie));
+            OnPropertyChanged(nameof(CategoriesExpChartValue));
+            OnPropertyChanged(nameof(LabelsExp));
+            OnPropertyChanged(nameof(ChartCategoriesExp));
+            OnPropertyChanged(nameof(ChartCategoriesExpPie));
             
         });
     }
@@ -91,6 +95,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     public async Task<List<Expense>> LoadExpensesAsync()
     {
         return await _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e=> e.Provider).ToListAsync();
+    }
+    public async Task<List<Income>> LoadIncomesAsync()
+    {
+        return await _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).ToListAsync();
     }
     private List<PaymentMethod> _allPaymentMethods;
 
@@ -253,6 +261,21 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             Expenses = value;
             OnPropertyChanged(nameof(Expenses));    
+        }
+    }
+    private List<Income> _allIncomes;
+    public ObservableCollection<IncomeViewModel> Incomes
+    {
+        get
+        {
+            var collection = new ObservableCollection<IncomeViewModel>();
+            _allIncomes.ForEach(i => collection.Add(new IncomeViewModel(i)));
+            return collection;
+        }
+        set
+        {
+            Incomes = value;
+            OnPropertyChanged(nameof(Incomes));
         }
     }
     private string _selectedOperationType;
@@ -470,15 +493,16 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         var window = new AddTransaction();
         window.ShowDialog();
         UpdateExpenses();
-        //TO-DO updateIncomes and transfers
+        UpdateIncomes();
+        //TO-DO update Incomes and transfers
         OnPropertyChanged(nameof(TotalInCash));
         OnPropertyChanged(nameof(TotalInCashless));
         OnPropertyChanged(nameof(TotalMoney));
         OnPropertyChanged(nameof(PaymentMethods));
-        OnPropertyChanged(nameof(CategoriesChartValue));
-        OnPropertyChanged(nameof(Labels));
-        OnPropertyChanged(nameof(ChartCategories));
-        OnPropertyChanged(nameof(ChartCategoriesPie));
+        OnPropertyChanged(nameof(CategoriesExpChartValue));
+        OnPropertyChanged(nameof(LabelsExp));
+        OnPropertyChanged(nameof(ChartCategoriesExp));
+        OnPropertyChanged(nameof(ChartCategoriesExpPie));
     }, x => true);
     public void UpdateCategories()
     {
@@ -514,8 +538,18 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             _allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
         }).Wait();
     }
+    public void UpdateIncomes()
+    {
+        _allIncomes.Clear();
+        Incomes.Clear();
+        Task.Run(async () =>
+        {
+            _allIncomes = await LoadIncomesAsync();
+            _allIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
+        }).Wait();
+    }
 
-    public ChartValues<int> CategoriesChartValue
+    public ChartValues<int> CategoriesExpChartValue
     {
         get
         {
@@ -527,12 +561,12 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             }
             return collection;
         }
-        set
-        {
+        //set
+        //{
 
-        }
+        //}
     }
-    public ObservableCollection<string> Labels
+    public ObservableCollection<string> LabelsExp
     {
         get
         {
@@ -540,14 +574,14 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
-    public SeriesCollection ChartCategories
+    public SeriesCollection ChartCategoriesExp
     {
         get
         {
             var collection = new SeriesCollection();
             var chart = new ColumnSeries()
             {
-                Values = CategoriesChartValue,
+                Values = CategoriesExpChartValue,
                 Title = "Expenses count",
             };
             collection.Add(chart);
@@ -556,7 +590,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }
     public Func<double, string> Formatter { get; set; } = value => String.Format("{0:0.##}", value).ToString();
 
-    public SeriesCollection ChartCategoriesPie
+    public SeriesCollection ChartCategoriesExpPie
     {
         get
         {
@@ -589,5 +623,69 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
 
     Func<ChartPoint, string> labelPoint = chartPoint =>
         string.Format("{0:#.00} ({1:P2})", chartPoint.Y, chartPoint.Participation);
+    public ChartValues<int> CategoriesIncChartValue
+    {
+        get
+        {
+            var collection = new ChartValues<int>();
+            var groups = Incomes.GroupBy(x => x.CategoryId);
+            foreach (var group in groups)
+            {
+                collection.Add(group.Count());
+            }
+            return collection;
+        }
+    }
+    public ObservableCollection<string> LabelsInc
+    {
+        get
+        {
+            var collection = new ObservableCollection<string>(Incomes.GroupBy(x => x.Category.Title).Select(g => g.Key));
+            return collection;
+        }
+    }
+    public SeriesCollection ChartCategoriesInc
+    {
+        get
+        {
+            var collection = new SeriesCollection();
+            var chart = new ColumnSeries()
+            {
+                Values = CategoriesExpChartValue,
+                Title = "Incomes count",
+            };
+            collection.Add(chart);
+            return collection;
+        }
+    }
+    public SeriesCollection ChartCategoriesIncPie
+    {
+        get
+        {
+            var collection = new SeriesCollection();
 
+
+            var groups = Incomes.GroupBy(x => x.CategoryId);
+            foreach (var group in groups)
+            {
+                var pie = new PieSeries
+                {
+                    //Title = group.Key.ToString(), //.Title,
+                    Title = Incomes.FirstOrDefault(x => x.CategoryId == group.Key).Category.Title,
+                    //Values = new ChartValues<int>
+                    //    {
+                    //        group.Count(),
+                    //    },
+                    Values = new ChartValues<decimal>
+                        {
+                            group.Sum(x => x.Amount),
+                        },
+                    DataLabels = true,
+                    LabelPoint = labelPoint
+                };
+                collection.Add(pie);
+            }
+            return collection;
+        }
+    }
 }
