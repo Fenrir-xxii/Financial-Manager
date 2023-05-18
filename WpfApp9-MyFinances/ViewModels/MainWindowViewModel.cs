@@ -15,6 +15,7 @@ using System.Windows.Input;
 using WpfApp9_MyFinances.Models;
 using WpfApp9_MyFinances.Windows;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
+using System.Threading;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
@@ -39,8 +40,16 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _isNewCategoryASubcategory = false;
         _titleOfNewProvider = String.Empty;
         _validNameOfNewProvider = false;
+        _datePickerColumnWidthExp = 105;
+        _isDatePickerColumnHiddenExp = false;
+        _datePickerColumnWidthInc = 105;
+        _isDatePickerColumnHiddenInc = false;
+        _beginDateExp = DateTime.Now.AddDays(-7);
+        _endDateExp = DateTime.Now;
+        _beginDateInc = DateTime.Now.AddDays(-7);
+        _endDateInc = DateTime.Now;
 
-        Task.Run(async () =>
+    Task.Run(async () =>
         {
             _allPaymentMethods = await LoadPaymentMethodsAsync();
             _allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
@@ -492,17 +501,18 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         var window = new AddTransaction();
         window.ShowDialog();
+        UpdatePaymentMethods();
         UpdateExpenses();
         UpdateIncomes();
         //TO-DO update Incomes and transfers
-        OnPropertyChanged(nameof(TotalInCash));
-        OnPropertyChanged(nameof(TotalInCashless));
-        OnPropertyChanged(nameof(TotalMoney));
-        OnPropertyChanged(nameof(PaymentMethods));
-        OnPropertyChanged(nameof(CategoriesExpChartValue));
-        OnPropertyChanged(nameof(LabelsExp));
-        OnPropertyChanged(nameof(ChartCategoriesExp));
-        OnPropertyChanged(nameof(ChartCategoriesExpPie));
+        //OnPropertyChanged(nameof(TotalInCash));
+        //OnPropertyChanged(nameof(TotalInCashless));
+        //OnPropertyChanged(nameof(TotalMoney));
+        //OnPropertyChanged(nameof(PaymentMethods));
+        //OnPropertyChanged(nameof(CategoriesExpChartValue));
+        //OnPropertyChanged(nameof(LabelsExp));
+        //OnPropertyChanged(nameof(ChartCategoriesExp));
+        //OnPropertyChanged(nameof(ChartCategoriesExpPie));
     }, x => true);
     public void UpdateCategories()
     {
@@ -528,6 +538,30 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
         }).Wait();
     }
+    public void UpdatePaymentMethods()
+    {
+        _allPaymentMethods.Clear();
+        PaymentMethods.Clear();
+        //Thread.Sleep(1000); 
+        //var newDb = new Database3MyFinancesContext();
+        var updatedPaymentMethods = new List<PaymentMethod>();
+
+        using (var newDb = new Database3MyFinancesContext())
+        {
+            updatedPaymentMethods = newDb.PaymentMethods.ToList();
+        }
+        // check for changes
+        _allPaymentMethods = updatedPaymentMethods;
+        _allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
+        OnPropertyChanged(nameof(TotalInCash));
+        OnPropertyChanged(nameof(TotalInCashless));
+        OnPropertyChanged(nameof(TotalMoney));
+        OnPropertyChanged(nameof(PaymentMethods));
+        OnPropertyChanged(nameof(CategoriesExpChartValue));
+        OnPropertyChanged(nameof(LabelsExp));
+        OnPropertyChanged(nameof(ChartCategoriesExp));
+        OnPropertyChanged(nameof(ChartCategoriesExpPie));
+    }
     public void UpdateExpenses()
     {
         _allExpenses.Clear();
@@ -536,6 +570,14 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             _allExpenses = await LoadExpensesAsync();
             _allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
+            //OnPropertyChanged(nameof(TotalInCash));
+            //OnPropertyChanged(nameof(TotalInCashless));
+            //OnPropertyChanged(nameof(TotalMoney));
+            //OnPropertyChanged(nameof(PaymentMethods));
+            //OnPropertyChanged(nameof(CategoriesExpChartValue));
+            //OnPropertyChanged(nameof(LabelsExp));
+            //OnPropertyChanged(nameof(ChartCategoriesExp));
+            //OnPropertyChanged(nameof(ChartCategoriesExpPie));
         }).Wait();
     }
     public void UpdateIncomes()
@@ -554,7 +596,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         get
         {
             var collection = new ChartValues<int>();
-            var groups =  Expenses.GroupBy(x => x.CategoryId);
+            //var groups =  Expenses.GroupBy(x => x.CategoryId);
+            var groups = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
             foreach (var group in groups)
             {
                 collection.Add(group.Count());
@@ -597,7 +640,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             var collection = new SeriesCollection();
             
 
-            var groups = Expenses.GroupBy(x => x.CategoryId);
+            //var groups = Expenses.GroupBy(x => x.CategoryId);
+            var groups = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
             foreach (var group in groups)
             {
                 var pie = new PieSeries
@@ -688,4 +732,116 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
+    private DateTime _beginDateExp;
+    private DateTime _endDateExp;
+    public DateTime BeginDateExp
+    {
+        get => _beginDateExp;
+        set
+        {
+            _beginDateExp = value;
+            OnPropertyChanged(nameof(BeginDateExp));
+            OnPropertyChanged(nameof(CategoriesExpChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesExp));
+            OnPropertyChanged(nameof(ChartCategoriesExpPie));
+        }
+    }
+    public DateTime EndDateExp
+    {
+        get => _endDateExp;
+        set
+        {
+            _endDateExp = value;
+            OnPropertyChanged(nameof(EndDateExp));
+            OnPropertyChanged(nameof(CategoriesExpChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesExp));
+            OnPropertyChanged(nameof(ChartCategoriesExpPie));
+        }
+    }
+    private int _datePickerColumnWidthExp;
+    public int DatePickerColumnWidthExp
+    {
+        get => _datePickerColumnWidthExp;
+        set
+        {
+            _datePickerColumnWidthExp = value;
+            OnPropertyChanged(nameof(DatePickerColumnWidthExp));
+        }
+    }
+    private bool _isDatePickerColumnHiddenExp;
+    public bool IsDatePickerColumnHiddenExp
+    {
+        get => _isDatePickerColumnHiddenExp;
+        set
+        {
+            _isDatePickerColumnHiddenExp = value;
+            OnPropertyChanged(nameof(IsDatePickerColumnHiddenExp));
+        }
+    }
+    public ICommand ShowHideDatePickerColumnExpCommand => new RelayCommand(x =>
+    {
+        if(_isDatePickerColumnHiddenExp)
+        {
+            _datePickerColumnWidthExp = 105;
+        }
+        else
+        {
+            _datePickerColumnWidthExp = 15;
+        }
+        OnPropertyChanged(nameof(DatePickerColumnWidthExp));
+        _isDatePickerColumnHiddenExp = !_isDatePickerColumnHiddenExp;
+    }, x => true);
+    private DateTime _beginDateInc;
+    private DateTime _endDateInc;
+    public DateTime BeginDateInc
+    {
+        get => _beginDateInc;
+        set
+        {
+            _beginDateInc = value;
+            OnPropertyChanged(nameof(BeginDateInc));
+        }
+    }
+    public DateTime EndDateInc
+    {
+        get => _endDateInc;
+        set
+        {
+            _endDateInc = value;
+            OnPropertyChanged(nameof(EndDateInc));
+        }
+    }
+    private int _datePickerColumnWidthInc;
+    public int DatePickerColumnWidthInc
+    {
+        get => _datePickerColumnWidthInc;
+        set
+        {
+            _datePickerColumnWidthInc = value;
+            OnPropertyChanged(nameof(DatePickerColumnWidthInc));
+        }
+    }
+    private bool _isDatePickerColumnHiddenInc;
+    public bool IsDatePickerColumnHiddenInc
+    {
+        get => _isDatePickerColumnHiddenInc;
+        set
+        {
+            _isDatePickerColumnHiddenInc = value;
+            OnPropertyChanged(nameof(IsDatePickerColumnHiddenInc));
+        }
+    }
+    public ICommand ShowHideDatePickerColumnIncCommand => new RelayCommand(x =>
+    {
+        if (_isDatePickerColumnHiddenInc)
+        {
+            _datePickerColumnWidthInc = 105;
+        }
+        else
+        {
+            _datePickerColumnWidthInc = 15;
+        }
+        OnPropertyChanged(nameof(DatePickerColumnWidthInc));
+        _isDatePickerColumnHiddenInc = !_isDatePickerColumnHiddenInc;
+    }, x => true);
 }

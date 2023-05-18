@@ -83,10 +83,10 @@
                         <ColumnDefinition Width="40*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="15*"></RowDefinition>
-                        <RowDefinition Height="85*"></RowDefinition>
+                        <RowDefinition Height="10*"></RowDefinition>
+                        <RowDefinition Height="90*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    
+                    <TextBlock Grid.Row="0" Text="C A T E G O R I E S" Foreground="DarkBlue" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                     <TabControl Grid.Column="0" Grid.Row="1">
                         <TabItem Header="Expenses">
                             <ListView
@@ -117,7 +117,7 @@
                             </ListView>
                         </TabItem>
                     </TabControl>
-                    <Grid Grid.Row="2" Grid.Column="2" Background="GhostWhite">
+                    <Grid Grid.Row="1" Grid.Column="2" Background="GhostWhite">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="10*"></RowDefinition>
                             <RowDefinition Height="80*"></RowDefinition>
@@ -168,9 +168,10 @@
                         <ColumnDefinition Width="40*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="15*"></RowDefinition>
-                        <RowDefinition Height="85*"></RowDefinition>
+                        <RowDefinition Height="10*"></RowDefinition>
+                        <RowDefinition Height="90*"></RowDefinition>
                     </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="P R O V I D E R S" Foreground="DarkBlue" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                     <ListView Grid.Row="1"
                               ItemsSource="{Binding Path=Providers}"
                               SelectedItem="{}" 
@@ -211,7 +212,22 @@
         <TabItem Header="Statistics">
             <TabControl>
                 <TabItem Header="Expenses">
-                    <TabControl>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="{Binding Path=DatePickerColumnWidthExp, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ColumnDefinition>
+                            <ColumnDefinition Width="87*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <DockPanel>
+                                <Button DockPanel.Dock="Top" Command="{Binding Path=ShowHideDatePickerColumnExpCommand}" Background="OrangeRed">*</Button>
+                            </DockPanel>
+                            <TextBlock Text="From:"></TextBlock>
+                            <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=BeginDateExp}" Maximum="{Binding Path=EndDateExp}"></xctk:DateTimePicker>
+                            <TextBlock Text="To:"></TextBlock>
+                            <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=EndDateExp}" Minimum="{Binding Path=BeginDateExp}"></xctk:DateTimePicker>
+                        </StackPanel>
+
+                        <TabControl Grid.Column="1">
                         <TabItem Header="Columns">
                             <lvc:CartesianChart Series="{Binding ChartCategoriesExp}" LegendLocation="Right" Background="#222E31" Foreground="White">
                         <lvc:CartesianChart.SeriesColors>
@@ -261,58 +277,74 @@
                             </lvc:PieChart>
                         </TabItem>
                     </TabControl>
+                    </Grid>
                 </TabItem>
                 <TabItem Header="Incomes">
-                    <TabControl>
-                        <TabItem Header="Columns">
-                            <lvc:CartesianChart Series="{Binding ChartCategoriesInc}" LegendLocation="Right" Background="#222E31" Foreground="White">
-                                <lvc:CartesianChart.SeriesColors>
-                                    <lvc:ColorsCollection>
-                                        <Color>Orange</Color>
-                                    </lvc:ColorsCollection>
-                                </lvc:CartesianChart.SeriesColors>
-                                <lvc:CartesianChart.DataTooltip>
-                                    <lvc:DefaultTooltip Background="Black">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="{Binding Path=DatePickerColumnWidthInc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ColumnDefinition>
+                            <ColumnDefinition Width="87*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <DockPanel>
+                                <Button DockPanel.Dock="Top" Command="{Binding Path=ShowHideDatePickerColumnIncCommand}" Background="OrangeRed">*</Button>
+                            </DockPanel>
+                            <TextBlock Text="From:"></TextBlock>
+                            <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=BeginDateInc}" Maximum="{Binding Path=EndDateInc}"></xctk:DateTimePicker>
+                            <TextBlock Text="To:"></TextBlock>
+                            <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=EndDateInc}" Minimum="{Binding Path=BeginDateInc}"></xctk:DateTimePicker>
+                        </StackPanel>
+                        <TabControl Grid.Row="0" Grid.Column="1">
+                            <TabItem Header="Columns">
+                                <lvc:CartesianChart Series="{Binding ChartCategoriesInc}" LegendLocation="Right" Background="#222E31" Foreground="White">
+                                    <lvc:CartesianChart.SeriesColors>
+                                        <lvc:ColorsCollection>
+                                            <Color>Orange</Color>
+                                        </lvc:ColorsCollection>
+                                    </lvc:CartesianChart.SeriesColors>
+                                    <lvc:CartesianChart.DataTooltip>
+                                        <lvc:DefaultTooltip Background="Black">
 
-                                    </lvc:DefaultTooltip>
-                                </lvc:CartesianChart.DataTooltip>
-                                <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis Title="Expense count&#x0a; " LabelFormatter="{Binding Formatter}" Foreground="White">
-                                        <lvc:Axis.Separator>
-                                            <lvc:Separator StrokeThickness="2" StrokeDashArray="4" Step="1">
-                                                <lvc:Separator.Stroke>
-                                                    <SolidColorBrush Color="#404F56" />
-                                                </lvc:Separator.Stroke>
-                                            </lvc:Separator>
-                                        </lvc:Axis.Separator>
-                                    </lvc:Axis>
-                                </lvc:CartesianChart.AxisY>
-                                <lvc:CartesianChart.AxisX>
-                                    <lvc:Axis Title="&#x0a;Categories" Labels="{Binding LabelsInc}" Foreground="White">
-                                        <lvc:Axis.Separator>
-                                            <lvc:Separator StrokeThickness="0" StrokeDashArray="0">
-                                                <lvc:Separator.Stroke>
-                                                    <SolidColorBrush Color="#404F56" />
-                                                </lvc:Separator.Stroke>
-                                            </lvc:Separator>
-                                        </lvc:Axis.Separator>
-                                    </lvc:Axis>
-                                </lvc:CartesianChart.AxisX>
-                            </lvc:CartesianChart>
-                        </TabItem>
-                        <TabItem Header="Pie">
-                            <lvc:PieChart LegendLocation="Right" Background="CadetBlue" DataClick="Chart_OnDataClick" Hoverable="False" DataTooltip="{x:Null}"
+                                        </lvc:DefaultTooltip>
+                                    </lvc:CartesianChart.DataTooltip>
+                                    <lvc:CartesianChart.AxisY>
+                                        <lvc:Axis Title="Expense count&#x0a; " LabelFormatter="{Binding Formatter}" Foreground="White">
+                                            <lvc:Axis.Separator>
+                                                <lvc:Separator StrokeThickness="2" StrokeDashArray="4" Step="1">
+                                                    <lvc:Separator.Stroke>
+                                                        <SolidColorBrush Color="#404F56" />
+                                                    </lvc:Separator.Stroke>
+                                                </lvc:Separator>
+                                            </lvc:Axis.Separator>
+                                        </lvc:Axis>
+                                    </lvc:CartesianChart.AxisY>
+                                    <lvc:CartesianChart.AxisX>
+                                        <lvc:Axis Title="&#x0a;Categories" Labels="{Binding LabelsInc}" Foreground="White">
+                                            <lvc:Axis.Separator>
+                                                <lvc:Separator StrokeThickness="0" StrokeDashArray="0">
+                                                    <lvc:Separator.Stroke>
+                                                        <SolidColorBrush Color="#404F56" />
+                                                    </lvc:Separator.Stroke>
+                                                </lvc:Separator>
+                                            </lvc:Axis.Separator>
+                                        </lvc:Axis>
+                                    </lvc:CartesianChart.AxisX>
+                                </lvc:CartesianChart>
+                            </TabItem>
+                            <TabItem Header="Pie">
+                                <lvc:PieChart LegendLocation="Right" Background="CadetBlue" DataClick="Chart_OnDataClick" Hoverable="False" DataTooltip="{x:Null}"
                         Series="{Binding ChartCategoriesIncPie}">
-                                <lvc:PieChart.Resources>
-                                    <Style TargetType="lvc:PieSeries">
-                                        <Setter Property="Foreground" Value="Black"></Setter>
-                                        <Setter Property="StrokeThickness" Value="1"></Setter>
-                                        <Setter Property="Stroke" Value="DarkGray"></Setter>
-                                    </Style>
-                                </lvc:PieChart.Resources>
-                            </lvc:PieChart>
-                        </TabItem>
-                    </TabControl>
+                                    <lvc:PieChart.Resources>
+                                        <Style TargetType="lvc:PieSeries">
+                                            <Setter Property="Foreground" Value="Black"></Setter>
+                                            <Setter Property="StrokeThickness" Value="1"></Setter>
+                                            <Setter Property="Stroke" Value="DarkGray"></Setter>
+                                        </Style>
+                                    </lvc:PieChart.Resources>
+                                </lvc:PieChart>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
                 </TabItem>
             </TabControl>
         </TabItem>
