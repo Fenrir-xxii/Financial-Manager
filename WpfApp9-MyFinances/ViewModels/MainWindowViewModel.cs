@@ -16,6 +16,7 @@ using WpfApp9_MyFinances.Models;
 using WpfApp9_MyFinances.Windows;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 using System.Threading;
+using LiveCharts.Helpers;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
@@ -590,7 +591,32 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             _allIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
         }).Wait();
     }
-
+    private PaymentMethodViewModel? _filterSelectedPaymentMethod;
+    public PaymentMethodViewModel? FilterSelectedPaymentMethod
+    {
+        get => _filterSelectedPaymentMethod;
+        set
+        {
+            _filterSelectedPaymentMethod = value;
+            OnPropertyChanged(nameof(FilterSelectedPaymentMethod));
+            OnPropertyChanged(nameof(CategoriesExpChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesExp));
+            OnPropertyChanged(nameof(ChartCategoriesExpPie));
+        }
+    }
+    private ProviderViewModel? _filterSelectedProvider;
+    public ProviderViewModel? FilterSelectedProvider
+    {
+        get => _filterSelectedProvider;
+        set
+        {
+            _filterSelectedProvider = value;
+            OnPropertyChanged(nameof(FilterSelectedProvider));
+            OnPropertyChanged(nameof(CategoriesExpChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesExp));
+            OnPropertyChanged(nameof(ChartCategoriesExpPie));
+        }
+    }
     public ChartValues<int> CategoriesExpChartValue
     {
         get
@@ -598,6 +624,24 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             var collection = new ChartValues<int>();
             //var groups =  Expenses.GroupBy(x => x.CategoryId);
             var groups = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+            //IEnumerable<IGrouping<int, ExpenseViewModel>>? res;
+
+            // REDO
+
+            if (_filterSelectedPaymentMethod != null && _filterSelectedProvider ==null)
+            {
+                //res = groups.Where(x => x.Key).Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+                groups = Expenses.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+            }
+            else if (_filterSelectedPaymentMethod == null && _filterSelectedProvider != null)
+            {
+                groups = Expenses.Where(x => x.Provider.Id == _filterSelectedProvider.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+            }
+            else if(_filterSelectedPaymentMethod != null && _filterSelectedProvider != null)
+            {
+                groups = Expenses.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.Provider.Id == _filterSelectedProvider.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+            }
+
             foreach (var group in groups)
             {
                 collection.Add(group.Count());
@@ -639,9 +683,14 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             var collection = new SeriesCollection();
             
-
             //var groups = Expenses.GroupBy(x => x.CategoryId);
             var groups = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+
+            if (_filterSelectedPaymentMethod != null)
+            {
+                groups = Expenses.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+            }
+
             foreach (var group in groups)
             {
                 var pie = new PieSeries

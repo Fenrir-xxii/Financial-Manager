@@ -225,6 +225,22 @@
                             <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=BeginDateExp}" Maximum="{Binding Path=EndDateExp}"></xctk:DateTimePicker>
                             <TextBlock Text="To:"></TextBlock>
                             <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=EndDateExp}" Minimum="{Binding Path=BeginDateExp}"></xctk:DateTimePicker>
+                            <TextBlock Text="Payment method:"></TextBlock>
+                            <ComboBox ItemsSource="{Binding Path=PaymentMethods}" SelectedItem="{Binding Path=FilterSelectedPaymentMethod}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <TextBlock Text="Provider:"></TextBlock>
+                            <ComboBox ItemsSource="{Binding Path=Providers}" SelectedItem="{Binding Path=FilterSelectedProvider}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </StackPanel>
 
                         <TabControl Grid.Column="1">
