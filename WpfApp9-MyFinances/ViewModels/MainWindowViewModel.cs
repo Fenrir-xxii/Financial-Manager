@@ -34,6 +34,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _allProviders = new List<Provider>();
         _allExpenses = new List<Expense>();
         _allIncomes = new List<Income>();
+        _allCurrencies = new List<Currency>();
         _categoryTypes = new List<string> { "Expense", "Income" };
         _selectedOperationType = String.Empty;
         _titleOfNewCategory = String.Empty;
@@ -64,6 +65,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             _allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
             _allIncomes = await LoadIncomesAsync();
             _allIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
+            _allCurrencies = await LoadCurrenciesAsync();
+            _allCurrencies.ForEach(c => Currencies.Add(new CurrencyViewModel(c)));  
             //_allCategoriesExp.ForEach(c => CategoriesExpItems.Add(new TreeViewItem { Header = c.Title }));
 
             OnPropertyChanged(nameof(PaymentMethods));
@@ -74,9 +77,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Providers));
             OnPropertyChanged(nameof(Expenses));
             OnPropertyChanged(nameof(Incomes));
+            OnPropertyChanged(nameof(Currencies));
             OnPropertyChanged(nameof(TotalInCash));
+            OnPropertyChanged(nameof(TotalInCashAllCurrencies));
             OnPropertyChanged(nameof(TotalInCashless));
+            OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
             OnPropertyChanged(nameof(TotalMoney));
+            OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
             OnPropertyChanged(nameof(CategoriesExpChartValue));
             OnPropertyChanged(nameof(LabelsExp));
             OnPropertyChanged(nameof(ChartCategoriesExp));
@@ -88,7 +95,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
 
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
-        return await _db.PaymentMethods.ToListAsync();
+        return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
     }
     public async Task<List<CategoriesExp>> LoadCategoriesExpAsync()
     {
@@ -109,6 +116,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     public async Task<List<Income>> LoadIncomesAsync()
     {
         return await _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).ToListAsync();
+    }
+    public async Task<List<Currency>> LoadCurrenciesAsync()
+    {
+        return await _db.Currencies.ToListAsync();
     }
     private List<PaymentMethod> _allPaymentMethods;
 
@@ -286,6 +297,21 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             Incomes = value;
             OnPropertyChanged(nameof(Incomes));
+        }
+    }
+    private List<Currency> _allCurrencies;
+    public ObservableCollection<CurrencyViewModel> Currencies
+    {
+        get
+        {
+            var collection = new ObservableCollection<CurrencyViewModel>();
+            _allCurrencies.ForEach(c => collection.Add(new CurrencyViewModel(c)));
+            return collection;
+        }
+        set
+        {
+            Currencies = value;
+            OnPropertyChanged(nameof(Currencies));
         }
     }
     private string _selectedOperationType;
@@ -484,6 +510,17 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return _allPaymentMethods.Where(x => x.IsCash == true).Sum(x => x.CurrentBalance);
         }
     }
+    public ObservableCollection<string> TotalInCashAllCurrencies
+    {
+        get
+        {
+            var collection = new ObservableCollection<string>();
+            var groups = _allPaymentMethods.Where(x => x.IsCash == true).GroupBy(x => x.Currency);
+            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            totals.ForEach(x => collection.Add(x));
+            return collection;
+        }
+    }
     public decimal TotalInCashless
     {
         get
@@ -491,11 +528,33 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return _allPaymentMethods.Where(x => x.IsCash == false).Sum(x => x.CurrentBalance);
         }
     }
+    public ObservableCollection<string> TotalInCashlessAllCurrencies
+    {
+        get
+        {
+            var collection = new ObservableCollection<string>();
+            var groups = _allPaymentMethods.Where(x => x.IsCash == false).GroupBy(x => x.Currency);
+            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            totals.ForEach(x => collection.Add(x));
+            return collection;
+        }
+    }
     public decimal TotalMoney
     {
         get
         {
             return _allPaymentMethods.Sum(x => x.CurrentBalance);
+        }
+    }
+    public ObservableCollection<string> TotalMoneyAllCurrencies
+    {
+        get
+        {
+            var collection = new ObservableCollection<string>();
+            var groups = _allPaymentMethods.GroupBy(x => x.Currency);
+            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            totals.ForEach(x => collection.Add(x));
+            return collection;
         }
     }
     public ICommand AddTransaction => new RelayCommand(x =>

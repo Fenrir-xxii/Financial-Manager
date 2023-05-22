@@ -5,26 +5,75 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:WpfApp9_MyFinances"
-        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf" xmlns:local1="clr-namespace:WpfApp9_MyFinances.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    
-    
+    <Window.Resources>
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="#263F3F"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#263F3F"></Setter>
+            <Setter Property="Foreground" Value="White"></Setter>
+        </Style>
+        <Style TargetType="Grid">
+            <Setter Property="Background" Value="DarkSlateGray"></Setter>
+        </Style>
+        <Style TargetType="TabItem">
+            <Setter Property="Background" Value="#1E3232"></Setter>
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Grid>
+                            <Border 
+                                Name="Border"
+                                Margin="0,0,-4,0" 
+                                Background="DarkSlateGray"
+                                BorderBrush="AliceBlue" 
+                                BorderThickness="1,1,1,1" 
+                                CornerRadius="2,12,0,0" >
+                                <ContentPresenter x:Name="ContentSite"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    ContentSource="Header"
+                                    Margin="12,2,12,2"
+                                    RecognizesAccessKey="True"/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Panel.ZIndex" Value="100" />
+                                <Setter TargetName="Border" Property="Background" Value="#1E3232" />
+                                <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0" />
+                                <Setter Property="Background" Value="#1E3232"></Setter>
+                            </Trigger>
+                            <!--<Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="AntiqueWhite"></Setter>
+                            </Trigger>-->
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="#1E3232"></Setter>
+        </Style>
+    </Window.Resources>
 
     <TabControl>
         <TabItem Header="Wallet">
-            <Border Padding="7" BorderThickness="4" Background="DimGray">
+            <Border Padding="7" BorderThickness="4" Background="DarkSlateGray">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="85*"></ColumnDefinition>
-                        <ColumnDefinition Width="15*"></ColumnDefinition>
+                        <ColumnDefinition Width="80*"></ColumnDefinition>
+                        <ColumnDefinition Width="20*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="10*"></RowDefinition>
                         <RowDefinition Height="80*"></RowDefinition>
                         <RowDefinition Height="10*"></RowDefinition>
                     </Grid.RowDefinitions>
-
                     <DataGrid
                         Grid.Row="1"
                         AutoGenerateColumns="False" 
@@ -32,16 +81,28 @@
                         ItemsSource="{Binding Path=PaymentMethods}"
                         SelectedItem="{Binding Path=SelectedPaymentMethod}"
                         ColumnWidth="*"
-                        Background="AliceBlue"
-                        AlternatingRowBackground="GhostWhite">
+                        Background="#C4C9C9"
+                        AlternatingRowBackground="#D0D4D4">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}">
                                 <Setter Property="FontWeight" Value="Bold"/>
                                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                 <Setter Property="FontFamily" Value="Times New Roman"/>
+                                <Setter Property="Background" Value="#1E3232"></Setter>
+                                <Setter Property="Foreground" Value="White"></Setter>
+                                <Setter Property="Height" Value="18"></Setter>
                             </Style>
                         </DataGrid.ColumnHeaderStyle>
+                        <!--<DataGrid.CellStyle>
+                            <Style>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Currency.CodeLetter}" Value="UAH">
+                                        
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>-->
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <!--<MenuItem Header="New Transaction" Command="{Binding Path}"></MenuItem>-->
@@ -50,33 +111,56 @@
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" Width="7*"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Name" Binding="{Binding Path=Title}" Width="30*"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Balance" Binding="{Binding Path=CurrentBalance, StringFormat='C', ConverterCulture='uk-UA'}" Width="18*">
+                            <DataGridTextColumn Header="Name" Binding="{Binding Path=Title}" Width="26*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Balance" Width="18*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                        <Binding Path="CurrentBalance"></Binding>
+                                        <Binding Path="Currency.CodeNumber"></Binding>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="HorizontalAlignment" Value="Right" />
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="IsCash" Binding="{Binding Path=IsCash}" Width="10*"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="35*"></DataGridTextColumn>
+                            <!--<DataGridTextColumn Header="Balance" Binding="{Binding Path=CurrentBalance, StringFormat='C', ConverterCulture='uk-UA'}" Width="18*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>-->
+                            <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency.CodeLetter}" Width="11*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="IsCash" Binding="{Binding Path=IsCash}" Width="8*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="30*"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <StackPanel Grid.Column="2" Grid.Row="1">
-                        <Button Margin="2,0,2,0">Add</Button>
-                        <TextBlock>Total cashless:</TextBlock>
+                    <Button Margin="200,5,200,5" Grid.Column="0" Grid.Row="0">Add</Button>
+                    <ScrollViewer Grid.Column="2" Grid.Row="1" Margin="2">
+                        <StackPanel>
+                            <!--<Button Margin="2,0,2,0">Add</Button>-->
+                        <!--<TextBlock>Total cashless:</TextBlock>
                         <TextBlock Text="{Binding Path=TotalInCashless, StringFormat=C, ConverterCulture='uk-UA'}"></TextBlock>
                         <TextBlock>Total in cash:</TextBlock>
                         <TextBlock Text="{Binding Path=TotalInCash, StringFormat=C, ConverterCulture='uk-UA'}"></TextBlock>
                         <TextBlock>Total in general:</TextBlock>
-                        <TextBlock Text="{Binding Path=TotalMoney, StringFormat=C, ConverterCulture='uk-UA'}"></TextBlock>
-                    </StackPanel>
+                        <TextBlock Text="{Binding Path=TotalMoney, StringFormat=C, ConverterCulture='uk-UA'}"></TextBlock>-->
+                            <TextBlock Text="Total cashless: " Foreground="NavajoWhite" HorizontalAlignment="Right" FontWeight="Bold"></TextBlock>
+                            <ListView ItemsSource="{Binding Path=TotalInCashlessAllCurrencies}" Background="#263F3F" Foreground="NavajoWhite" HorizontalContentAlignment="Right"></ListView>
+                            <TextBlock Text="Total in cash: " Foreground="NavajoWhite" HorizontalAlignment="Right" FontWeight="Bold"></TextBlock>
+                            <ListView ItemsSource="{Binding Path=TotalInCashAllCurrencies}" Background="#263F3F" Foreground="NavajoWhite" HorizontalContentAlignment="Right"></ListView>
+                            <TextBlock Text ="Total in general: " Foreground="NavajoWhite" HorizontalAlignment="Right" FontWeight="Bold"></TextBlock>
+                            <ListView ItemsSource="{Binding Path=TotalMoneyAllCurrencies, StringFormat={}{0:C}}" Background="#263F3F" Foreground="NavajoWhite" HorizontalContentAlignment="Right"></ListView>
+                        </StackPanel>
+                    </ScrollViewer>
                     <Button Grid.Column="0" Grid.Row="2" Margin="50,5,50,5" Command="{Binding Path=AddTransaction}">New Transaction</Button>
                 </Grid>
             </Border>
         </TabItem>
         <TabItem Header="Categories">
-            <Border Padding="7" BorderThickness="4" Background="DimGray">
+            <Border Padding="7" BorderThickness="4" Background="DarkSlateGray">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="60*"></ColumnDefinition>
@@ -117,7 +201,7 @@
                             </ListView>
                         </TabItem>
                     </TabControl>
-                    <Grid Grid.Row="1" Grid.Column="2" Background="GhostWhite">
+                    <Grid Grid.Row="1" Grid.Column="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="10*"></RowDefinition>
                             <RowDefinition Height="80*"></RowDefinition>
@@ -161,7 +245,7 @@
             </Border>
         </TabItem>
         <TabItem Header="Providers">
-            <Border Padding="7" BorderThickness="4" Background="DimGray">
+            <Border Padding="7" BorderThickness="4" Background="DarkSlateGray">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="60*"></ColumnDefinition>
@@ -182,7 +266,7 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <Grid Grid.Row="2" Grid.Column="2" Background="GhostWhite">
+                    <Grid Grid.Row="2" Grid.Column="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="10*"></RowDefinition>
                             <RowDefinition Height="80*"></RowDefinition>

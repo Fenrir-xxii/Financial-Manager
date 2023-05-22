@@ -83,6 +83,26 @@ public class PaymentMethodViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IsCash));
         }
     }
+    public int CurrencyId
+    {
+        get => Model.CurrencyId;
+        set
+        {
+            Model.CurrencyId = value;
+            OnPropertyChanged(nameof(CurrencyId));
+        }
+    }
+    public CurrencyViewModel Currency
+    {
+        get => new CurrencyViewModel { Model = Model.Currency };
+        set
+        {
+            Model.Currency = value.Model;
+            Model.CurrencyId = value.Model.Id;
+            OnPropertyChanged(nameof(Currency));
+            OnPropertyChanged(nameof(CurrencyId));
+        }
+    }
     public ObservableCollection<ExpenseViewModel> Expenses
     {
         get

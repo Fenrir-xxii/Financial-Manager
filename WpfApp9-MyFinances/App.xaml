@@ -1,9 +1,10 @@
 ﻿<Application x:Class="WpfApp9_MyFinances.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:WpfApp9_MyFinances"
+             xmlns:local="clr-namespace:WpfApp9_MyFinances" 
+             xmlns:local1="clr-namespace:WpfApp9_MyFinances.Converters"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <local1:LocalizeCurrencyMultiConverter x:Key="localizeCurrencyMultiConverter"/>
     </Application.Resources>
 </Application>
