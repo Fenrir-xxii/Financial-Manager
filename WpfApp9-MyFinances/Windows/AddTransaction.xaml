@@ -8,6 +8,7 @@
         xmlns:wpfx="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:viewmodels="clr-namespace:WpfApp9_MyFinances.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:AddTransactionViewModel}"
         mc:Ignorable="d"
         Title="AddTransaction" Height="550" Width="500">
+    
     <Grid>
         <Border Padding="10" BorderThickness="3" Background="LightGray">
             <Grid>

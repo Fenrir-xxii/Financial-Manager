@@ -137,7 +137,13 @@
                             <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="30*"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Button Margin="200,5,200,5" Grid.Column="0" Grid.Row="0">Add</Button>
+                    <Button Margin="200,5,200,5" Grid.Column="0" Grid.Row="0" Content="Add">
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="7"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
                     <ScrollViewer Grid.Column="2" Grid.Row="1" Margin="2">
                         <StackPanel>
                             <!--<Button Margin="2,0,2,0">Add</Button>-->
@@ -155,7 +161,13 @@
                             <ListView ItemsSource="{Binding Path=TotalMoneyAllCurrencies, StringFormat={}{0:C}}" Background="#263F3F" Foreground="NavajoWhite" HorizontalContentAlignment="Right"></ListView>
                         </StackPanel>
                     </ScrollViewer>
-                    <Button Grid.Column="0" Grid.Row="2" Margin="50,5,50,5" Command="{Binding Path=AddTransaction}">New Transaction</Button>
+                    <Button Grid.Column="0" Grid.Row="2" Margin="50,5,50,5" Command="{Binding Path=AddTransaction}" Content="New Transaction">
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="7"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
                 </Grid>
             </Border>
         </TabItem>
@@ -170,18 +182,26 @@
                         <RowDefinition Height="10*"></RowDefinition>
                         <RowDefinition Height="90*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="C A T E G O R I E S" Foreground="DarkBlue" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    <TextBlock Grid.Row="0" Text="C A T E G O R I E S" Foreground="NavajoWhite" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                     <TabControl Grid.Column="0" Grid.Row="1">
                         <TabItem Header="Expenses">
                             <ListView
                               ItemsSource="{Binding Path=CategoriesExpItems}"
+                              Background="#C4C9C9"
                               SelectedItem="{}" 
                               SelectedIndex="0">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <TreeViewItem
-                                Header="{Binding Header}"
-                                ItemsSource="{Binding Path=Items}"/>
+                                        <Border BorderThickness="0,0,0,1" BorderBrush="#263F3F" HorizontalAlignment="Stretch">
+                                            <TreeViewItem
+                                            Header="{Binding Header}"
+                                            ItemsSource="{Binding Path=Items}"/>
+                                        </Border>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
@@ -190,12 +210,20 @@
                             <ListView
                               ItemsSource="{Binding Path=CategoriesIncItems}"
                               SelectedItem="{}" 
+                              Background="#C4C9C9"
                               SelectedIndex="0">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <TreeViewItem
-                                Header="{Binding Header}"
-                                ItemsSource="{Binding Path=Items}"/>
+                                        <Border BorderThickness="0,0,0,1" BorderBrush="#263F3F" HorizontalAlignment="Stretch">
+                                            <TreeViewItem
+                                            Header="{Binding Header}"
+                                            ItemsSource="{Binding Path=Items}"/>
+                                        </Border>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
@@ -215,13 +243,13 @@
                         <TextBlock Grid.Column="1">Add new category</TextBlock>
                         <StackPanel Grid.Row="1" Grid.Column="1">
                             <TextBlock>Choose Category Type:</TextBlock>
-                            <ComboBox ItemsSource="{Binding Path=CategoryTypes}" SelectedItem="{Binding Path=SelectedOperationType}">
+                            <ComboBox ItemsSource="{Binding Path=CategoryTypes}" SelectedItem="{Binding Path=SelectedOperationType}" Background="#C4C9C9">
                             </ComboBox>
                             <TextBlock></TextBlock>
                             <TextBlock>Title of category:</TextBlock>
-                            <TextBox Text="{Binding TitleOfNewCategory, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                            <TextBox Text="{Binding TitleOfNewCategory, UpdateSourceTrigger=PropertyChanged}" Background="#C4C9C9"></TextBox>
                             <TextBlock></TextBlock>
-                            <CheckBox IsChecked="{Binding Path=IsNewCategoryASubcategory, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Path=IsCategoryTypeExp}">Is subcategory</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=IsNewCategoryASubcategory, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Path=IsCategoryTypeExp}" Background="#C4C9C9">Is subcategory</CheckBox>
                             <TextBlock>Choose Main category:</TextBlock>
                             <ComboBox ItemsSource="{Binding Path=CategoriesExp}" SelectedItem="{Binding Path=SelectedMainCategoryExpForSub}" IsEnabled="{Binding Path=IsNewCategoryASubcategory}">
                                 <ComboBox.ItemTemplate>
@@ -231,16 +259,23 @@
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
                             <TextBlock></TextBlock>
-                            <Button Command="{Binding Path=CheckTitleOfNewCategory}">Check Title</Button>
+                            <Button Command="{Binding Path=CheckTitleOfNewCategory}" Content="Check Title">
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="7"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
                             <TextBlock></TextBlock>
-                            <Button Command="{Binding Path=AddNewCategory}">Add</Button>
-                            
+                            <Button Command="{Binding Path=AddNewCategory}" Content="Add">
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="7"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
                         </StackPanel>
-                        
                     </Grid>
-
-
-
                 </Grid>
             </Border>
         </TabItem>
@@ -255,10 +290,11 @@
                         <RowDefinition Height="10*"></RowDefinition>
                         <RowDefinition Height="90*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="P R O V I D E R S" Foreground="DarkBlue" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    <TextBlock Grid.Row="0" Text="P R O V I D E R S" Foreground="NavajoWhite" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                     <ListView Grid.Row="1"
                               ItemsSource="{Binding Path=Providers}"
-                              SelectedItem="{}" 
+                              SelectedItem="{}"
+                              Background="#C4C9C9"
                               SelectedIndex="0">
                         <ListView.ItemTemplate>
                             <DataTemplate>
@@ -280,21 +316,35 @@
                         <TextBlock Grid.Column="1">Add new provider</TextBlock>
                         <StackPanel Grid.Row="1" Grid.Column="1">
                             <TextBlock>Title of provider:</TextBlock>
-                            <TextBox Text="{Binding TitleOfNewProvider, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                            <TextBox Text="{Binding TitleOfNewProvider, UpdateSourceTrigger=PropertyChanged}" Background="#C4C9C9"></TextBox>
                             <TextBlock></TextBlock>
-                            <Button Command="{Binding Path=CheckTitleOfNewProvider}">Check Title</Button>
+                            <Button Command="{Binding Path=CheckTitleOfNewProvider}" Content="Check Title">
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="7"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
                             <TextBlock></TextBlock>
-                            <Button Command="{Binding Path=AddNewProvider}">Add</Button>
-
+                            <Button Command="{Binding Path=AddNewProvider}" Content="Add">
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="7"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
                         </StackPanel>
-
                     </Grid>
-
                 </Grid>
             </Border>
         </TabItem>
         <TabItem Header="Statistics">
             <TabControl>
+                <TabControl.Resources>
+                    <Style TargetType="TabPanel">
+                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                    </Style>
+                </TabControl.Resources>
                 <TabItem Header="Expenses">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -309,22 +359,39 @@
                             <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=BeginDateExp}" Maximum="{Binding Path=EndDateExp}"></xctk:DateTimePicker>
                             <TextBlock Text="To:"></TextBlock>
                             <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=EndDateExp}" Minimum="{Binding Path=BeginDateExp}"></xctk:DateTimePicker>
+                            <TextBlock Text="Currency:"></TextBlock>
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Path=Currencies}" SelectedItem="{Binding Path=FilterSelectedCurrency}" Name="CurrencyComboBox">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=CodeLetter}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <!--<Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemovePaymentMethodFilterCommand}">x</Button>-->
+                            </StackPanel>
                             <TextBlock Text="Payment method:"></TextBlock>
-                            <ComboBox ItemsSource="{Binding Path=PaymentMethods}" SelectedItem="{Binding Path=FilterSelectedPaymentMethod}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Title}"></TextBlock>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Path=PaymentMethods}" SelectedItem="{Binding Path=FilterSelectedPaymentMethod}" Name="PaymentMethodComboBox">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemovePaymentMethodFilterCommand}" Height="20">x</Button>
+                            </StackPanel>
                             <TextBlock Text="Provider:"></TextBlock>
-                            <ComboBox ItemsSource="{Binding Path=Providers}" SelectedItem="{Binding Path=FilterSelectedProvider}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Title}"></TextBlock>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Path=Providers}" SelectedItem="{Binding Path=FilterSelectedProvider}" Name="ProviderComboBox">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemoveProviderFilterCommand}" Height="20">x</Button>
+                            </StackPanel>
                         </StackPanel>
 
                         <TabControl Grid.Column="1">

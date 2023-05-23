@@ -90,6 +90,9 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
             
         });
+        (App.Current.MainWindow as MainWindow).CurrencyComboBox.SelectedIndex = 0;
+
+
     }
     private Database3MyFinancesContext _db;
 
@@ -608,7 +611,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
 
         using (var newDb = new Database3MyFinancesContext())
         {
-            updatedPaymentMethods = newDb.PaymentMethods.ToList();
+            updatedPaymentMethods = newDb.PaymentMethods.Include(x=> x.Currency).ToList();
         }
         // check for changes
         _allPaymentMethods = updatedPaymentMethods;
@@ -663,6 +666,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
         }
     }
+    public ICommand RemovePaymentMethodFilterCommand => new RelayCommand(x =>
+    {
+        (App.Current.MainWindow as MainWindow).PaymentMethodComboBox.SelectedItem = null;
+    }, x => _filterSelectedPaymentMethod!=null);
     private ProviderViewModel? _filterSelectedProvider;
     public ProviderViewModel? FilterSelectedProvider
     {
@@ -676,35 +683,78 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
         }
     }
+    public ICommand RemoveProviderFilterCommand => new RelayCommand(x =>
+    {
+        (App.Current.MainWindow as MainWindow).ProviderComboBox.SelectedItem = null;
+    }, x => _filterSelectedProvider != null);
+    private CurrencyViewModel _filterSelectedCurrency;
+    public CurrencyViewModel FilterSelectedCurrency
+    {
+        get
+        {
+            if (_filterSelectedCurrency == null)
+            {
+                if(_allCurrencies == null)
+                {
+                    return _filterSelectedCurrency = new CurrencyViewModel();
+                };
+                _filterSelectedCurrency = Currencies.FirstOrDefault();
+            }
+            return _filterSelectedCurrency;
+        }
+        set
+        {
+            _filterSelectedCurrency = value;
+            OnPropertyChanged(nameof(FilterSelectedCurrency));
+            OnPropertyChanged(nameof(CategoriesExpChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesExp));
+            OnPropertyChanged(nameof(ChartCategoriesExpPie));
+        }
+    }
     public ChartValues<int> CategoriesExpChartValue
     {
         get
         {
             var collection = new ChartValues<int>();
             //var groups =  Expenses.GroupBy(x => x.CategoryId);
-            var groups = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+            //var groups = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
             //IEnumerable<IGrouping<int, ExpenseViewModel>>? res;
 
+            var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date);
+            if (_filterSelectedCurrency != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Currency.Id == _filterSelectedCurrency.Id);
+            }
+            if (_filterSelectedPaymentMethod != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id);
+            }
+            if(_filterSelectedProvider != null)
+            {
+                filter = filter.Where(x => x.Provider.Id == _filterSelectedProvider.Id);
+            }
+            var groups = filter.GroupBy(x => x.CategoryId);
             // REDO
 
-            if (_filterSelectedPaymentMethod != null && _filterSelectedProvider ==null)
-            {
-                //res = groups.Where(x => x.Key).Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
-                groups = Expenses.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
-            }
-            else if (_filterSelectedPaymentMethod == null && _filterSelectedProvider != null)
-            {
-                groups = Expenses.Where(x => x.Provider.Id == _filterSelectedProvider.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
-            }
-            else if(_filterSelectedPaymentMethod != null && _filterSelectedProvider != null)
-            {
-                groups = Expenses.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.Provider.Id == _filterSelectedProvider.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
-            }
+            //if (_filterSelectedPaymentMethod != null && _filterSelectedProvider ==null)
+            //{
+            //    //res = groups.Where(x => x.Key).Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+            //    groups = Expenses.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+            //}
+            //else if (_filterSelectedPaymentMethod == null && _filterSelectedProvider != null)
+            //{
+            //    groups = Expenses.Where(x => x.Provider.Id == _filterSelectedProvider.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+            //}
+            //else if(_filterSelectedPaymentMethod != null && _filterSelectedProvider != null)
+            //{
+            //    groups = Expenses.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.Provider.Id == _filterSelectedProvider.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+            //}
 
             foreach (var group in groups)
             {
                 collection.Add(group.Count());
             }
+            OnPropertyChanged(nameof(LabelsExp));
             return collection;
         }
         //set
@@ -716,7 +766,19 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         get
         {
-            var collection = new ObservableCollection<string>(Expenses.GroupBy(x => x.Category.Title).Select(g => g.Key));
+            //var collection = new ObservableCollection<string>(Expenses.GroupBy(x => x.Category.Title).Select(g => g.Key));
+            //var collection = new ObservableCollection<string>();
+            var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date);
+            if (_filterSelectedPaymentMethod != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id);
+            }
+            if (_filterSelectedProvider != null)
+            {
+                filter = filter.Where(x => x.Provider.Id == _filterSelectedProvider.Id);
+            }
+            var collection = new ObservableCollection<string>(filter.GroupBy(x => x.Category.Title).Select(g => g.Key));
+            
             return collection;
         }
     }
@@ -743,12 +805,24 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             var collection = new SeriesCollection();
             
             //var groups = Expenses.GroupBy(x => x.CategoryId);
-            var groups = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+            //var groups = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
 
+            var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date);
             if (_filterSelectedPaymentMethod != null)
             {
-                groups = Expenses.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id);
             }
+            if (_filterSelectedProvider != null)
+            {
+                filter = filter.Where(x => x.Provider.Id == _filterSelectedProvider.Id);
+            }
+            var groups = filter.GroupBy(x => x.CategoryId);
+
+
+            //if (_filterSelectedPaymentMethod != null)
+            //{
+            //    groups = Expenses.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
+            //}
 
             foreach (var group in groups)
             {
