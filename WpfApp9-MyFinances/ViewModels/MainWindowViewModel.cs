@@ -1026,4 +1026,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         OnPropertyChanged(nameof(DatePickerColumnWidthInc));
         _isDatePickerColumnHiddenInc = !_isDatePickerColumnHiddenInc;
     }, x => true);
+    //TEST
+    public ObservableCollection<string> TestScroll
+    {
+        get
+        {
+            var collection = new ObservableCollection<string> { "some text1", "some text2", "some text3", "some text4", "some text5", "some text6", "some text7", "some text8", "some text9", "some text10", "some text11", "some text12", "some text13", "some text14", "some text15", "some text16", "some text17" };
+            return collection;
+        }
+    }
 }

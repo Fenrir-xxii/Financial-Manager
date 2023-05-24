@@ -25,5 +25,21 @@ namespace WpfApp9_MyFinances.Windows
             InitializeComponent();
             DataContext = new AddTransactionViewModel();
         }
+        //private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        //{
+        //    e.CanExecute = IsValid(sender as DependencyObject);
+        //}
+
+        //private bool IsValid(DependencyObject obj)
+        //{
+        //    return !Validation.GetHasError(obj) && LogicalTreeHelper.GetChildren(obj).OfType<DependencyObject>().All(IsValid);
+        //}
+        //void Save_Executed(object target, ExecutedRoutedEventArgs e)
+        //{
+        //    var a = (AddTransactionViewModel)target;
+        //    _ = (DataContext as AddTransactionViewModel).SaveTransactionExp;
+        //}
+
+       
     }
 }

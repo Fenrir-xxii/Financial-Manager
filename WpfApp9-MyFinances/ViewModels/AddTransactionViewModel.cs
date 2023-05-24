@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using WpfApp9_MyFinances.Models;
 using WpfApp9_MyFinances.Windows;
@@ -28,6 +29,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         _incomeTransaction= new IncomeViewModel { DateOfIncome = DateTime.Now };
         _transferTransaction = new TransferViewModel { DateOfTransfer = DateTime.Now};
         _operationTypes = new List<string> { _expenseTransaction.OperationTypeName, _incomeTransaction.OperationTypeName, _transferTransaction.OperationTypeName };
+        _isSaveButtonEnabled = false;
 
         Task.Run(async () =>
         {
@@ -49,7 +51,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
     private Database3MyFinancesContext _db;
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
-        return await _db.PaymentMethods.ToListAsync();
+        return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
     }
     public async Task<List<CategoriesExp>> LoadCategoriesExpAsync()
     {
@@ -91,7 +93,9 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             _selectedPaymentMethod = value;
             OnPropertyChanged(nameof(SelectedPaymentMethod));
             OnPropertyChanged(nameof(PlannedBalanceExp));
+            OnPropertyChanged(nameof(PlannedBalanceInc));
             OnPropertyChanged(nameof(PaymentMethodsForTransfer));
+            OnPropertyChanged(nameof(IsSaveButtonEnabled));
         }
     }
     public ObservableCollection<PaymentMethodViewModel> PaymentMethodsForTransfer
@@ -150,6 +154,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             _selectedCategoryExp = value;
             OnPropertyChanged(nameof(SelectedCategoryExp));
             OnPropertyChanged(nameof(SubCategoriesExp));
+            OnPropertyChanged(nameof(IsSaveButtonEnabled));
         }
     }
     private List<SubcategoryExpViewModel> _subCategoriesExp;
@@ -173,6 +178,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             _selectedSubCategoryExp = value;
             OnPropertyChanged(nameof(SelectedSubCategoryExp));
+            OnPropertyChanged(nameof(IsSaveButtonEnabled));
         }
     }
     private List<CategoriesInc> _allCategoriesInc;
@@ -229,6 +235,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             _selectedProvider = value;
             OnPropertyChanged(nameof(SelectedProvider));
+            OnPropertyChanged(nameof(IsSaveButtonEnabled));
         }
     }
     private ExpenseViewModel _expenseTransaction;
@@ -338,7 +345,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             decimal balance = 0;
             if (SelectedPaymentMethod != null)
             {
-                balance = SelectedPaymentMethod.CurrentBalance - IncomeTransaction.Amount;
+                balance = SelectedPaymentMethod.CurrentBalance + IncomeTransaction.Amount;
             }
             return balance;
         }
@@ -382,6 +389,47 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PlannedBalanceReceiverTfr));
         }
     }
+    //private bool _isValid(DependencyObject obj)
+    //{
+    //    return !Validation.GetHasError(obj) && LogicalTreeHelper.GetChildren(obj).OfType<DependencyObject>().All(_isValid);
+    //}
+    //public bool IsSaveButtonEnabled;
+    //private void _save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+    //{
+    //    IsSaveButtonEnabled = e.CanExecute = _isValid(sender as DependencyObject);
+    //}
+    private bool _isSaveButtonEnabled;
+    public bool IsSaveButtonEnabled
+    {
+        get
+        {
+            if(_selectedPaymentMethod == null)
+            {
+                return false;
+            }
+            if (_selectedProvider == null)
+            {
+                return false;
+            }
+            if (_selectedCategoryExp == null)
+            {
+                return false;
+            }
+            if (_selectedCategoryExp != null)
+            {
+                if(_selectedCategoryExp.Subcategories.Count > 0 && _selectedSubCategoryExp == null)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        set
+        {
+            _isSaveButtonEnabled = value;
+            OnPropertyChanged(nameof(IsSaveButtonEnabled));
+        }
+    }
     public ICommand SaveTransactionExp => new RelayCommand(x =>
     {
         ExpenseTransaction.PaymentMethod = SelectedPaymentMethod;
@@ -408,7 +456,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         }
         //Application.Current.Windows[];
         //Application.Current.Windows[windowId].Close();
-    }, x => true);
+    }, x => IsSaveButtonEnabled);
     public ICommand SaveTransactionInc => new RelayCommand(x =>
     {
         IncomeTransaction.PaymentMethod = SelectedPaymentMethod;

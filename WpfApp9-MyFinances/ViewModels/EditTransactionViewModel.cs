@@ -66,7 +66,7 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
     private Database3MyFinancesContext _db;
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
-        return await _db.PaymentMethods.ToListAsync();
+        return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
     }
     public async Task<List<CategoriesExp>> LoadCategoriesExpAsync()
     {
