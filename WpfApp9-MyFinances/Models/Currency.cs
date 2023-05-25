@@ -13,5 +13,9 @@ public partial class Currency
 
     public string Title { get; set; } = null!;
 
+    public virtual ICollection<Exchange> ExchangeCurrencyIdFromNavigations { get; } = new List<Exchange>();
+
+    public virtual ICollection<Exchange> ExchangeCurrencyIdToNavigations { get; } = new List<Exchange>();
+
     public virtual ICollection<PaymentMethod> PaymentMethods { get; } = new List<PaymentMethod>();
 }

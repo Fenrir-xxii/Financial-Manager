@@ -21,6 +21,10 @@ public partial class PaymentMethod
 
     public virtual Currency Currency { get; set; } = null!;
 
+    public virtual ICollection<Exchange> ExchangeFroms { get; } = new List<Exchange>();
+
+    public virtual ICollection<Exchange> ExchangeTos { get; } = new List<Exchange>();
+
     public virtual ICollection<Expense> Expenses { get; } = new List<Expense>();
 
     public virtual ICollection<Income> Incomes { get; } = new List<Income>();

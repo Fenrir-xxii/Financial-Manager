@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using WpfApp9_MyFinances.Models;
+using System.Threading;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
@@ -21,6 +22,8 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         _db = db;
         _originalIncomeAmount = income.Amount;
         Init();
+        _runUpdate = true;
+        UpdatePlannedBalanceInc();
     }
     public EditTransactionViewModel(Expense expense, Database3MyFinancesContext db)
     {
@@ -30,6 +33,8 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         Init();
         //_selectedCategoryExp = ExpenseModel.Category;
         _selectedSubCategoryExp = ExpenseModel.Subcategory;
+        _runUpdate = true;
+        UpdatePlannedBalanceExp();
     }
     public EditTransactionViewModel(Transfer transfer, Database3MyFinancesContext db)
     {
@@ -37,6 +42,8 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         _db = db;
         _originalTransferAmount = transfer.Amount;
         Init();
+        _runUpdate = true;
+        UpdatePlannedBalanceTfr();
     }
     public void Init()
     {
@@ -346,6 +353,41 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PlannedBalanceReceiverTfr));
         }
     }
+    private bool _runUpdate;
+    public void UpdatePlannedBalanceExp()
+    {
+        Task.Run(() =>
+        {
+            while (_runUpdate)
+            {
+                OnPropertyChanged(nameof(PlannedBalanceExp));
+                Thread.Sleep(500);
+            }
+        });
+    }
+    public void UpdatePlannedBalanceInc()
+    {
+        Task.Run(() =>
+        {
+            while (_runUpdate)
+            {
+                OnPropertyChanged(nameof(PlannedBalanceInc));
+                Thread.Sleep(500);
+            }
+        });
+    }
+    public void UpdatePlannedBalanceTfr()
+    {
+        Task.Run(() =>
+        {
+            while (_runUpdate)
+            {
+                OnPropertyChanged(nameof(PlannedBalanceSenderTfr));
+                OnPropertyChanged(nameof(PlannedBalanceReceiverTfr));
+                Thread.Sleep(500);
+            }
+        });
+    }
     public ICommand SaveEditOfTransactionExp => new RelayCommand(x =>
     {
         ExpenseModel.Subcategory = _selectedSubCategoryExp;
@@ -353,6 +395,7 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         {
             _db.Update(ExpenseModel.Model);
             _db.SaveChanges();
+            _runUpdate = false;
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception e)
@@ -373,6 +416,7 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         {
             _db.Update(IncomeModel.Model);
             _db.SaveChanges();
+            _runUpdate = false;
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception e)
@@ -391,6 +435,7 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         {
             _db.Update(TransferModel.Model);
             _db.SaveChanges();
+            _runUpdate = false;
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception e)
@@ -406,6 +451,7 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
     public ICommand CancelEditOfTransaction => new RelayCommand(x =>
     {
         //Application.Current.Windows[1].Close();
+        _runUpdate = false;
         var window = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive);
         window?.Close();
     }, x => true);

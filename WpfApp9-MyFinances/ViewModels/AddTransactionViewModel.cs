@@ -107,7 +107,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             {
                 foreach (var pay in _allPaymentMethods)
                 {
-                    if(pay.Id != SelectedPaymentMethod.Model.Id)
+                    if(pay.Id != SelectedPaymentMethod.Model.Id && pay.CurrencyId == SelectedPaymentMethod.Model.CurrencyId)  // transfers only of same currency
                     {
                         collection.Add(new PaymentMethodViewModel(pay));
                     }
