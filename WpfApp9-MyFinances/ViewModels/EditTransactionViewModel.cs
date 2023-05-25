@@ -19,12 +19,14 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
     {
         IncomeModel = new IncomeViewModel(income);
         _db = db;
+        _originalIncomeAmount = income.Amount;
         Init();
     }
     public EditTransactionViewModel(Expense expense, Database3MyFinancesContext db)
     {
         ExpenseModel = new ExpenseViewModel(expense);
         _db = db;
+        _originalExpenseAmount = expense.Amount;
         Init();
         //_selectedCategoryExp = ExpenseModel.Category;
         _selectedSubCategoryExp = ExpenseModel.Subcategory;
@@ -33,6 +35,7 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
     {
         TransferModel = new TransferViewModel(transfer);
         _db = db;
+        _originalTransferAmount = transfer.Amount;
         Init();
     }
     public void Init()
@@ -268,6 +271,81 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
     //        OnPropertyChanged(nameof(SelectedProvider));
     //    }
     //}
+    private decimal _originalExpenseAmount;
+    public decimal PlannedBalanceExp
+    {
+        get
+        {
+            decimal balance = 0;
+            if (ExpenseModel != null)
+            {
+                var differenceInAmount = ExpenseModel.Amount - _originalExpenseAmount;
+                balance = ExpenseModel.PaymentMethod.CurrentBalance - differenceInAmount;  //ExpenceAmount;
+            }
+            return balance;
+        }
+        set
+        {
+            PlannedBalanceExp = value;
+            OnPropertyChanged(nameof(PlannedBalanceExp));
+        }
+    }
+    private decimal _originalIncomeAmount;
+    public decimal PlannedBalanceInc
+    {
+        get
+        {
+            decimal balance = 0;
+            if (IncomeModel != null)
+            {
+                var differenceInAmount = IncomeModel.Amount - _originalIncomeAmount;
+                balance = IncomeModel.PaymentMethod.CurrentBalance - differenceInAmount;
+            }
+            return balance;
+        }
+        set
+        {
+            PlannedBalanceInc = value;
+            OnPropertyChanged(nameof(PlannedBalanceInc));
+        }
+    }
+    private decimal _originalTransferAmount;
+    public decimal PlannedBalanceSenderTfr
+    {
+        get
+        {
+            decimal balance = 0;
+            if (TransferModel != null)
+            {
+                var differenceInAmount = TransferModel.Amount - _originalTransferAmount;
+                balance = TransferModel.From.CurrentBalance - differenceInAmount;
+            }
+            return balance;
+        }
+        set
+        {
+            PlannedBalanceSenderTfr = value;
+            OnPropertyChanged(nameof(PlannedBalanceSenderTfr));
+        }
+    }
+    public decimal PlannedBalanceReceiverTfr
+    {
+        get
+        {
+            decimal balance = 0;
+            if (TransferModel != null)
+            {
+                var differenceInAmount = TransferModel.Amount - _originalTransferAmount;
+                balance = TransferModel.To.CurrentBalance + differenceInAmount;
+            }
+            return balance;
+        }
+        set
+        {
+            PlannedBalanceReceiverTfr = value;
+            OnPropertyChanged(nameof(PlannedBalanceReceiverTfr));
+        }
+    }
     public ICommand SaveEditOfTransactionExp => new RelayCommand(x =>
     {
         ExpenseModel.Subcategory = _selectedSubCategoryExp;
