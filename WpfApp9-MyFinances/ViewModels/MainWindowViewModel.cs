@@ -78,11 +78,11 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Expenses));
             OnPropertyChanged(nameof(Incomes));
             OnPropertyChanged(nameof(Currencies));
-            OnPropertyChanged(nameof(TotalInCash));
+            //OnPropertyChanged(nameof(TotalInCash));
             OnPropertyChanged(nameof(TotalInCashAllCurrencies));
-            OnPropertyChanged(nameof(TotalInCashless));
+            //OnPropertyChanged(nameof(TotalInCashless));
             OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
-            OnPropertyChanged(nameof(TotalMoney));
+            //OnPropertyChanged(nameof(TotalMoney));
             OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
             OnPropertyChanged(nameof(CategoriesExpChartValue));
             OnPropertyChanged(nameof(LabelsExp));
@@ -506,13 +506,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         window.ShowDialog();
 
     }, x => true);
-    public decimal TotalInCash
-    {
-        get
-        {
-            return _allPaymentMethods.Where(x => x.IsCash == true).Sum(x => x.CurrentBalance);
-        }
-    }
+    //public decimal TotalInCash
+    //{
+    //    get
+    //    {
+    //        return _allPaymentMethods.Where(x => x.IsCash == true).Sum(x => x.CurrentBalance);
+    //    }
+    //}
     public ObservableCollection<string> TotalInCashAllCurrencies
     {
         get
@@ -524,13 +524,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
-    public decimal TotalInCashless
-    {
-        get
-        {
-            return _allPaymentMethods.Where(x => x.IsCash == false).Sum(x => x.CurrentBalance);
-        }
-    }
+    //public decimal TotalInCashless
+    //{
+    //    get
+    //    {
+    //        return _allPaymentMethods.Where(x => x.IsCash == false).Sum(x => x.CurrentBalance);
+    //    }
+    //}
     public ObservableCollection<string> TotalInCashlessAllCurrencies
     {
         get
@@ -542,13 +542,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
-    public decimal TotalMoney
-    {
-        get
-        {
-            return _allPaymentMethods.Sum(x => x.CurrentBalance);
-        }
-    }
+    //public decimal TotalMoney
+    //{
+    //    get
+    //    {
+    //        return _allPaymentMethods.Sum(x => x.CurrentBalance);
+    //    }
+    //}
     public ObservableCollection<string> TotalMoneyAllCurrencies
     {
         get
@@ -616,9 +616,9 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         // check for changes
         _allPaymentMethods = updatedPaymentMethods;
         _allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
-        OnPropertyChanged(nameof(TotalInCash));
-        OnPropertyChanged(nameof(TotalInCashless));
-        OnPropertyChanged(nameof(TotalMoney));
+        OnPropertyChanged(nameof(TotalInCashAllCurrencies));
+        OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
+        OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
         OnPropertyChanged(nameof(PaymentMethods));
         OnPropertyChanged(nameof(CategoriesExpChartValue));
         OnPropertyChanged(nameof(LabelsExp));

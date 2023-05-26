@@ -45,6 +45,16 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         _runUpdate = true;
         UpdatePlannedBalanceTfr();
     }
+    public EditTransactionViewModel(Exchange exchange, Database3MyFinancesContext db)
+    {
+        ExchangeModel = new ExchangeViewModel(exchange);
+        _db = db;
+        _originalExchangeAmountFrom = exchange.AmountFrom;
+        _originalExchangeAmountTo = (decimal)((exchange.AmountTo == null) ? 0 : exchange.AmountTo);
+        Init();
+        _runUpdate = true;
+        UpdatePlannedBalanceExc();
+    }
     public void Init()
     {
         _allPaymentMethods = new List<PaymentMethod>();
@@ -73,6 +83,7 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
     public ExpenseViewModel ExpenseModel { get; set; }
     public IncomeViewModel IncomeModel { get; set; }
     public TransferViewModel TransferModel { get; set; }
+    public ExchangeViewModel ExchangeModel { get; set; }
     private Database3MyFinancesContext _db;
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
@@ -127,12 +138,30 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         {
             var collection = new ObservableCollection<PaymentMethodViewModel>();
             //if (SelectedPaymentMethod != null)
-            if (TransferModel != null && TransferModel.From !=null)
+            if (TransferModel != null && TransferModel.From !=null)   
+            {
+                foreach (var pay in _allPaymentMethods)   
+                {
+                    //if (pay.Id != SelectedPaymentMethod.Model.Id)
+                    if (pay.Id != TransferModel.From.Id && pay.CurrencyId == TransferModel.From.CurrencyId)
+                    {
+                        collection.Add(new PaymentMethodViewModel(pay));
+                    }
+                }
+            }
+            return collection;
+        }
+    }
+    public ObservableCollection<PaymentMethodViewModel> PaymentMethodsForExchange
+    {
+        get
+        {
+            var collection = new ObservableCollection<PaymentMethodViewModel>();
+            if (ExchangeModel != null && ExchangeModel.From !=null)
             {
                 foreach (var pay in _allPaymentMethods)
                 {
-                    //if (pay.Id != SelectedPaymentMethod.Model.Id)
-                    if (pay.Id != TransferModel.From.Id)
+                    if (pay.CurrencyId != ExchangeModel.From.CurrencyId)
                     {
                         collection.Add(new PaymentMethodViewModel(pay));
                     }
@@ -353,6 +382,44 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PlannedBalanceReceiverTfr));
         }
     }
+    private decimal _originalExchangeAmountFrom;
+    private decimal _originalExchangeAmountTo;
+    public decimal PlannedBalanceSenderExc
+    {
+        get
+        {
+            decimal balance = 0;
+            if (ExchangeModel != null)
+            {
+                var differenceInAmount = ExchangeModel.AmountFrom - _originalExchangeAmountFrom;
+                balance = ExchangeModel.From.CurrentBalance - differenceInAmount;
+            }
+            return balance;
+        }
+        set
+        {
+            PlannedBalanceSenderExc = value;
+            OnPropertyChanged(nameof(PlannedBalanceSenderExc));
+        }
+    }
+    public decimal PlannedBalanceReceiverExc
+    {
+        get
+        {
+            decimal balance = 0;
+            if (ExchangeModel != null)
+            {
+                var differenceInAmount = Math.Round((ExchangeModel.AmountFrom * ExchangeModel.ExchangeRate),2) - _originalExchangeAmountTo;   // double check here
+                balance = (decimal)(ExchangeModel.To.CurrentBalance + differenceInAmount);
+            }
+            return balance;
+        }
+        set
+        {
+            PlannedBalanceReceiverExc = value;
+            OnPropertyChanged(nameof(PlannedBalanceReceiverExc));
+        }
+    }
     private bool _runUpdate;
     public void UpdatePlannedBalanceExp()
     {
@@ -384,6 +451,18 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
             {
                 OnPropertyChanged(nameof(PlannedBalanceSenderTfr));
                 OnPropertyChanged(nameof(PlannedBalanceReceiverTfr));
+                Thread.Sleep(500);
+            }
+        });
+    }
+    public void UpdatePlannedBalanceExc()
+    {
+        Task.Run(() =>
+        {
+            while (_runUpdate)
+            {
+                OnPropertyChanged(nameof(PlannedBalanceSenderExc));
+                OnPropertyChanged(nameof(PlannedBalanceReceiverExc));
                 Thread.Sleep(500);
             }
         });
@@ -434,6 +513,25 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         try
         {
             _db.Update(TransferModel.Model);
+            _db.SaveChanges();
+            _runUpdate = false;
+            MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        //MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        foreach (Window item in Application.Current.Windows)
+        {
+            if (item.DataContext == this) item.Close();
+        }
+    }, x => true);
+    public ICommand SaveEditOfTransactionExc => new RelayCommand(x =>
+    {
+        try
+        {
+            _db.Update(ExchangeModel.Model);
             _db.SaveChanges();
             _runUpdate = false;
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);

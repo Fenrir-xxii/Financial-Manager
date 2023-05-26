@@ -29,6 +29,7 @@ namespace WpfApp9_MyFinances.Windows
             ExpensesTab.IsSelected = true;
             IncomesTab.IsEnabled = false;
             TransfersTab.IsEnabled = false;
+            ExchangeTab.IsEnabled = false;
         }
         public EditTransaction(Income income, Database3MyFinancesContext db)
         {
@@ -38,6 +39,7 @@ namespace WpfApp9_MyFinances.Windows
             IncomesTab.IsSelected = true;
             ExpensesTab.IsEnabled = false;
             TransfersTab.IsEnabled = false;
+            ExchangeTab.IsEnabled = false;
         }
         public EditTransaction(Transfer transfer, Database3MyFinancesContext db)
         {
@@ -45,6 +47,17 @@ namespace WpfApp9_MyFinances.Windows
             //DataContext= new TransferViewModel(transfer); 
             DataContext = new EditTransactionViewModel(transfer, db);
             TransfersTab.IsSelected = true;
+            ExpensesTab.IsEnabled = false;
+            IncomesTab.IsEnabled = false;
+            ExchangeTab.IsEnabled = false;
+        }
+        public EditTransaction(Exchange exchange, Database3MyFinancesContext db)
+        {
+            InitializeComponent();
+            //DataContext= new TransferViewModel(transfer); 
+            DataContext = new EditTransactionViewModel(exchange, db);
+            ExchangeTab.IsSelected = true;
+            TransfersTab.IsEnabled = false;
             ExpensesTab.IsEnabled = false;
             IncomesTab.IsEnabled = false;
         }

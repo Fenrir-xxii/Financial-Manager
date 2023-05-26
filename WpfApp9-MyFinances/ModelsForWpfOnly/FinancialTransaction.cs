@@ -10,7 +10,7 @@ namespace WpfApp9_MyFinances.ModelsForWpfOnly;
 
 public enum TransactionType
 {
-    EXPENSE=0, INCOME, TRANSFER
+    EXPENSE=0, INCOME, TRANSFER, EXCHANGE
 }
     
 public class FinancialTransaction
@@ -63,6 +63,29 @@ public class FinancialTransaction
         //Title = "Transfer";
         //BalanceBefore = transferFrom.From.GetBalanceForDate(DateOfTransaction);
         //BalanceAfter = BalanceBefore + Amount;
+    }
+    public FinancialTransaction(Exchange exchange, bool isIncome)
+    {
+        if (isIncome)
+        {
+            Amount = (decimal)((exchange.AmountTo == null) ? 0 : exchange.AmountTo);
+            DateOfTransaction = exchange.DateOfExchange;
+            Title = "Incoming exchange";
+            BalanceBefore = exchange.To.GetBalanceForDate(DateOfTransaction);
+            BalanceAfter = BalanceBefore + Amount;
+            TransactionId = exchange.Id;
+            TransactionType = TransactionType.EXCHANGE;
+        }
+        else
+        {
+            Amount = -exchange.AmountFrom;
+            DateOfTransaction = exchange.DateOfExchange;
+            Title = "Outcoming exchange";
+            BalanceBefore = exchange.From.GetBalanceForDate(DateOfTransaction);
+            BalanceAfter = BalanceBefore + Amount;
+            TransactionId = exchange.Id;
+            TransactionType = TransactionType.EXCHANGE;
+        }
     }
     [NotMapped]
     public decimal BalanceBefore { get; set; }

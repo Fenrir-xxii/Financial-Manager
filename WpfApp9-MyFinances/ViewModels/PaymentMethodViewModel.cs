@@ -41,6 +41,15 @@ public class PaymentMethodViewModel : NotifyPropertyChangedBase
         {
             _allTransactions.Add(new FinancialTransaction(transactionTfr.Model, true));
         });
+        ExchangesOut.ToList().ForEach(transactionExc =>
+        {
+            _allTransactions.Add(new FinancialTransaction(transactionExc.Model, false));
+        });
+        ExchangesIn.ToList().ForEach(transactionExc =>
+        {
+            _allTransactions.Add(new FinancialTransaction(transactionExc.Model, true));
+        });
+
         //var a = 3;
         //Incomes and Transfers next
     }
@@ -149,6 +158,28 @@ public class PaymentMethodViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
+    public ObservableCollection<ExchangeViewModel> ExchangesOut
+    {
+        get
+        {
+            var collection = new ObservableCollection<ExchangeViewModel>();
+
+            var exp = _db.Exchanges.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).ToList();
+            exp.ForEach(e => collection.Add(new ExchangeViewModel { Model = e }));
+            return collection;
+        }
+    }
+    public ObservableCollection<ExchangeViewModel> ExchangesIn
+    {
+        get
+        {
+            var collection = new ObservableCollection<ExchangeViewModel>();
+
+            var exp = _db.Exchanges.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).ToList();
+            exp.ForEach(e => collection.Add(new ExchangeViewModel { Model = e }));
+            return collection;
+        }
+    }
     private List<FinancialTransaction> _allTransactions;
     public ObservableCollection<FinancialTransactionViewModel> Transactions
     {
@@ -200,6 +231,14 @@ public class PaymentMethodViewModel : NotifyPropertyChangedBase
             case TransactionType.TRANSFER:
                 {
                     var transaction = _db.Transfers.Include(t => t.From).Include(t=> t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId); //include
+                    var subWindow = new EditTransaction(transaction, _db);
+                    subWindow.ShowDialog();
+                    //update
+                    break;
+                }
+            case TransactionType.EXCHANGE:
+                {
+                    var transaction = _db.Exchanges.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
                     var subWindow = new EditTransaction(transaction, _db);
                     subWindow.ShowDialog();
                     //update
@@ -259,6 +298,18 @@ public class PaymentMethodViewModel : NotifyPropertyChangedBase
                         _db.SaveChanges();
                         MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }catch (Exception ex)
+                    {
+                        MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    break;
+                }
+            case TransactionType.EXCHANGE:
+                {
+                    try
+                    {
+                       //TODO
+                    }
+                    catch (Exception ex)
                     {
                         MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }

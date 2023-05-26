@@ -729,6 +729,95 @@
                         </Grid>
                     </Border>
                 </TabItem>
+                <TabItem Header="EXC" Name="ExchangeTab">
+                    <Border Padding="10" BorderThickness="1">
+                        <Grid>
+                            <Border Padding="7">
+                                <Grid Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40*"></ColumnDefinition>
+                                        <ColumnDefinition Width="20*"></ColumnDefinition>
+                                        <ColumnDefinition Width="40*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="90*"></RowDefinition>
+                                        <RowDefinition Height="10*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Grid.Row="0" Grid.ColumnSpan="3">
+                                        <TextBlock Text="Sender:"></TextBlock>
+                                        <ComboBox ItemsSource="{Binding Path=PaymentMethods}" SelectedItem="{Binding Path=ExchangeModel.From}">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <TextBlock Text="{Binding Path= ExchangeModel.From.CurrentBalance}"/>
+                                        <TextBlock Text="Receiver:"></TextBlock>
+                                        <ComboBox ItemsSource="{Binding Path=PaymentMethodsForExchange}" SelectedItem="{Binding Path=ExchangeModel.To}">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <!--<TextBlock Text="{Binding Path= TransferModel.To.CurrentBalance}"></TextBlock>-->
+                                        <TextBlock Foreground="NavajoWhite">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                                    <Binding Path="ExchangeModel.To.CurrentBalance"></Binding>
+                                                    <Binding Path="ExchangeModel.To.Currency.CodeNumber"></Binding>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock>Date:</TextBlock>
+                                        <!--<DatePicker SelectedDateFormat="Long" FirstDayOfWeek="Monday" SelectedDate="{Binding Path=TransferModel.DateOfTransfer}"></DatePicker>-->
+                                        <wpfx:DateTimePicker Text="{Binding Path=ExchangeModel.DateOfExchange}" Background="#C4C9C9" Format="LongDate" AutoCloseCalendar="True" CultureInfo="en"></wpfx:DateTimePicker>
+                                        <TextBlock>Amount:</TextBlock>
+                                        <!--<TextBox Text="{Binding Path=ExpenseTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
+                                        <wpfx:DecimalUpDown Value="{Binding Path=ExchangeModel.AmountFrom, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0" Background="#C4C9C9"/>
+                                        <TextBlock>Exchange rate:</TextBlock>
+                                        <wpfx:DecimalUpDown Value="{Binding Path=ExchangeModel.ExchangeRate, UpdateSourceTrigger=PropertyChanged}" FormatString="F" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0" Background="#C4C9C9"/>
+                                        <TextBlock>Description / comment:</TextBlock>
+                                        <TextBox Text="{Binding Path=ExchangeModel.Description}"></TextBox>
+                                        <!--<TextBlock>
+                                        </TextBlock>-->
+                                        <TextBlock>
+                                            <TextBlock>Planned balance of sender: </TextBlock>
+                                            <!--<TextBlock Text="{Binding Path=PlannedBalanceSenderTfr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='C', ConverterCulture='uk-UA'}"></TextBlock>-->
+                                            <TextBlock Foreground="NavajoWhite">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                                        <Binding Path="PlannedBalanceSenderExc"></Binding>
+                                                        <Binding Path="ExchangeModel.From.Currency.CodeNumber"></Binding>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                        </TextBlock>
+                                        </TextBlock>
+                                        <TextBlock>
+                                            <TextBlock>Planned balance of receiver: </TextBlock>
+                                            <!--<TextBlock Text="{Binding Path=PlannedBalanceReceiverTfr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='C', ConverterCulture='uk-UA'}"></TextBlock>-->
+                                            <TextBlock Foreground="NavajoWhite">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                                        <Binding Path="PlannedBalanceReceiverExc"></Binding>
+                                                        <Binding Path="ExchangeModel.To.Currency.CodeNumber"></Binding>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                        </TextBlock>
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2">
+                                        <Button Command="{Binding Path=SaveEditOfTransactionExc}" Height="30">Save</Button>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Grid.Column="2">
+                                        <Button Command="{Binding Path=CancelEditOfTransaction}" Height="30">Cancel</Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </TabItem>
             </TabControl>
         </Grid>
     </Border>

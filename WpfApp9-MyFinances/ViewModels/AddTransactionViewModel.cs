@@ -28,7 +28,8 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         _expenseTransaction = new ExpenseViewModel { DateOfExpense=DateTime.Now};
         _incomeTransaction= new IncomeViewModel { DateOfIncome = DateTime.Now };
         _transferTransaction = new TransferViewModel { DateOfTransfer = DateTime.Now};
-        _operationTypes = new List<string> { _expenseTransaction.OperationTypeName, _incomeTransaction.OperationTypeName, _transferTransaction.OperationTypeName };
+        _exchangeTransaction = new ExchangeViewModel { DateOfExchange = DateTime.Now};
+        _operationTypes = new List<string> { _expenseTransaction.OperationTypeName, _incomeTransaction.OperationTypeName, _transferTransaction.OperationTypeName, _exchangeTransaction.OperationTypeName };
         _isSaveButtonEnabled = false;
 
         Task.Run(async () =>
@@ -95,6 +96,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PlannedBalanceExp));
             OnPropertyChanged(nameof(PlannedBalanceInc));
             OnPropertyChanged(nameof(PaymentMethodsForTransfer));
+            OnPropertyChanged(nameof(PaymentMethodsForExchange));
             OnPropertyChanged(nameof(IsSaveButtonEnabled));
         }
     }
@@ -116,6 +118,24 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
+    public ObservableCollection<PaymentMethodViewModel> PaymentMethodsForExchange
+    {
+        get
+        {
+            var collection = new ObservableCollection<PaymentMethodViewModel>();
+            if (SelectedPaymentMethod != null)
+            {
+                foreach (var pay in _allPaymentMethods)
+                {
+                    if (pay.CurrencyId != SelectedPaymentMethod.Model.CurrencyId) 
+                    {
+                        collection.Add(new PaymentMethodViewModel(pay));
+                    }
+                }
+            }
+            return collection;
+        }
+    }
     private PaymentMethodViewModel _selectedPaymentMethodForTransfer;
     public PaymentMethodViewModel SelectedPaymentMethodForTransfer
     {
@@ -124,6 +144,17 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             _selectedPaymentMethodForTransfer = value;
             OnPropertyChanged(nameof(SelectedPaymentMethodForTransfer));
+            //OnPropertyChanged(nameof(PlannedBalance));
+        }
+    }
+    private PaymentMethodViewModel _selectedPaymentMethodForExchange;
+    public PaymentMethodViewModel SelectedPaymentMethodForExchange
+    {
+        get => _selectedPaymentMethodForExchange;
+        set
+        {
+            _selectedPaymentMethodForExchange = value;
+            OnPropertyChanged(nameof(SelectedPaymentMethodForExchange));
             //OnPropertyChanged(nameof(PlannedBalance));
         }
     }
@@ -301,6 +332,38 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PlannedBalanceReceiverTfr));
         }
     }
+    private ExchangeViewModel _exchangeTransaction;
+    public ExchangeViewModel ExchangeTransaction
+    {
+        get => _exchangeTransaction;
+        set
+        {
+            _exchangeTransaction = value;
+            OnPropertyChanged(nameof(ExchangeTransaction));
+        }
+    }
+    public decimal ExchangeAmount
+    {
+        get => _exchangeTransaction.AmountFrom;
+        set
+        {
+            ExchangeTransaction.AmountFrom = value;
+            OnPropertyChanged(nameof(ExchangeAmount));
+            OnPropertyChanged(nameof(PlannedBalanceSenderExc));
+            OnPropertyChanged(nameof(PlannedBalanceReceiverExc));
+        }
+    }
+    public decimal ExchangeRate
+    {
+        get => _exchangeTransaction.ExchangeRate;
+        set
+        {
+            ExchangeTransaction.ExchangeRate = value;
+            OnPropertyChanged(nameof(ExchangeRate));
+            //OnPropertyChanged(nameof(PlannedBalanceSenderExc));
+            OnPropertyChanged(nameof(PlannedBalanceReceiverExc));
+        }
+    }
     private List<string> _operationTypes;
     public ObservableCollection<string> OperationTypes
     {
@@ -387,6 +450,40 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             PlannedBalanceReceiverTfr = value;
             OnPropertyChanged(nameof(PlannedBalanceReceiverTfr));
+        }
+    }
+    public decimal PlannedBalanceSenderExc
+    {
+        get
+        {
+            decimal balance = 0;
+            if (SelectedPaymentMethod != null)
+            {
+                balance = SelectedPaymentMethod.CurrentBalance - ExchangeTransaction.AmountFrom;
+            }
+            return balance;
+        }
+        set
+        {
+            PlannedBalanceSenderExc = value;
+            OnPropertyChanged(nameof(PlannedBalanceSenderExc));
+        }
+    }
+    public decimal PlannedBalanceReceiverExc
+    {
+        get
+        {
+            decimal balance = 0;
+            if (SelectedPaymentMethod != null)
+            {
+                balance = SelectedPaymentMethodForExchange.CurrentBalance + Math.Round((ExchangeAmount * ExchangeRate),2);  // double check here
+            }
+            return balance;
+        }
+        set
+        {
+            PlannedBalanceReceiverExc = value;
+            OnPropertyChanged(nameof(PlannedBalanceReceiverExc));
         }
     }
     //private bool _isValid(DependencyObject obj)
@@ -495,6 +592,29 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
        
+        foreach (Window item in Application.Current.Windows)
+        {
+            if (item.DataContext == this) item.Close();
+        }
+    }, x => true);
+    public ICommand SaveTransactionExc => new RelayCommand(x =>
+    {
+        ExchangeTransaction.From = SelectedPaymentMethod;
+        ExchangeTransaction.To = SelectedPaymentMethodForExchange;
+        ExchangeTransaction.CurrencyIdFromNavigation = SelectedPaymentMethod.Currency;
+        ExchangeTransaction.CurrencyIdToNavigation = SelectedPaymentMethodForExchange.Currency;
+
+        try
+        {
+            _db.Add(ExchangeTransaction.Model);
+            _db.SaveChanges();
+            MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
         foreach (Window item in Application.Current.Windows)
         {
             if (item.DataContext == this) item.Close();

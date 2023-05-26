@@ -20,6 +20,8 @@ public partial class PaymentMethod
         var allExpenses = db.Expenses.AsNoTracking().Where(x => x.PaymentMethodId == Id).ToList();
         var allTransfersIn = db.Transfers.AsNoTracking().Where(x => x.ToId == Id).ToList();
         var allTransfersOut = db.Transfers.AsNoTracking().Where(x => x.FromId == Id).ToList();
+        var allExchangesIn = db.Exchanges.AsNoTracking().Where(x => x.ToId == Id).ToList();
+        var allExchangesOut = db.Exchanges.AsNoTracking().Where(x => x.FromId == Id).ToList();
 
         //Incomes.ToList().ForEach(income =>
         allIncomes.ToList().ForEach(income =>
@@ -48,6 +50,20 @@ public partial class PaymentMethod
             if (expense.DateOfTransfer >= date)
             {
                 res += expense.Amount;
+            }
+        });
+        allExchangesIn.ToList().ForEach(income =>
+        {
+            if (income.DateOfExchange >= date)
+            {
+                res -= (decimal)((income.AmountTo ==null)? 0: income.AmountTo);
+            }
+        });
+        allExchangesOut.ToList().ForEach(expense =>
+        {
+            if (expense.DateOfExchange >= date)
+            {
+                res += expense.AmountFrom;
             }
         });
         return res;

@@ -19,7 +19,7 @@ public partial class Exchange
 
     public decimal? AmountTo { get; set; }
 
-    public decimal? ExchangeRate { get; set; }
+    public decimal ExchangeRate { get; set; }
 
     public DateTime DateOfExchange { get; set; }
 
