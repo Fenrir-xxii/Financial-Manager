@@ -30,7 +30,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         _transferTransaction = new TransferViewModel { DateOfTransfer = DateTime.Now};
         _exchangeTransaction = new ExchangeViewModel { DateOfExchange = DateTime.Now};
         _operationTypes = new List<string> { _expenseTransaction.OperationTypeName, _incomeTransaction.OperationTypeName, _transferTransaction.OperationTypeName, _exchangeTransaction.OperationTypeName };
-        _isSaveButtonEnabled = false;
+        _isSaveExpButtonEnabled = false;
 
         Task.Run(async () =>
         {
@@ -97,7 +97,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PlannedBalanceInc));
             OnPropertyChanged(nameof(PaymentMethodsForTransfer));
             OnPropertyChanged(nameof(PaymentMethodsForExchange));
-            OnPropertyChanged(nameof(IsSaveButtonEnabled));
+            OnPropertyChanged(nameof(IsSaveExpButtonEnabled));
         }
     }
     public ObservableCollection<PaymentMethodViewModel> PaymentMethodsForTransfer
@@ -185,7 +185,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             _selectedCategoryExp = value;
             OnPropertyChanged(nameof(SelectedCategoryExp));
             OnPropertyChanged(nameof(SubCategoriesExp));
-            OnPropertyChanged(nameof(IsSaveButtonEnabled));
+            OnPropertyChanged(nameof(IsSaveExpButtonEnabled));
         }
     }
     private List<SubcategoryExpViewModel> _subCategoriesExp;
@@ -209,7 +209,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             _selectedSubCategoryExp = value;
             OnPropertyChanged(nameof(SelectedSubCategoryExp));
-            OnPropertyChanged(nameof(IsSaveButtonEnabled));
+            OnPropertyChanged(nameof(IsSaveExpButtonEnabled));
         }
     }
     private List<CategoriesInc> _allCategoriesInc;
@@ -266,7 +266,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             _selectedProvider = value;
             OnPropertyChanged(nameof(SelectedProvider));
-            OnPropertyChanged(nameof(IsSaveButtonEnabled));
+            OnPropertyChanged(nameof(IsSaveExpButtonEnabled));
         }
     }
     private ExpenseViewModel _expenseTransaction;
@@ -495,12 +495,12 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
     //{
     //    IsSaveButtonEnabled = e.CanExecute = _isValid(sender as DependencyObject);
     //}
-    private bool _isSaveButtonEnabled;
-    public bool IsSaveButtonEnabled
+    private bool _isSaveExpButtonEnabled;
+    public bool IsSaveExpButtonEnabled
     {
         get
         {
-            if(_selectedPaymentMethod == null)
+            if (_selectedPaymentMethod == null)
             {
                 return false;
             }
@@ -523,8 +523,75 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         }
         set
         {
-            _isSaveButtonEnabled = value;
-            OnPropertyChanged(nameof(IsSaveButtonEnabled));
+            _isSaveExpButtonEnabled = value;
+            OnPropertyChanged(nameof(IsSaveExpButtonEnabled));
+        }
+    }
+    private bool _isSaveIncButtonEnabled;
+    public bool IsSaveIncButtonEnabled
+    {
+        get
+        {
+            if (_selectedPaymentMethod == null)
+            {
+                return false;
+            }
+            if (_selectedProvider == null)
+            {
+                return false;
+            }
+            if (_selectedCategoryInc == null)
+            {
+                return false;
+            }
+            return true;
+        }
+        set
+        {
+            _isSaveIncButtonEnabled = value;
+            OnPropertyChanged(nameof(IsSaveIncButtonEnabled));
+        }
+    }
+    private bool _isSaveTfrButtonEnabled;
+    public bool IsSaveTfrButtonEnabled
+    {
+        get
+        {
+            if (_selectedPaymentMethod == null)
+            {
+                return false;
+            }
+            if (_selectedPaymentMethodForTransfer == null)
+            {
+                return false;
+            }
+            return true;
+        }
+        set
+        {
+            _isSaveTfrButtonEnabled = value;
+            OnPropertyChanged(nameof(IsSaveTfrButtonEnabled));
+        }
+    }
+    private bool _isSaveExcButtonEnabled;
+    public bool IsSaveExcButtonEnabled
+    {
+        get
+        {
+            if (_selectedPaymentMethod == null)
+            {
+                return false;
+            }
+            if (_selectedPaymentMethodForExchange == null)
+            {
+                return false;
+            }
+            return true;
+        }
+        set
+        {
+            _isSaveExcButtonEnabled = value;
+            OnPropertyChanged(nameof(IsSaveExcButtonEnabled));
         }
     }
     public ICommand SaveTransactionExp => new RelayCommand(x =>
@@ -553,7 +620,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         }
         //Application.Current.Windows[];
         //Application.Current.Windows[windowId].Close();
-    }, x => IsSaveButtonEnabled);
+    }, x => IsSaveExpButtonEnabled);
     public ICommand SaveTransactionInc => new RelayCommand(x =>
     {
         IncomeTransaction.PaymentMethod = SelectedPaymentMethod;
@@ -575,7 +642,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             if (item.DataContext == this) item.Close();
         }
-    }, x => true);
+    }, x => IsSaveIncButtonEnabled);
     public ICommand SaveTransactionTransf => new RelayCommand(x =>
     {
         TransferTransaction.From = SelectedPaymentMethod;
@@ -596,7 +663,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             if (item.DataContext == this) item.Close();
         }
-    }, x => true);
+    }, x => IsSaveTfrButtonEnabled);
     public ICommand SaveTransactionExc => new RelayCommand(x =>
     {
         ExchangeTransaction.From = SelectedPaymentMethod;
@@ -619,7 +686,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             if (item.DataContext == this) item.Close();
         }
-    }, x => true);
+    }, x => IsSaveExcButtonEnabled);
     public ICommand CancelTransaction => new RelayCommand(x =>
     {
         //Application.Current.Windows[1].Close();

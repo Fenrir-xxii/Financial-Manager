@@ -358,6 +358,20 @@
                 </Trigger>
                 <Trigger Property="HasItems" Value="false">
                     <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
+                    <Setter Property="IsEnabled" Value="False"></Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Validation.ErrorTemplate">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <DockPanel>
+                                    <Border BorderBrush="Gray" BorderThickness="0">
+                                        <AdornedElementPlaceholder/>
+                                    </Border>
+                                </DockPanel>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
                 </Trigger>
                 <MultiTrigger>
                     <MultiTrigger.Conditions>
@@ -501,6 +515,7 @@
                 </StackPanel>
                 <TabControl Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="3">
                     <TabItem Header="Expense">
+                        <AdornerDecorator>
                         <Border BorderThickness="2">
                             <Grid Margin="2">
                                 <Grid.ColumnDefinitions>
@@ -619,9 +634,11 @@
                                 </StackPanel>
                             </Grid>
                         </Border>
+                        </AdornerDecorator>
                     </TabItem>
                     <TabItem Header="Income">
-                        <Border BorderThickness="2">
+                        <AdornerDecorator>
+                            <Border BorderThickness="2">
                             <Grid Margin="2">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="40*"></ColumnDefinition>
@@ -637,9 +654,32 @@
                                     <!--<DatePicker SelectedDateFormat="Long" FirstDayOfWeek="Monday" SelectedDate="{Binding Path=IncomeTransaction.DateOfIncome}"></DatePicker>-->
                                     <wpfx:DateTimePicker Text="{Binding Path=IncomeTransaction.DateOfIncome}" Background="#C4C9C9" Format="LongDate" AutoCloseCalendar="True" CultureInfo="en"></wpfx:DateTimePicker>
                                     <TextBlock>Product name/title:</TextBlock>
-                                    <TextBox Text="{Binding Path= IncomeTransaction.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                    <!--<TextBox Text="{Binding Path= IncomeTransaction.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
+                                    <TextBox>
+                                        <TextBox.Text>
+                                            <Binding Path="IncomeTransaction.Title" UpdateSourceTrigger="PropertyChanged">
+                                                <Binding.ValidationRules>
+                                                    <validationrules:NotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                     <TextBlock>Provider:</TextBlock>
-                                    <ComboBox ItemsSource="{Binding Path=Providers}" SelectedItem="{Binding Path=SelectedProvider}">
+                                    <!--<ComboBox ItemsSource="{Binding Path=Providers}" SelectedItem="{Binding Path=SelectedProvider}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>-->
+                                    <ComboBox ItemsSource="{Binding Path=Providers}">
+                                        <ComboBox.SelectedItem>
+                                            <Binding Path="SelectedProvider">
+                                                <Binding.ValidationRules>
+                                                    <validationrules:SelectionComboBoxValidationRule ValidatesOnTargetUpdated="True"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </ComboBox.SelectedItem>
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Path=Title}"></TextBlock>
@@ -647,17 +687,30 @@
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
                                     <TextBlock>Amount:</TextBlock>
-                                    <wpfx:DecimalUpDown Value="{Binding Path=IncomeAmount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0" Background="#C4C9C9"/>
+                                    <wpfx:DecimalUpDown Value="{Binding Path=IncomeAmount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0.01" Background="#C4C9C9"/>
                                     <!--<TextBox Text="{Binding Path=IncomeTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
                                     <TextBlock>Category:</TextBlock>
-                                    <ComboBox ItemsSource="{Binding Path=CategoriesInc}" SelectedItem="{Binding Path=SelectedCategoryInc}">
+                                    <!--<ComboBox ItemsSource="{Binding Path=CategoriesInc}" SelectedItem="{Binding Path=SelectedCategoryInc}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>-->
+                                    <ComboBox ItemsSource="{Binding Path=CategoriesInc}">
+                                        <ComboBox.SelectedItem>
+                                            <Binding Path="SelectedCategoryInc">
+                                                <Binding.ValidationRules>
+                                                    <validationrules:SelectionComboBoxValidationRule ValidatesOnTargetUpdated="True"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </ComboBox.SelectedItem>
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Path=Title}"></TextBlock>
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
-
                                     <TextBlock>Description / comment:</TextBlock>
                                     <TextBox Text="{Binding Path=IncomeTransaction.Description}"></TextBox>
                                     <TextBlock>
@@ -681,8 +734,10 @@
                                 </StackPanel>
                             </Grid>
                         </Border>
+                        </AdornerDecorator>
                     </TabItem>
                     <TabItem Header="Transfer">
+                        <AdornerDecorator>
                         <Border BorderThickness="2">
                             <Grid Margin="2">
                                 <Grid.ColumnDefinitions>
@@ -694,49 +749,63 @@
                                     <RowDefinition Height="75*"></RowDefinition>
                                     <RowDefinition Height="25*"></RowDefinition>
                                 </Grid.RowDefinitions>
-                                <StackPanel Grid.Row="0" Grid.ColumnSpan="3" Margin="2">
-                                    <TextBlock>Date:</TextBlock>
-                                    <!--<DatePicker SelectedDateFormat="Long" FirstDayOfWeek="Monday" SelectedDate="{Binding Path=TransferTransaction.DateOfTransfer}"></DatePicker>-->
-                                    <wpfx:DateTimePicker Text="{Binding Path=TransferTransaction.DateOfTransfer}" Background="#C4C9C9" Format="LongDate" AutoCloseCalendar="True" CultureInfo="en"></wpfx:DateTimePicker>
-                                    <TextBlock>Receiver:</TextBlock>
-                                    <ComboBox ItemsSource="{Binding Path=PaymentMethodsForTransfer}" SelectedItem="{Binding Path=SelectedPaymentMethodForTransfer}">
+                                    <StackPanel Grid.Row="0" Grid.ColumnSpan="3" Margin="2">
+                                        <TextBlock>Date:</TextBlock>
+                                        <!--<DatePicker SelectedDateFormat="Long" FirstDayOfWeek="Monday" SelectedDate="{Binding Path=TransferTransaction.DateOfTransfer}"></DatePicker>-->
+                                        <wpfx:DateTimePicker Text="{Binding Path=TransferTransaction.DateOfTransfer}" Background="#C4C9C9" Format="LongDate" AutoCloseCalendar="True" CultureInfo="en"></wpfx:DateTimePicker>
+                                        <TextBlock>Receiver:</TextBlock>
+                                        <!--<ComboBox ItemsSource="{Binding Path=PaymentMethodsForTransfer}" SelectedItem="{Binding Path=SelectedPaymentMethodForTransfer}">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Path=Title}"></TextBlock>
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                    <TextBlock>Amount:</TextBlock>
-                                    <!--<TextBox Text="{Binding Path=TransferTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
-                                    <wpfx:DecimalUpDown Value="{Binding Path=TransferAmount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0" Background="#C4C9C9"/>
-                                    <TextBlock>Description / comment:</TextBlock>
-                                    <TextBox Text="{Binding Path=TransferTransaction.Description}"></TextBox>
-                                    <TextBlock>
-                                        <TextBlock>Planned balance of sender: </TextBlock>
-                                        <!--<TextBlock Text="{Binding Path=PlannedBalanceSenderTfr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='C', ConverterCulture='uk-UA'}"></TextBlock>-->
-                                        <TextBlock Foreground="NavajoWhite">
-                                            <TextBlock.Text>
-                                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
-                                                    <Binding Path="PlannedBalanceSenderTfr"></Binding>
-                                                    <Binding Path="SelectedPaymentMethod.Currency.CodeNumber"></Binding>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
+                                    </ComboBox>-->
+                                        <ComboBox ItemsSource="{Binding Path=PaymentMethodsForTransfer}">
+                                            <ComboBox.SelectedItem>
+                                                <Binding Path="SelectedPaymentMethodForTransfer">
+                                                    <Binding.ValidationRules>
+                                                        <validationrules:SelectionComboBoxValidationRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </ComboBox.SelectedItem>
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <TextBlock>Amount:</TextBlock>
+                                        <!--<TextBox Text="{Binding Path=TransferTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
+                                        <wpfx:DecimalUpDown Value="{Binding Path=TransferAmount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0.01" Background="#C4C9C9"/>
+                                        <TextBlock>Description / comment:</TextBlock>
+                                        <TextBox Text="{Binding Path=TransferTransaction.Description}"></TextBox>
+                                        <TextBlock>
+                                            <TextBlock>Planned balance of sender: </TextBlock>
+                                            <!--<TextBlock Text="{Binding Path=PlannedBalanceSenderTfr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='C', ConverterCulture='uk-UA'}"></TextBlock>-->
+                                            <TextBlock Foreground="NavajoWhite">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                                        <Binding Path="PlannedBalanceSenderTfr"></Binding>
+                                                        <Binding Path="SelectedPaymentMethod.Currency.CodeNumber"></Binding>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
                                         </TextBlock>
-                                    </TextBlock>
-                                    <TextBlock>
-                                        <TextBlock>Planned balance of receiver: </TextBlock>
-                                        <!--<TextBlock Text="{Binding Path=PlannedBalanceReceiverTfr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='C', ConverterCulture='uk-UA'}"></TextBlock>-->
-                                        <TextBlock Foreground="NavajoWhite">
-                                            <TextBlock.Text>
-                                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
-                                                    <Binding Path="PlannedBalanceReceiverTfr"></Binding>
-                                                    <Binding Path="SelectedPaymentMethodForTransfer.Currency.CodeNumber"></Binding>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
+                                        <TextBlock>
+                                            <TextBlock>Planned balance of receiver: </TextBlock>
+                                            <!--<TextBlock Text="{Binding Path=PlannedBalanceReceiverTfr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='C', ConverterCulture='uk-UA'}"></TextBlock>-->
+                                            <TextBlock Foreground="NavajoWhite">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                                        <Binding Path="PlannedBalanceReceiverTfr"></Binding>
+                                                        <Binding Path="SelectedPaymentMethodForTransfer.Currency.CodeNumber"></Binding>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
                                         </TextBlock>
-                                    </TextBlock>
-                                </StackPanel>
-                                <StackPanel Grid.Row="2">
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2">
                                     <Button Command="{Binding Path=SaveTransactionTransf}" Height="30">Save</Button>
                                     <!--<Button Command="ApplicationCommands.Save" Height="30">Save</Button>-->
                                 </StackPanel>
@@ -745,8 +814,10 @@
                                 </StackPanel>
                             </Grid>
                         </Border>
+                        </AdornerDecorator>
                     </TabItem>
                     <TabItem Header="Exchange">
+                        <AdornerDecorator>
                         <Border BorderThickness="2">
                             <Grid Margin="2">
                                 <Grid.ColumnDefinitions>
@@ -763,18 +834,32 @@
                                     <!--<DatePicker SelectedDateFormat="Long" FirstDayOfWeek="Monday" SelectedDate="{Binding Path=TransferTransaction.DateOfTransfer}"></DatePicker>-->
                                     <wpfx:DateTimePicker Text="{Binding Path=ExchangeTransaction.DateOfExchange}" Background="#C4C9C9" Format="LongDate" AutoCloseCalendar="True" CultureInfo="en"></wpfx:DateTimePicker>
                                     <TextBlock>Receiver:</TextBlock>
-                                    <ComboBox ItemsSource="{Binding Path=PaymentMethodsForExchange}" SelectedItem="{Binding Path=SelectedPaymentMethodForExchange}">
+                                    <!--<ComboBox ItemsSource="{Binding Path=PaymentMethodsForExchange}" SelectedItem="{Binding Path=SelectedPaymentMethodForExchange}">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Path=Title}"></TextBlock>
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                    <TextBlock>Amount:</TextBlock>
+                                    </ComboBox>-->
+                                        <ComboBox ItemsSource="{Binding Path=PaymentMethodsForExchange}">
+                                            <ComboBox.SelectedItem>
+                                                <Binding Path="SelectedPaymentMethodForExchange">
+                                                    <Binding.ValidationRules>
+                                                        <validationrules:SelectionComboBoxValidationRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </ComboBox.SelectedItem>
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <TextBlock>Amount:</TextBlock>
                                     <!--<TextBox Text="{Binding Path=TransferTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
-                                    <wpfx:DecimalUpDown Value="{Binding Path=ExchangeAmount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0" Background="#C4C9C9"/>
+                                    <wpfx:DecimalUpDown Value="{Binding Path=ExchangeAmount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0.01" Background="#C4C9C9"/>
                                     <TextBlock>Exchange rate:</TextBlock>
-                                    <wpfx:DecimalUpDown Value="{Binding Path=ExchangeRate, UpdateSourceTrigger=PropertyChanged}" FormatString="F" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0" Background="#C4C9C9"/>
+                                    <wpfx:DecimalUpDown Value="{Binding Path=ExchangeRate, UpdateSourceTrigger=PropertyChanged}" FormatString="F" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0.01" Background="#C4C9C9"/>
                                     <TextBlock>Description / comment:</TextBlock>
                                     <TextBox Text="{Binding Path=ExchangeTransaction.Description}"></TextBox>
                                     <TextBlock>
@@ -817,6 +902,7 @@
                                 </StackPanel>
                             </Grid>
                         </Border>
+                        </AdornerDecorator>
                     </TabItem>
                 </TabControl>
 
