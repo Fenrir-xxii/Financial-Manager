@@ -35,6 +35,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _allExpenses = new List<Expense>();
         _allIncomes = new List<Income>();
         _allCurrencies = new List<Currency>();
+        _allRecurringCharges = new List<RecurringCharge>();
         _categoryTypes = new List<string> { "Expense", "Income" };
         _selectedOperationType = String.Empty;
         _titleOfNewCategory = String.Empty;
@@ -66,7 +67,9 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             _allIncomes = await LoadIncomesAsync();
             _allIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
             _allCurrencies = await LoadCurrenciesAsync();
-            _allCurrencies.ForEach(c => Currencies.Add(new CurrencyViewModel(c)));  
+            _allCurrencies.ForEach(c => Currencies.Add(new CurrencyViewModel(c)));
+            _allRecurringCharges = await LoadRecurringChargesAsync();
+            _allRecurringCharges.ForEach(rc => RecurringCharges.Add(new RecurringChargeViewModel(rc)));
             //_allCategoriesExp.ForEach(c => CategoriesExpItems.Add(new TreeViewItem { Header = c.Title }));
 
             OnPropertyChanged(nameof(PaymentMethods));
@@ -78,6 +81,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Expenses));
             OnPropertyChanged(nameof(Incomes));
             OnPropertyChanged(nameof(Currencies));
+            OnPropertyChanged(nameof(RecurringCharges));
             //OnPropertyChanged(nameof(TotalInCash));
             OnPropertyChanged(nameof(TotalInCashAllCurrencies));
             //OnPropertyChanged(nameof(TotalInCashless));
@@ -124,8 +128,11 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         return await _db.Currencies.ToListAsync();
     }
+    public async Task<List<RecurringCharge>> LoadRecurringChargesAsync()
+    {
+        return await _db.RecurringCharges.Include(x => x.Periodicity).ToListAsync();
+    }
     private List<PaymentMethod> _allPaymentMethods;
-
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
     {
         get 
@@ -348,6 +355,34 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedMainCategoryExpForSub));
         }
     }
+    private List<RecurringCharge> _allRecurringCharges;
+    public ObservableCollection<RecurringChargeViewModel> RecurringCharges
+    {
+        get
+        {
+            var collection = new ObservableCollection<RecurringChargeViewModel>();
+            foreach (var rc in _allRecurringCharges)
+            {
+                collection.Add(new RecurringChargeViewModel(rc));
+            }
+            return collection;
+        }
+        set
+        {
+            RecurringCharges = value;
+            OnPropertyChanged(nameof(RecurringCharges));
+        }
+    }
+    private RecurringChargeViewModel _selectedRecurringCharge;
+    public RecurringChargeViewModel SelectedRecurringCharge
+    {
+        get => _selectedRecurringCharge;
+        set
+        {
+            _selectedRecurringCharge = value;
+            OnPropertyChanged(nameof(SelectedRecurringCharge));
+        }
+    }
     public bool IsCategoryTypeExp
     {
         get
@@ -560,6 +595,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
+    public ICommand AddNewPaymentMethod => new RelayCommand(x =>
+    {
+        var window = new AddPaymentMethod();
+        window.ShowDialog();
+        UpdatePaymentMethods();
+        
+    }, x => true);
     public ICommand AddTransaction => new RelayCommand(x =>
     {
         var window = new AddTransaction();
@@ -653,6 +695,38 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             _allIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
         }).Wait();
     }
+    public void UpdateRecuringCharges()
+    {
+        _allRecurringCharges.Clear();
+        RecurringCharges.Clear();
+        Task.Run(async () =>
+        {
+            _allRecurringCharges = await LoadRecurringChargesAsync();
+            _allRecurringCharges.ForEach(rc => RecurringCharges.Add(new RecurringChargeViewModel(rc)));
+        }).Wait();
+    }
+    public ICommand ShowFullInfoOfRecurringCharge => new RelayCommand(x =>
+    {
+        var window = new RecuringChargeFullInfo(_selectedRecurringCharge.Model);
+        window.ShowDialog();
+        // update recurring charges
+    }, x => _selectedRecurringCharge !=null);
+    public ICommand DeleteRecurringCharge => new RelayCommand(x =>
+    {
+        try
+        {
+            _db.Remove(_selectedRecurringCharge.Model);
+            _db.SaveChanges();
+            UpdateRecuringCharges();
+            MessageBox.Show("Delete operation was successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            OnPropertyChanged(nameof(RecurringCharges));
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+    }, x => _selectedRecurringCharge != null);
     private PaymentMethodViewModel? _filterSelectedPaymentMethod;
     public PaymentMethodViewModel? FilterSelectedPaymentMethod
     {

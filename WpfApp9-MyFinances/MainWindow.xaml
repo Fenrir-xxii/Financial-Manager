@@ -118,6 +118,7 @@
 
         <Style x:Key="FavsScrollViewer" TargetType="{x:Type ScrollViewer}">
             <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="CanContentScroll" Value="True"></Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ScrollViewer}">
@@ -526,14 +527,14 @@
                             <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="30*"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Button Margin="200,5,200,5" Grid.Column="0" Grid.Row="0" Content="Add">
+                    <Button Margin="200,5,200,5" Grid.Column="0" Grid.Row="0" Content="Add" Command="{Binding Path=AddNewPaymentMethod}">
                         <Button.Resources>
                             <Style TargetType="{x:Type Border}">
                                 <Setter Property="CornerRadius" Value="7"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <ScrollViewer Grid.Column="2" Grid.Row="1" Margin="2">
+                    <ScrollViewer Grid.Column="2" Grid.Row="1" Margin="2" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
                         <StackPanel>
                             <!--<Button Margin="2,0,2,0">Add</Button>-->
                             <!--<TextBlock>Total cashless:</TextBlock>
@@ -727,6 +728,78 @@
                 </Grid>
             </Border>
         </TabItem>
+        <TabItem Header="Recurring Charges">
+            <Border Padding="7" BorderThickness="4" Background="DarkSlateGray">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="10*"></RowDefinition>
+                        <RowDefinition Height="80*"></RowDefinition>
+                        <RowDefinition Height="10*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="R E C U R R I N G   C H A R G E S " Foreground="NavajoWhite" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    <DataGrid
+                        Grid.Row="1"
+                        AutoGenerateColumns="False" 
+                        IsReadOnly="True" 
+                        ItemsSource="{Binding Path=RecurringCharges}"
+                        SelectedItem="{Binding Path=SelectedRecurringCharge}"
+                        ColumnWidth="*"
+                        Background="#C4C9C9"
+                        AlternatingRowBackground="#D0D4D4">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="FontFamily" Value="Times New Roman"/>
+                                <Setter Property="Background" Value="#1E3232"></Setter>
+                                <Setter Property="Foreground" Value="White"></Setter>
+                                <Setter Property="Height" Value="18"></Setter>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Full info" Command="{Binding Path=ShowFullInfoOfRecurringCharge}"></MenuItem>
+                                <MenuItem Header="Delete" Command="{Binding Path=DeleteRecurringCharge}"></MenuItem>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <!--<DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" Width="3*"></DataGridTextColumn>-->
+                            <DataGridTextColumn Header="Name" Binding="{Binding Path=Title}" Width="15*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Amount" Width="10*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                        <Binding Path="Amount"></Binding>
+                                        <Binding Path="Currency.CodeNumber"></Binding>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency.CodeLetter}" Width="9*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Category" Binding="{Binding Path=Category.Title}" Width="10*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="SubCategory" Binding="{Binding Path=Subcategory.Title}" Width="10*"></DataGridTextColumn>
+                            <!--<DataGridTextColumn Header="Provider" Binding="{Binding Path=Provider.Title}" Width="10*"></DataGridTextColumn>-->
+                            <!--<DataGridTextColumn Header="Payment method" Binding="{Binding Path=PaymentMethod.Title}" Width="10*"></DataGridTextColumn>-->
+                            <DataGridTextColumn Header="Auto payment" Binding="{Binding Path=AutoPayment}" Width="10*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Periodicity" Binding="{Binding Path=PeriodicityText}" Width="10*"></DataGridTextColumn>
+                            <!--<DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="10*"></DataGridTextColumn>-->
+                            <DataGridTextColumn Header="Next Payment" Binding="{Binding Path=DateOfNextPayment, StringFormat='dd.MM.yyyy'}" Width="10*"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button Margin="200,5,200,5" Grid.Column="0" Grid.Row="2" Content="Add">
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="7"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+            </Border>
+        </TabItem>
         <TabItem Header="Statistics">
             <TabControl>
                 <TabControl.Resources>
@@ -916,10 +989,24 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <ScrollViewer CanContentScroll="True" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
-                    <ListView ItemsSource="{Binding Path=TestScroll}">
+                    <ListView ItemsSource="{Binding Path=TestScroll}" >
 
                     </ListView>
                 </ScrollViewer>
+                <ListView Grid.Row="1" Grid.Column="0" Background="#C4C9C9" ItemsSource="{Binding Path=RecurringCharges}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <WrapPanel>
+                                <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                <TextBlock Text=" "></TextBlock>
+                                <TextBlock Text="{Binding Path=Amount}"></TextBlock>
+                                <TextBlock Text=" "></TextBlock>
+                                <TextBlock Text="{Binding Path=Category.Title}"></TextBlock>
+                            </WrapPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                </ListView>
             </Grid>
 
         </TabItem>

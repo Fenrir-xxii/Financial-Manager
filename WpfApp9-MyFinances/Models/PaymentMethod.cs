@@ -29,6 +29,8 @@ public partial class PaymentMethod
 
     public virtual ICollection<Income> Incomes { get; } = new List<Income>();
 
+    public virtual ICollection<RecurringCharge> RecurringCharges { get; } = new List<RecurringCharge>();
+
     public virtual ICollection<Transfer> TransferFroms { get; } = new List<Transfer>();
 
     public virtual ICollection<Transfer> TransferTos { get; } = new List<Transfer>();

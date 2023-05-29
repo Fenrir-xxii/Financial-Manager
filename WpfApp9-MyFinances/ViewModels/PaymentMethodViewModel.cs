@@ -14,12 +14,8 @@ using WpfApp9_MyFinances.Windows;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
-public class PaymentMethodViewModel : NotifyPropertyChangedBase
+public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
 {
-    public PaymentMethodViewModel() 
-    {
-        _allTransactions = new List<FinancialTransaction>();
-    }
     public PaymentMethodViewModel(PaymentMethod payment)
     {
         Model = payment;
@@ -63,6 +59,7 @@ public class PaymentMethodViewModel : NotifyPropertyChangedBase
         {
             Model.Title = value;
             OnPropertyChanged(nameof(Title));
+            OnPropertyChanged(nameof(IsAddButtonEnabled));
         }
     }
     public string? Description
@@ -81,6 +78,7 @@ public class PaymentMethodViewModel : NotifyPropertyChangedBase
         {
             Model.CurrentBalance = value;
             OnPropertyChanged(nameof(CurrentBalance));
+            OnPropertyChanged(nameof(IsAddButtonEnabled));
         }
     }
     public bool IsCash

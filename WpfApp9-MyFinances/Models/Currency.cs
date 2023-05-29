@@ -18,4 +18,6 @@ public partial class Currency
     public virtual ICollection<Exchange> ExchangeCurrencyIdToNavigations { get; } = new List<Exchange>();
 
     public virtual ICollection<PaymentMethod> PaymentMethods { get; } = new List<PaymentMethod>();
+
+    public virtual ICollection<RecurringCharge> RecurringCharges { get; } = new List<RecurringCharge>();
 }

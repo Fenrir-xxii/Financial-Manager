@@ -11,5 +11,7 @@ public partial class CategoriesExp
 
     public virtual ICollection<Expense> Expenses { get; } = new List<Expense>();
 
+    public virtual ICollection<RecurringCharge> RecurringCharges { get; } = new List<RecurringCharge>();
+
     public virtual ICollection<SubcategoriesExp> SubcategoriesExps { get; } = new List<SubcategoriesExp>();
 }

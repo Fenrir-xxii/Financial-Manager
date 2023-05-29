@@ -65,7 +65,7 @@ public class ExpenseViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(DateOfExpense));
         }
     }
-    public int? ProviderId
+    public int ProviderId
     {
         get => Model.ProviderId;
         set
@@ -114,7 +114,7 @@ public class ExpenseViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PaymentMethodId));
         }
     }
-    public ProviderViewModel? Provider
+    public ProviderViewModel Provider
     {
         get => new ProviderViewModel { Model = Model.Provider };
         set
@@ -130,8 +130,8 @@ public class ExpenseViewModel : NotifyPropertyChangedBase
         get => new SubcategoryExpViewModel { Model = Model.SubcategoriesExp };
         set
         {
-            Model.SubcategoriesExp = value == null? null : value.Model;
-            Model.SubCategoryTitle = value == null? null : value.Model.Title;
+            Model.SubcategoriesExp = (value == null)? null : value.Model;
+            Model.SubCategoryTitle = (value == null)? null : value.Model.Title;
             OnPropertyChanged(nameof(Subcategory));
             OnPropertyChanged(nameof(SubCategoryTitle));
         }

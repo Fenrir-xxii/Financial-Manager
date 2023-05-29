@@ -14,4 +14,6 @@ public partial class Provider
     public virtual ICollection<Expense> Expenses { get; } = new List<Expense>();
 
     public virtual ICollection<Income> Incomes { get; } = new List<Income>();
+
+    public virtual ICollection<RecurringCharge> RecurringCharges { get; } = new List<RecurringCharge>();
 }
