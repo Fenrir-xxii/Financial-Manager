@@ -51,6 +51,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _endDateExp = DateTime.Now;
         _beginDateInc = DateTime.Now.AddDays(-7);
         _endDateInc = DateTime.Now;
+        _searchBox = String.Empty;
 
     Task.Run(async () =>
         {
@@ -92,7 +93,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(LabelsExp));
             OnPropertyChanged(nameof(ChartCategoriesExp));
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
-            
+            OnPropertyChanged(nameof(FilteredExpenses));
         });
         (App.Current.MainWindow as MainWindow).CurrencyComboBox.SelectedIndex = 0;
 
@@ -666,6 +667,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         OnPropertyChanged(nameof(LabelsExp));
         OnPropertyChanged(nameof(ChartCategoriesExp));
         OnPropertyChanged(nameof(ChartCategoriesExpPie));
+        OnPropertyChanged(nameof(FilteredExpenses));
     }
     public void UpdateExpenses()
     {
@@ -738,6 +740,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(CategoriesExpChartValue));
             OnPropertyChanged(nameof(ChartCategoriesExp));
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
+            OnPropertyChanged(nameof(FilteredExpenses));
+            OnPropertyChanged(nameof(FilterSelectedCategoryExp));
         }
     }
     public ICommand RemovePaymentMethodFilterCommand => new RelayCommand(x =>
@@ -755,6 +759,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(CategoriesExpChartValue));
             OnPropertyChanged(nameof(ChartCategoriesExp));
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
+            OnPropertyChanged(nameof(FilteredExpenses));
+            OnPropertyChanged(nameof(FilterSelectedCategoryExp));
         }
     }
     public ICommand RemoveProviderFilterCommand => new RelayCommand(x =>
@@ -783,6 +789,70 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(CategoriesExpChartValue));
             OnPropertyChanged(nameof(ChartCategoriesExp));
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
+            OnPropertyChanged(nameof(FilteredExpenses));
+            OnPropertyChanged(nameof(FilterSelectedCategoryExp));
+        }
+    }
+    private CategoryExpViewModel _filterSelectedCategoryExp;
+    public CategoryExpViewModel FilterSelectedCategoryExp
+    {
+        get => _filterSelectedCategoryExp;
+        set
+        {
+            _filterSelectedCategoryExp = value;
+            OnPropertyChanged(nameof(FilterSelectedCategoryExp));
+            OnPropertyChanged(nameof(FilterSelectedProvider));
+            OnPropertyChanged(nameof(CategoriesExpChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesExp));
+            OnPropertyChanged(nameof(ChartCategoriesExpPie));
+            OnPropertyChanged(nameof(FilteredExpenses));
+        }
+    }
+    public ICommand RemoveCategoryFilterCommand => new RelayCommand(x =>
+    {
+        (App.Current.MainWindow as MainWindow).CategoryComboBox.SelectedItem = null;
+    }, x => _filterSelectedCategoryExp != null);
+    private string _searchBox;
+    public string SearchBox
+    {
+        get => _searchBox;
+        set
+        {
+            if (_searchBox != value)
+            {
+                _searchBox = value;
+            }
+            OnPropertyChanged(nameof(SearchBox));
+            OnPropertyChanged(nameof(FilteredExpenses));
+        }
+    }
+    public ObservableCollection<ExpenseViewModel> FilteredExpenses
+    {
+        get
+        {
+            var collection = new ObservableCollection<ExpenseViewModel>();
+
+            var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).Where(e => e.Title.ToLower().Contains(_searchBox.ToLower()));
+            if (_filterSelectedCurrency != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Currency.Id == _filterSelectedCurrency.Id);
+            }
+            if (_filterSelectedPaymentMethod != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id);
+            }
+            if (_filterSelectedProvider != null)
+            {
+                filter = filter.Where(x => x.Provider.Id == _filterSelectedProvider.Id);
+            }
+            if (_filterSelectedCategoryExp != null)
+            {
+                filter = filter.Where(x => x.Category.Id == _filterSelectedCategoryExp.Id);
+            }
+            var list = filter.OrderByDescending(x => x.DateOfExpense).ToList();
+            list.ForEach(collection.Add);
+
+            return collection;
         }
     }
     public ChartValues<int> CategoriesExpChartValue
@@ -806,6 +876,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             if(_filterSelectedProvider != null)
             {
                 filter = filter.Where(x => x.Provider.Id == _filterSelectedProvider.Id);
+            }
+            if (_filterSelectedCategoryExp != null)
+            {
+                filter = filter.Where(x => x.Category.Id == _filterSelectedCategoryExp.Id);
             }
             var groups = filter.GroupBy(x => x.CategoryId);
             // REDO
@@ -851,6 +925,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             {
                 filter = filter.Where(x => x.Provider.Id == _filterSelectedProvider.Id);
             }
+            if (_filterSelectedCategoryExp != null)
+            {
+                filter = filter.Where(x => x.Category.Id == _filterSelectedCategoryExp.Id);
+            }
             var collection = new ObservableCollection<string>(filter.GroupBy(x => x.Category.Title).Select(g => g.Key));
             
             return collection;
@@ -889,6 +967,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             if (_filterSelectedProvider != null)
             {
                 filter = filter.Where(x => x.Provider.Id == _filterSelectedProvider.Id);
+            }
+            if (_filterSelectedCategoryExp != null)
+            {
+                filter = filter.Where(x => x.Category.Id == _filterSelectedCategoryExp.Id);
             }
             var groups = filter.GroupBy(x => x.CategoryId);
 
@@ -1000,6 +1082,9 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(CategoriesExpChartValue));
             OnPropertyChanged(nameof(ChartCategoriesExp));
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
+            OnPropertyChanged(nameof(FilterSelectedCategoryExp));
+            OnPropertyChanged(nameof(FilterSelectedProvider));
+            OnPropertyChanged(nameof(FilteredExpenses));
         }
     }
     public DateTime EndDateExp
@@ -1012,6 +1097,9 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(CategoriesExpChartValue));
             OnPropertyChanged(nameof(ChartCategoriesExp));
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
+            OnPropertyChanged(nameof(FilterSelectedCategoryExp));
+            OnPropertyChanged(nameof(FilterSelectedProvider));
+            OnPropertyChanged(nameof(FilteredExpenses));
         }
     }
     private int _datePickerColumnWidthExp;

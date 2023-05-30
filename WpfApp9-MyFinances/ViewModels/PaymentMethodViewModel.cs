@@ -116,7 +116,7 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         {
             var collection = new ObservableCollection<ExpenseViewModel>();
             
-            var exp = _db.Expenses.AsNoTracking().Where(x => x.PaymentMethodId== Id).Include(y => y.PaymentMethod).ToList();
+            var exp = _db.Expenses.AsNoTracking().Where(x => x.PaymentMethodId== Id).Include(y => y.PaymentMethod).Include(s => s.PaymentMethod.Currency).ToList();
             exp.ForEach(e => collection.Add(new ExpenseViewModel { Model = e }));
             //Expenses.ToList().ForEach(e => collection.Add(new ExpenseViewModel { Model = e.Model }));
             return collection;
@@ -129,7 +129,7 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         {
             var collection = new ObservableCollection<IncomeViewModel>();
 
-            var exp = _db.Incomes.AsNoTracking().Where(x => x.PaymentMethodId == Id).Include(y => y.PaymentMethod).ToList();
+            var exp = _db.Incomes.AsNoTracking().Where(x => x.PaymentMethodId == Id).Include(y => y.PaymentMethod).Include(s => s.PaymentMethod.Currency).ToList();
             exp.ForEach(e => collection.Add(new IncomeViewModel { Model = e }));
             return collection;
         }
@@ -140,7 +140,7 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         {
             var collection = new ObservableCollection<TransferViewModel>();
 
-            var exp = _db.Transfers.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).ToList();
+            var exp = _db.Transfers.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).Include(s => s.From.Currency).ToList();
             exp.ForEach(e => collection.Add(new TransferViewModel { Model = e }));
             return collection;
         }
@@ -151,7 +151,7 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         {
             var collection = new ObservableCollection<TransferViewModel>();
 
-            var exp = _db.Transfers.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).ToList();
+            var exp = _db.Transfers.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).Include(s => s.To.Currency).ToList();
             exp.ForEach(e => collection.Add(new TransferViewModel { Model = e }));
             return collection;
         }
@@ -162,7 +162,7 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         {
             var collection = new ObservableCollection<ExchangeViewModel>();
 
-            var exp = _db.Exchanges.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).ToList();
+            var exp = _db.Exchanges.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).Include(s => s.From.Currency).ToList();
             exp.ForEach(e => collection.Add(new ExchangeViewModel { Model = e }));
             return collection;
         }
@@ -173,7 +173,7 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         {
             var collection = new ObservableCollection<ExchangeViewModel>();
 
-            var exp = _db.Exchanges.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).ToList();
+            var exp = _db.Exchanges.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).Include(s => s.To.Currency).ToList();
             exp.ForEach(e => collection.Add(new ExchangeViewModel { Model = e }));
             return collection;
         }
@@ -215,6 +215,7 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
                     var transaction = _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
                     var subWindow = new EditTransaction(transaction, _db); // pass model of transaction (expense, income or transfer)
                     subWindow.ShowDialog();
+                    UpdateExpenses();
                     //update
                     break;
                 }
@@ -253,6 +254,10 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         //window.ShowDialog();
 
     }, x => SelectedTransaction != null);
+    public void UpdateExpenses()
+    {
+        //TODO
+    }
     public ICommand DeleteTransaction => new RelayCommand(x =>
     {
         switch (SelectedTransaction.TransactionType)

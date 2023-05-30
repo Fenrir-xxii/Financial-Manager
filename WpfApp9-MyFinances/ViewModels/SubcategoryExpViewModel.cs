@@ -19,7 +19,7 @@ namespace WpfApp9_MyFinances.ViewModels
         public int Id { get => Model.Id; }
         public string Title
         {
-            get => Model.Title;
+            get => (Model==null)? null : Model.Title;
             set
             {
                 Model.Title = value;

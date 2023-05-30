@@ -854,6 +854,17 @@
                                 </ComboBox>
                                 <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemoveProviderFilterCommand}" Height="20">x</Button>
                             </StackPanel>
+                            <TextBlock Text="Category:"></TextBlock>
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Path=CategoriesExp}" SelectedItem="{Binding Path=FilterSelectedCategoryExp}" Name="CategoryComboBox">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemoveCategoryFilterCommand}" Height="20">x</Button>
+                            </StackPanel>
                         </StackPanel>
 
                         <TabControl Grid.Column="1">
@@ -904,6 +915,59 @@
                                         </Style>
                                     </lvc:PieChart.Resources>
                                 </lvc:PieChart>
+                            </TabItem>
+                            <TabItem Header="List">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="10*"></RowDefinition>
+                                        <RowDefinition Height="90*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Search by title: "></TextBlock>
+                                        <TextBox MinWidth="550" Text="{Binding Path=SearchBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                    </TextBlock>
+                                    <DataGrid Grid.Row="1"
+                                        AutoGenerateColumns="False" 
+                                        IsReadOnly="True" 
+                                        ItemsSource="{Binding Path=FilteredExpenses}"
+                                        SelectedItem=""
+                                        Background="#C4C9C9"
+                                        AlternatingRowBackground="#D0D4D4"
+                                        ColumnWidth="*">
+                                    <DataGrid.ColumnHeaderStyle>
+                                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                                            <!--<Setter Property="FontWeight" Value="Bold"/>-->
+                                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Setter Property="FontFamily" Value="Times New Roman"/>
+                                            <Setter Property="Background" Value="#1E3232"></Setter>
+                                            <Setter Property="Foreground" Value="White"></Setter>
+                                            <Setter Property="Height" Value="16"></Setter>
+                                        </Style>
+                                    </DataGrid.ColumnHeaderStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Date" Binding="{Binding Path=DateOfExpense, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}" Width="20*"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Category" Binding="{Binding Path=Category.Title}" Width="15*"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Subcategory" Binding="{Binding Path=Subcategory.Title, TargetNullValue='-'}" Width="15*"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Payment Method" Binding="{Binding Path=PaymentMethod.Title}" Width="20*"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Amount" Width="15*">
+                                                <DataGridTextColumn.Binding>
+                                                    <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                                        <Binding Path="Amount"></Binding>
+                                                        <Binding Path="PaymentMethod.Currency.CodeNumber"></Binding>
+                                                    </MultiBinding>
+                                                </DataGridTextColumn.Binding>
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                    
+                                </DataGrid>
+                                </Grid>
                             </TabItem>
                         </TabControl>
                     </Grid>

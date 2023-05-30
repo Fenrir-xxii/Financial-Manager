@@ -25,6 +25,7 @@ public class FinancialTransaction
         BalanceAfter = BalanceBefore + Amount;
         TransactionId = expense.Id;
         TransactionType = TransactionType.EXPENSE;
+        CurrencyCode = expense.PaymentMethod.Currency.CodeNumber;
     }
     public FinancialTransaction(Income income)
     {
@@ -35,6 +36,7 @@ public class FinancialTransaction
         BalanceAfter = BalanceBefore + Amount;
         TransactionId = income.Id;
         TransactionType = TransactionType.INCOME;
+        CurrencyCode = income.PaymentMethod.Currency.CodeNumber;
     }
     public FinancialTransaction(Transfer transfer, bool isIncome)
     {
@@ -47,16 +49,18 @@ public class FinancialTransaction
             BalanceAfter = BalanceBefore + Amount;
             TransactionId = transfer.Id;
             TransactionType = TransactionType.TRANSFER;
+            CurrencyCode = transfer.To.Currency.CodeNumber;
         }
         else
         {
             Amount = -transfer.Amount;
             DateOfTransaction = transfer.DateOfTransfer;
-            Title = "Outcoming Transfer";
+            Title = "Outcoming transfer";
             BalanceBefore = transfer.From.GetBalanceForDate(DateOfTransaction);
             BalanceAfter = BalanceBefore + Amount;
             TransactionId = transfer.Id;
             TransactionType = TransactionType.TRANSFER;
+            CurrencyCode = transfer.From.Currency.CodeNumber;
         }
         //Amount = -transferFrom.Amount;
         //DateOfTransaction = transferFrom.DateOfTransfer;
@@ -75,6 +79,7 @@ public class FinancialTransaction
             BalanceAfter = BalanceBefore + Amount;
             TransactionId = exchange.Id;
             TransactionType = TransactionType.EXCHANGE;
+            CurrencyCode = exchange.To.Currency.CodeNumber;
         }
         else
         {
@@ -85,6 +90,7 @@ public class FinancialTransaction
             BalanceAfter = BalanceBefore + Amount;
             TransactionId = exchange.Id;
             TransactionType = TransactionType.EXCHANGE;
+            CurrencyCode = exchange.From.Currency.CodeNumber;
         }
     }
     [NotMapped]
@@ -97,6 +103,8 @@ public class FinancialTransaction
     public DateTime DateOfTransaction { get; set; }
     [NotMapped]
     public string Title { get; set; }
+    [NotMapped]
+    public int CurrencyCode { get; set; }   
     [NotMapped]
     public int TransactionId { get; set; }
     [NotMapped]

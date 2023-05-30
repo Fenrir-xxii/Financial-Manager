@@ -9,7 +9,7 @@
         xmlns:wpfx="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:viewmodels="clr-namespace:WpfApp9_MyFinances.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:AddTransactionViewModel}"
         mc:Ignorable="d"
         Title="AddTransaction" Height="550" Width="500"
-    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" xmlns:local1="clr-namespace:WpfApp9_MyFinances.Converters">
     <Window.Resources>
         <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
             <Setter Property="Visibility" Value="Visible" />
@@ -564,10 +564,9 @@
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
-                                    <TextBlock>Amount:</TextBlock>
-                                    <!--<TextBox Text="{Binding Path=ExpenseTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
-                                    <wpfx:DecimalUpDown Value="{Binding Path=ExpenseAmount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0.01" DefaultValue="0.01" Background="#C4C9C9"/>
-                                    <TextBlock>Category:</TextBlock>
+                                        <TextBlock>Amount:</TextBlock>
+                                        <wpfx:DecimalUpDown Value="{Binding Path=ExpenseAmount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FormatString="F2" Increment="0.01" TextAlignment="Left" Minimum="0.01" DefaultValue="0.01" Background="#C4C9C9"/>
+                                        <TextBlock>Category:</TextBlock>
                                     <!--<ComboBox ItemsSource="{Binding Path=CategoriesExp}" SelectedItem="{Binding Path=SelectedCategoryExp}">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
@@ -687,7 +686,7 @@
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
                                     <TextBlock>Amount:</TextBlock>
-                                    <wpfx:DecimalUpDown Value="{Binding Path=IncomeAmount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0.01" Background="#C4C9C9"/>
+                                        <wpfx:DecimalUpDown Value="{Binding Path=IncomeAmount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FormatString="F2" Increment="0.01" TextAlignment="Left" Minimum="0.01" Background="#C4C9C9"/>
                                     <!--<TextBox Text="{Binding Path=IncomeTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
                                     <TextBlock>Category:</TextBlock>
                                     <!--<ComboBox ItemsSource="{Binding Path=CategoriesInc}" SelectedItem="{Binding Path=SelectedCategoryInc}">
@@ -777,7 +776,7 @@
                                         </ComboBox>
                                         <TextBlock>Amount:</TextBlock>
                                         <!--<TextBox Text="{Binding Path=TransferTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
-                                        <wpfx:DecimalUpDown Value="{Binding Path=TransferAmount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0.01" Background="#C4C9C9"/>
+                                        <wpfx:DecimalUpDown Value="{Binding Path=TransferAmount, UpdateSourceTrigger=PropertyChanged}" FormatString="F2" Increment="0.01" TextAlignment="Left" Minimum="0.01" Background="#C4C9C9"/>
                                         <TextBlock>Description / comment:</TextBlock>
                                         <TextBox Text="{Binding Path=TransferTransaction.Description}"></TextBox>
                                         <TextBlock>
@@ -857,10 +856,15 @@
                                         </ComboBox>
                                         <TextBlock>Amount:</TextBlock>
                                     <!--<TextBox Text="{Binding Path=TransferTransaction.Amount, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
-                                    <wpfx:DecimalUpDown Value="{Binding Path=ExchangeAmount, UpdateSourceTrigger=PropertyChanged}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0.01" Background="#C4C9C9"/>
+                                        <wpfx:DecimalUpDown Value="{Binding Path=ExchangeAmount, UpdateSourceTrigger=PropertyChanged}" FormatString="F2" Increment="0.01" TextAlignment="Left" Minimum="0.01" Background="#C4C9C9"/>
                                     <TextBlock>Exchange rate:</TextBlock>
                                     <wpfx:DecimalUpDown Value="{Binding Path=ExchangeRate, UpdateSourceTrigger=PropertyChanged}" FormatString="F" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0.01" Background="#C4C9C9"/>
-                                    <TextBlock>Description / comment:</TextBlock>
+                                        <TextBlock>    
+                                            <TextBlock>Resulting exchange amount:</TextBlock>
+                                            <TextBlock Text="{Binding Path=ExchangeAmountResult}"></TextBlock>
+                                            <TextBlock Text="{Binding Path=SelectedPaymentMethodForExchange.Currency.CodeLetter}"></TextBlock>
+                                        </TextBlock>
+                                        <TextBlock>Description / comment:</TextBlock>
                                     <TextBox Text="{Binding Path=ExchangeTransaction.Description}"></TextBox>
                                     <TextBlock>
                                         <TextBlock>Planned balance of sender: </TextBlock>
@@ -881,7 +885,7 @@
                                             <TextBlock.Text>
                                                 <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
                                                     <Binding Path="PlannedBalanceReceiverExc"></Binding>
-                                                    <Binding Path="SelectedPaymentMethodForTransfer.Currency.CodeNumber"></Binding>
+                                                        <Binding Path="SelectedPaymentMethodForExchange.Currency.CodeNumber"></Binding>
                                                 </MultiBinding>
                                             </TextBlock.Text>
                                         </TextBlock>

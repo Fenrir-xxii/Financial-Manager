@@ -452,10 +452,18 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="10*"></RowDefinition>
-                    <RowDefinition Height="90*"></RowDefinition>
+                    <RowDefinition Height="10*"></RowDefinition>
+                    <RowDefinition Height="80*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="T R A N S A C T I O N S" Foreground="NavajoWhite" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                <DataGrid Grid.Row="1"
+                <TextBlock Grid.Row="0" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="NavajoWhite">
+                    <TextBlock Text="'"></TextBlock>
+                    <TextBlock Text="{Binding Path=Model.Title}"></TextBlock>
+                    <TextBlock Text="' "></TextBlock>
+                    <TextBlock Text="{Binding Path=Model.CurrentBalance, StringFormat='{}{0:#,#.00}'}"></TextBlock>
+                    <TextBlock Text="{Binding Path=Model.Currency.CodeLetter}"></TextBlock>
+                </TextBlock>
+                <TextBlock Grid.Row="1" Text="T R A N S A C T I O N S" Foreground="NavajoWhite" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                <DataGrid Grid.Row="2"
                           AutoGenerateColumns="False" 
                           IsReadOnly="True" 
                           ItemsSource="{Binding Path=Transactions}"
@@ -488,33 +496,69 @@
                         <DataGridTemplateColumn Header="Title" Width="30*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Foreground="{Binding Path=TransactionColor}" Text="{Binding Path=Title}"></TextBlock>
+                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        
-                        <DataGridTextColumn Header="Balance before" Binding="{Binding Path=BalanceBefore, StringFormat='C', ConverterCulture='uk-UA'}" Width="20*">
+
+                        <DataGridTextColumn Header="Balance before" Width="20*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                    <Binding Path="BalanceBefore"></Binding>
+                                    <Binding Path="CurrencyCode"></Binding>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Right" />
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
+
+                        <DataGridTextColumn Header="Amount" Width="20*">
+                            <DataGridTextColumn.CellStyle>
+                                <Style>
+                                    <Setter Property="TextBlock.Foreground" Value="{Binding Path=TransactionColor}"></Setter>
+                                    <Setter Property="TextBlock.TextAlignment" Value="Right"></Setter>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                    <Binding Path="Amount"></Binding>
+                                    <Binding Path="CurrencyCode"></Binding>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
                         
-                        <DataGridTemplateColumn Header="Amount" Width="20*">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Foreground="{Binding Path=TransactionColor}" Text="{Binding Path=Amount, StringFormat='C', ConverterCulture='uk-UA'}" HorizontalAlignment="Right"></TextBlock>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                       
-                        <DataGridTextColumn Header="Balance after" Binding="{Binding Path=BalanceAfter, StringFormat='C', ConverterCulture='uk-UA'}" Width="20*">
+                        
+                        
+                        <!--<DataGridTextColumn Header="Balance" Width="18*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                    <Binding Path="Amount"></Binding>
+                                    <Binding Path="Currency.CodeNumber"></Binding>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Right" />
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
+                            
+                        </DataGridTextColumn>-->
+
+                        <DataGridTextColumn Header="Balance after" Width="20*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                    <Binding Path="BalanceAfter"></Binding>
+                                    <Binding Path="CurrencyCode"></Binding>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>

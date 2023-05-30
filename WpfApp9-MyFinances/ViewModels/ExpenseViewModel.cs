@@ -1,8 +1,10 @@
 ﻿using My.BaseViewModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WpfApp9_MyFinances.Models;
 
@@ -131,7 +133,7 @@ public class ExpenseViewModel : NotifyPropertyChangedBase
         set
         {
             Model.SubcategoriesExp = (value == null)? null : value.Model;
-            Model.SubCategoryTitle = (value == null)? null : value.Model.Title;
+            Model.SubCategoryTitle = (value == null)? null : value.Model.Title;  // exception null ref
             OnPropertyChanged(nameof(Subcategory));
             OnPropertyChanged(nameof(SubCategoryTitle));
         }
@@ -144,6 +146,29 @@ public class ExpenseViewModel : NotifyPropertyChangedBase
             return false;
 
         return Model.Id.Equals((obj as ExpenseViewModel).Model.Id);
+    }
+    public CultureInfo Culture
+    {
+        get
+        {
+            switch(PaymentMethod.Currency.CodeNumber)
+            {
+                case 980: // UAH
+                    return new CultureInfo("uk-UA");  
+                case 840: // USD
+                    return new CultureInfo("en-US");
+                case 978: // EUR
+                    return new CultureInfo("fr");
+                case 826:  // GBP
+                    return new CultureInfo("uk");
+                default:
+                    var culture = new CultureInfo("de");
+                    culture.NumberFormat.CurrencySymbol = "|*|";
+                    //var nfi = (NumberFormatInfo)NumberFormatInfo.CurrentInfo.Clone();
+                    //nfi.CurrencySymbol = "|*|";
+                    return culture;
+            }
+        }
     }
     public string OperationTypeName => "Expense";
 }

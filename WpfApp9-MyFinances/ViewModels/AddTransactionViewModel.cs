@@ -351,6 +351,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(ExchangeAmount));
             OnPropertyChanged(nameof(PlannedBalanceSenderExc));
             OnPropertyChanged(nameof(PlannedBalanceReceiverExc));
+            OnPropertyChanged(nameof(ExchangeAmountResult));
         }
     }
     public decimal ExchangeRate
@@ -362,6 +363,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(ExchangeRate));
             //OnPropertyChanged(nameof(PlannedBalanceSenderExc));
             OnPropertyChanged(nameof(PlannedBalanceReceiverExc));
+            OnPropertyChanged(nameof(ExchangeAmountResult));
         }
     }
     private List<string> _operationTypes;
@@ -469,6 +471,10 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PlannedBalanceSenderExc));
         }
     }
+    public decimal ExchangeAmountResult
+    {
+        get => Math.Round((ExchangeAmount * ExchangeRate), 2);
+    }
     public decimal PlannedBalanceReceiverExc
     {
         get
@@ -476,7 +482,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             decimal balance = 0;
             if (SelectedPaymentMethod != null)
             {
-                balance = SelectedPaymentMethodForExchange.CurrentBalance + Math.Round((ExchangeAmount * ExchangeRate),2);  // double check here
+                balance = SelectedPaymentMethodForExchange.CurrentBalance + ExchangeAmountResult; //Math.Round((ExchangeAmount * ExchangeRate),2);  // double check here
             }
             return balance;
         }

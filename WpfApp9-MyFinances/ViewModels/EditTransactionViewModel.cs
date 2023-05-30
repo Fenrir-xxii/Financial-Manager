@@ -32,7 +32,7 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         _originalExpenseAmount = expense.Amount;
         Init();
         //_selectedCategoryExp = ExpenseModel.Category;
-        _selectedSubCategoryExp = ExpenseModel.Subcategory;
+        _selectedSubCategoryExp = (expense.SubcategoriesExp == null)? null: new SubcategoryExpViewModel(expense.SubcategoriesExp);   //ExpenseModel.Subcategory;
         _runUpdate = true;
         UpdatePlannedBalanceExp();
     }
@@ -241,8 +241,8 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
-    private SubcategoryExpViewModel _selectedSubCategoryExp;
-    public SubcategoryExpViewModel SelectedSubCategoryExp
+    private SubcategoryExpViewModel? _selectedSubCategoryExp;
+    public SubcategoryExpViewModel? SelectedSubCategoryExp
     {
         get => _selectedSubCategoryExp;
         set

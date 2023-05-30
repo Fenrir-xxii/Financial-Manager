@@ -65,6 +65,15 @@ public class FinancialTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(BalanceAfter));
         }
     }
+    public int CurrencyCode
+    {
+        get => Model.CurrencyCode;
+        set
+        {
+            Model.CurrencyCode = value;
+            OnPropertyChanged(nameof(CurrencyCode));
+        }
+    }
     public int TransactionId
     {
         get => Model.TransactionId;
