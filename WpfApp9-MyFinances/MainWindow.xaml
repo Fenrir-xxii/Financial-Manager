@@ -446,8 +446,82 @@
         <Style TargetType="TextBox">
             <Setter Property="Background" Value="#C4C9C9"></Setter>
         </Style>
+        <Style TargetType="DataGrid">
+            <!--<Style.Triggers>
+                <Trigger Property="DataGridCell.IsSelected" Value="True">
+                    <Setter Property="Background" Value="#CCDAFF" />
+                </Trigger>
+            </Style.Triggers>-->
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                            Color="#344646"/>
+                <ContextMenu x:Key="RowMenu"></ContextMenu>
+            </Style.Resources>
+        </Style>
+        <Style x:Key="{x:Type ContextMenu}" TargetType="{x:Type ContextMenu}">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContextMenu}">
+                        <!--<Border Background="#485858" CornerRadius="7, 7, 8, 8" BorderBrush="DarkGray" BorderThickness="2" Opacity="0.96">
+                            <StackPanel ClipToBounds="True" Orientation="Vertical" IsItemsHost="True" Margin="5,4,5,4"/>
+                        </Border>-->
+                        <Border Background="#485858" CornerRadius="7, 7, 8, 8" BorderBrush="DarkGray" BorderThickness="2" Opacity="0.96" Name="Bord">
+                            <StackPanel ClipToBounds="True" Orientation="Vertical" IsItemsHost="True" Margin="5,4,5,4">
 
+                            </StackPanel>
+                            
+                        </Border>
+                        <!--<ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Bord" Property="BorderBrush" Value="red"></Setter>
+                                <Setter TargetName="Bord" Property="Background" Value="#6C7979"></Setter>
+                            </Trigger>
+                            
+                        </ControlTemplate.Triggers>-->
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <!--<Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="BorderBrush" Value="red"></Setter>
+                    <Setter Property="Background" Value="blue"></Setter>
+                </Trigger>
+            </Style.Triggers>-->
+        </Style>
 
+        <Style TargetType="MenuItem">
+            <Setter Property="OverridesDefaultStyle" Value="True"></Setter>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Foreground" Value="black"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Border Name="Border" BorderThickness="0">
+                            <Grid>
+                                <ContentPresenter Margin="6,3,6,3" ContentSource="Header" RecognizesAccessKey="True" />
+                                <!--<ContentPresenter Margin="4,2,4,2" ContentSource="Header" RecognizesAccessKey="True"/>-->
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="red"></Setter>
+                                <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,1"></Setter>
+                                <!--<Setter TargetName="Border" Property="Background" Value="#6C7979"></Setter>-->
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <!--<Setter Property="Background" Value="#0a99f3" />-->
+                    <Setter Property="Foreground" Value="NavajoWhite"/>
+                    <!--<Setter Property="BorderBrush" Value="Red"></Setter>-->
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
     </Window.Resources>
 
@@ -484,18 +558,9 @@
                                 <Setter Property="Height" Value="18"></Setter>
                             </Style>
                         </DataGrid.ColumnHeaderStyle>
-                        <!--<DataGrid.CellStyle>
-                            <Style>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Currency.CodeLetter}" Value="UAH">
-                                        
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.CellStyle>-->
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <!--<MenuItem Header="New Transaction" Command="{Binding Path}"></MenuItem>-->
+                                <MenuItem Header="Test" ></MenuItem>
                                 <MenuItem Header="Show Transactions" Command="{Binding Path=ShowAllTransactions}"></MenuItem>
                             </ContextMenu>
                         </DataGrid.ContextMenu>

@@ -335,7 +335,7 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
             if (IncomeModel != null)
             {
                 var differenceInAmount = IncomeModel.Amount - _originalIncomeAmount;
-                balance = IncomeModel.PaymentMethod.CurrentBalance - differenceInAmount;
+                balance = IncomeModel.PaymentMethod.CurrentBalance + differenceInAmount;
             }
             return balance;
         }

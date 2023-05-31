@@ -457,10 +457,10 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="NavajoWhite">
                     <TextBlock Text="'"></TextBlock>
-                    <TextBlock Text="{Binding Path=Model.Title}"></TextBlock>
+                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
                     <TextBlock Text="' "></TextBlock>
-                    <TextBlock Text="{Binding Path=Model.CurrentBalance, StringFormat='{}{0:#,#.00}'}"></TextBlock>
-                    <TextBlock Text="{Binding Path=Model.Currency.CodeLetter}"></TextBlock>
+                    <TextBlock Text="{Binding Path=CurrentBalance, StringFormat='{}{0:#,#.00}'}"></TextBlock>
+                    <TextBlock Text="{Binding Path=Currency.CodeLetter}"></TextBlock>
                 </TextBlock>
                 <TextBlock Grid.Row="1" Text="T R A N S A C T I O N S" Foreground="NavajoWhite" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                 <DataGrid Grid.Row="2"

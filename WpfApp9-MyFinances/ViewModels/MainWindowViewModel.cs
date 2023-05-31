@@ -540,8 +540,23 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         var window = new AllTransactions(SelectedPaymentMethod);
         window.ShowDialog();
+        // update all transactions from selectedPaymentMethod
+        // check for changes
 
-    }, x => true);
+        var pmFromDb = _db.PaymentMethods.Include(x => x.Currency).FirstOrDefault(x=> x.Id== _selectedPaymentMethod.Id);
+        if (pmFromDb != null)
+        {
+            var pmLocal = _allPaymentMethods.FirstOrDefault(y => y.Id == pmFromDb.Id);
+            if (pmLocal != null)
+            {
+                pmLocal = pmFromDb;
+                OnPropertyChanged(nameof(PaymentMethods));
+                //_allPaymentMethods.Remove(_allPaymentMethods.FirstOrDefault(y => y.Id == pm.Id));
+                //_allPaymentMethods.Add(pm);
+            }
+        }
+
+    }, x => _selectedPaymentMethod !=null);
     //public decimal TotalInCash
     //{
     //    get
@@ -677,14 +692,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             _allExpenses = await LoadExpensesAsync();
             _allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
-            //OnPropertyChanged(nameof(TotalInCash));
-            //OnPropertyChanged(nameof(TotalInCashless));
-            //OnPropertyChanged(nameof(TotalMoney));
-            //OnPropertyChanged(nameof(PaymentMethods));
-            //OnPropertyChanged(nameof(CategoriesExpChartValue));
-            //OnPropertyChanged(nameof(LabelsExp));
-            //OnPropertyChanged(nameof(ChartCategoriesExp));
-            //OnPropertyChanged(nameof(ChartCategoriesExpPie));
         }).Wait();
     }
     public void UpdateIncomes()
