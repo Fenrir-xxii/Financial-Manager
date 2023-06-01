@@ -635,6 +635,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         //OnPropertyChanged(nameof(ChartCategoriesExp));
         //OnPropertyChanged(nameof(ChartCategoriesExpPie));
     }, x => true);
+    public ICommand AddRecuringCharge => new RelayCommand(x =>
+    {
+        var window = new AddRecurringCharge();
+        window.ShowDialog();
+        UpdateRecuringCharges();
+
+    }, x => true);
     public void UpdateCategories()
     {
         _allCategoriesExp.Clear();

@@ -10,7 +10,10 @@ namespace WpfApp9_MyFinances.ViewModels;
 
 public class RecurringChargeViewModel : NotifyPropertyChangedBase
 {
-    public RecurringChargeViewModel() { }
+    public RecurringChargeViewModel() 
+    {
+        Model = new RecurringCharge();
+    }
     public RecurringChargeViewModel(RecurringCharge recurringCharge)
     {
         Model = recurringCharge;
@@ -126,7 +129,14 @@ public class RecurringChargeViewModel : NotifyPropertyChangedBase
     }
     public PaymentMethodViewModel? PaymentMethod
     {
-        get => new PaymentMethodViewModel { Model = Model.PaymentMethod };
+        get
+        {
+            if (Model.PaymentMethod == null)
+            {
+                return null;
+            }
+            return new PaymentMethodViewModel { Model = Model.PaymentMethod };
+        }
         set
         {
             Model.PaymentMethod = (value == null) ? null : value.Model;

@@ -481,13 +481,7 @@
                 </Grid.RowDefinitions>
                 <StackPanel Grid.ColumnSpan="3">
                     <TextBlock Text="Select transaction's payment method:" Foreground="NavajoWhite" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"></TextBlock>
-                    <!--<ComboBox Template="{DynamicResource ComboBoxTemplate1}" ItemsSource="{Binding Path=PaymentMethods}" SelectedItem="{Binding Path=SelectedPaymentMethod}" Background="#FFC4C9C9" BorderBrush="#FF1E3232">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=Title}"></TextBlock>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>-->
+                    
                     <ComboBox Template="{DynamicResource ComboBoxTemplate1}" ItemsSource="{Binding Path=PaymentMethods}" Background="#FFC4C9C9" BorderBrush="#FF1E3232">
                         <ComboBox.SelectedItem>
                             <Binding Path="SelectedPaymentMethod">

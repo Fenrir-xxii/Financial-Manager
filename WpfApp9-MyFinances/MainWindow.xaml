@@ -855,12 +855,12 @@
                             <DataGridTextColumn Header="Next Payment" Binding="{Binding Path=DateOfNextPayment, StringFormat='dd.MM.yyyy'}" Width="10*"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Button Margin="200,5,200,5" Grid.Column="0" Grid.Row="2" Content="Add">
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
+                    <Button Margin="200,5,200,5" Grid.Column="0" Grid.Row="2" Content="Add" Command="{Binding Path=AddRecuringCharge}">
+                        <!--<Button.Resources>
+                            --><!--<Style TargetType="{x:Type Border}">
                                 <Setter Property="CornerRadius" Value="7"/>
-                            </Style>
-                        </Button.Resources>
+                            </Style>--><!--
+                        </Button.Resources>-->
                     </Button>
                 </Grid>
             </Border>
