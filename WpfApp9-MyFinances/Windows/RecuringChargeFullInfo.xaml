@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp9_MyFinances.Windows"
         mc:Ignorable="d"
-        Title="RecuringChargeFullInfo" Height="300" Width="400"
+        Title="RecuringChargeFullInfo" Height="320" Width="400"
          xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
     <Window.Resources>
         <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
@@ -457,60 +457,103 @@
         <Style TargetType="TextBox">
             <Setter Property="Background" Value="#C4C9C9"></Setter>
         </Style>
+        <Style TargetType="Border">
+            <Setter Property="BorderBrush">
+                <Setter.Value>
+                    <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile">
+                        <DrawingBrush.Drawing>
+                            <DrawingGroup>
+                                <GeometryDrawing Brush="black">
+                                    <GeometryDrawing.Geometry>
+                                        <GeometryGroup>
+                                            <RectangleGeometry Rect="0,0,50,50" />
+                                            <RectangleGeometry Rect="50,50,50,50" />
+                                        </GeometryGroup>
+                                    </GeometryDrawing.Geometry>
+                                </GeometryDrawing>
+                            </DrawingGroup>
+                        </DrawingBrush.Drawing>
+                    </DrawingBrush>
+                </Setter.Value>
+            </Setter>
+            
+        </Style>
 
     </Window.Resources>
     
     
     <Grid>
-        <Border Padding="10" BorderThickness="3" Background="DarkSlateGray">
+        <Border Padding="10" BorderThickness="5" Background="DarkSlateGray">
             <Grid>
                 <StackPanel>
-                    <TextBlock>
-                        <TextBlock Text="Title: "></TextBlock>
-                        <TextBlock Text="{Binding Path=Title}"></TextBlock>
-                    </TextBlock>
-                    <TextBlock>
-                        <TextBlock Text="Category: "></TextBlock>
-                        <TextBlock Text="{Binding Path=Category.Title}"></TextBlock>
-                    </TextBlock>
-                    <TextBlock>
-                        <TextBlock Text="Subcategory: "></TextBlock>
-                        <TextBlock Text="{Binding Path=Subcategory.Title}"></TextBlock>
-                    </TextBlock>
-                    <TextBlock>
-                        <TextBlock Text="Provider: "></TextBlock>
-                        <TextBlock Text="{Binding Path=Provider.Title}"></TextBlock>
-                    </TextBlock>
-                    <TextBlock>
-                        <TextBlock Text="Amount: "></TextBlock>
-                        <TextBlock Text="{Binding Path=Amount}"></TextBlock>
-                        <TextBlock Text=" "></TextBlock>
-                        <TextBlock Text="{Binding Path=Currency.CodeLetter}"></TextBlock>
-                    </TextBlock>
-                    <TextBlock>
-                        <TextBlock Text="Default payment method: "></TextBlock>
-                        <TextBlock Text="{Binding Path=PaymentMethod.Title}"></TextBlock>
-                    </TextBlock>
-                    <TextBlock>
-                        <TextBlock Text="Auto payment: "></TextBlock>
-                        <TextBlock Text="{Binding Path=AutoPayment}"></TextBlock>
-                    </TextBlock>
-                    <TextBlock>
-                        <TextBlock Text="Periodicity: "></TextBlock>
-                        <TextBlock Text="{Binding Path=PeriodicityText}"></TextBlock>
-                    </TextBlock>
-                    <TextBlock>
-                        <TextBlock Text="Start date: "></TextBlock>
-                        <TextBlock Text="{Binding Path=DateOfStart, StringFormat='dd.MM.yyyy'}"></TextBlock>
-                    </TextBlock>
-                    <TextBlock>
-                        <TextBlock Text="Next payment date: "></TextBlock>
-                        <TextBlock Text="{Binding Path=DateOfNextPayment, StringFormat='dd.MM.yyyy'}"></TextBlock>
-                    </TextBlock>
-                    <TextBlock>
-                        <TextBlock Text="Description: "></TextBlock>
-                        <TextBlock Text="{Binding Path=Description}"></TextBlock>
-                    </TextBlock>
+                    <Border BorderThickness="0,0,0,1">
+                        <TextBlock FontSize="16">
+                            <TextBlock Text="Title: " Foreground="NavajoWhite"></TextBlock>
+                            <TextBlock Text="{Binding Path=Title}" Foreground="White"></TextBlock>
+                        </TextBlock>
+                    </Border>
+                    <Border BorderThickness="0,0,0,1">
+                        <TextBlock FontSize="16">
+                            <TextBlock Text="Category: " Foreground="NavajoWhite"></TextBlock>
+                            <TextBlock Text="{Binding Path=Category.Title}" Foreground="White"></TextBlock>
+                        </TextBlock>
+                    </Border>
+                    <Border BorderThickness="0,0,0,1">
+                        <TextBlock FontSize="16">
+                            <TextBlock Text="Subcategory: " Foreground="NavajoWhite"></TextBlock>
+                            <TextBlock Text="{Binding Path=Subcategory.Title}" Foreground="White"></TextBlock>
+                        </TextBlock>
+                    </Border>
+                    <Border BorderThickness="0,0,0,1">
+                        <TextBlock FontSize="16">
+                            <TextBlock Text="Provider: " Foreground="NavajoWhite"></TextBlock>
+                            <TextBlock Text="{Binding Path=Provider.Title}" Foreground="White"></TextBlock>
+                        </TextBlock>
+                    </Border>
+                    <Border BorderThickness="0,0,0,1">
+                        <TextBlock FontSize="16">
+                            <TextBlock Text="Amount: " Foreground="NavajoWhite"></TextBlock>
+                            <TextBlock Text="{Binding Path=Amount, StringFormat='F2'}" Foreground="White"></TextBlock>
+                            <!--<TextBlock Text=" "></TextBlock>-->
+                            <TextBlock Text="{Binding Path=Currency.CodeLetter}" Foreground="White"></TextBlock>
+                        </TextBlock>
+                    </Border>
+                    <Border BorderThickness="0,0,0,1">
+                        <TextBlock FontSize="16">
+                            <TextBlock Text="Default payment method: " Foreground="NavajoWhite"></TextBlock>
+                            <TextBlock Text="{Binding Path=PaymentMethod.Title}" Foreground="White"></TextBlock>
+                        </TextBlock>
+                    </Border>
+                    <Border BorderThickness="0,0,0,1">
+                        <TextBlock FontSize="16">
+                            <TextBlock Text="Auto payment: " Foreground="NavajoWhite"></TextBlock>
+                            <TextBlock Text="{Binding Path=AutoPayment}" Foreground="White"></TextBlock>
+                        </TextBlock>
+                    </Border>
+                    <Border BorderThickness="0,0,0,1">
+                        <TextBlock FontSize="16">
+                            <TextBlock Text="Periodicity: " Foreground="NavajoWhite"></TextBlock>
+                            <TextBlock Text="{Binding Path=PeriodicityText}" Foreground="White"></TextBlock>
+                        </TextBlock>
+                    </Border>
+                    <Border BorderThickness="0,0,0,1">
+                        <TextBlock FontSize="16">
+                            <TextBlock Text="Start date: " Foreground="NavajoWhite"></TextBlock>
+                            <TextBlock Text="{Binding Path=DateOfStart, StringFormat='dd.MM.yyyy'}" Foreground="White"></TextBlock>
+                        </TextBlock>
+                    </Border>
+                    <Border BorderThickness="0,0,0,1">
+                        <TextBlock FontSize="16">
+                            <TextBlock Text="Next payment date: " Foreground="NavajoWhite"></TextBlock>
+                            <TextBlock Text="{Binding Path=DateOfNextPayment, StringFormat='dd.MM.yyyy'}" Foreground="White"></TextBlock>
+                        </TextBlock>
+                    </Border>
+                    <Border BorderThickness="0,0,0,1">
+                        <TextBlock FontSize="16">
+                            <TextBlock Text="Description: " Foreground="NavajoWhite"></TextBlock>
+                            <TextBlock Text="{Binding Path=Description}" Foreground="White"></TextBlock>
+                        </TextBlock>
+                    </Border>
                 </StackPanel>
             </Grid>
         </Border>
