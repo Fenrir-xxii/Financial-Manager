@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp9_MyFinances.Windows"
         mc:Ignorable="d"
-        Title="RecuringChargeFullInfo" Height="320" Width="400"
+        Title="RecuringChargeFullInfo" Height="380" Width="400"
          xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
     <Window.Resources>
         <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
@@ -549,10 +549,12 @@
                         </TextBlock>
                     </Border>
                     <Border BorderThickness="0,0,0,1">
-                        <TextBlock FontSize="16">
-                            <TextBlock Text="Description: " Foreground="NavajoWhite"></TextBlock>
-                            <TextBlock Text="{Binding Path=Description}" Foreground="White"></TextBlock>
-                        </TextBlock>
+                        <StackPanel>
+                            <TextBlock FontSize="16" TextWrapping="Wrap" >
+                                <TextBlock Text="Description: " Foreground="NavajoWhite"></TextBlock>
+                                <TextBlock Text="{Binding Path=Description}" Foreground="White" TextWrapping="Wrap"></TextBlock>
+                            </TextBlock>
+                        </StackPanel>
                     </Border>
                 </StackPanel>
             </Grid>

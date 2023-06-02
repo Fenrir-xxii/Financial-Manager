@@ -361,10 +361,16 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         get
         {
-            var collection = new ObservableCollection<RecurringChargeViewModel>();
+            var list = new List<RecurringChargeViewModel>();
             foreach (var rc in _allRecurringCharges)
             {
-                collection.Add(new RecurringChargeViewModel(rc));
+                list.Add(new RecurringChargeViewModel(rc));
+            }
+            var sortedList = list.OrderBy(x => x.DateOfNextPayment).ToList();
+            var collection = new ObservableCollection<RecurringChargeViewModel>();
+            foreach (var rc in sortedList)
+            {
+                collection.Add(rc);
             }
             return collection;
         }
@@ -719,6 +725,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             _allRecurringCharges = await LoadRecurringChargesAsync();
             _allRecurringCharges.ForEach(rc => RecurringCharges.Add(new RecurringChargeViewModel(rc)));
+            OnPropertyChanged(nameof(RecurringCharges));
         }).Wait();
     }
     public ICommand ShowFullInfoOfRecurringCharge => new RelayCommand(x =>

@@ -282,7 +282,7 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
         }
         try
         {
-            _db.Add(Model);
+            _db.Add(Model.Model);
             _db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
