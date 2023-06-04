@@ -458,7 +458,7 @@
                 <ContextMenu x:Key="RowMenu"></ContextMenu>
             </Style.Resources>
         </Style>
-        
+
         <Style x:Key="{x:Type ContextMenu}" TargetType="{x:Type ContextMenu}">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -835,9 +835,11 @@
                     </DataGrid>
                     <Button Margin="200,5,200,5" Grid.Column="0" Grid.Row="2" Content="Add" Command="{Binding Path=AddRecuringCharge}">
                         <!--<Button.Resources>
-                            --><!--<Style TargetType="{x:Type Border}">
+                            -->
+                        <!--<Style TargetType="{x:Type Border}">
                                 <Setter Property="CornerRadius" Value="7"/>
-                            </Style>--><!--
+                            </Style>-->
+                        <!--
                         </Button.Resources>-->
                     </Button>
                 </Grid>
@@ -977,24 +979,24 @@
                                         Background="#C4C9C9"
                                         AlternatingRowBackground="#D0D4D4"
                                         ColumnWidth="*">
-                                    <DataGrid.ColumnHeaderStyle>
-                                        <Style TargetType="{x:Type DataGridColumnHeader}">
-                                            <!--<Setter Property="FontWeight" Value="Bold"/>-->
-                                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                            <Setter Property="FontFamily" Value="Times New Roman"/>
-                                            <Setter Property="Background" Value="#1E3232"></Setter>
-                                            <Setter Property="Foreground" Value="White"></Setter>
-                                            <Setter Property="Height" Value="16"></Setter>
-                                        </Style>
-                                    </DataGrid.ColumnHeaderStyle>
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Date" Binding="{Binding Path=DateOfExpense, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}" Width="20*"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Category" Binding="{Binding Path=Category.Title}" Width="15*"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Subcategory" Binding="{Binding Path=Subcategory.Title, TargetNullValue='-'}" Width="15*"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Payment Method" Binding="{Binding Path=PaymentMethod.Title}" Width="20*"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Amount" Width="15*">
+                                        <DataGrid.ColumnHeaderStyle>
+                                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                                <!--<Setter Property="FontWeight" Value="Bold"/>-->
+                                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                                <Setter Property="FontFamily" Value="Times New Roman"/>
+                                                <Setter Property="Background" Value="#1E3232"></Setter>
+                                                <Setter Property="Foreground" Value="White"></Setter>
+                                                <Setter Property="Height" Value="16"></Setter>
+                                            </Style>
+                                        </DataGrid.ColumnHeaderStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Date" Binding="{Binding Path=DateOfExpense, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}" Width="20*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Category" Binding="{Binding Path=Category.Title}" Width="15*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Subcategory" Binding="{Binding Path=Subcategory.Title, TargetNullValue='-'}" Width="15*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Payment Method" Binding="{Binding Path=PaymentMethod.Title}" Width="20*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Amount" Width="15*">
                                                 <DataGridTextColumn.Binding>
                                                     <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
                                                         <Binding Path="Amount"></Binding>
@@ -1007,9 +1009,9 @@
                                                     </Style>
                                                 </DataGridTextColumn.ElementStyle>
                                             </DataGridTextColumn>
-                                    </DataGrid.Columns>
-                                    
-                                </DataGrid>
+                                        </DataGrid.Columns>
+
+                                    </DataGrid>
                                 </Grid>
                             </TabItem>
                         </TabControl>
@@ -1084,6 +1086,163 @@
                 </TabItem>
             </TabControl>
         </TabItem>
+        <TabItem Header="Loans">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <!--<ColumnDefinition Width="167*"/>
+                    <ColumnDefinition Width="68*"/>
+                    <ColumnDefinition Width="14*"/>
+                    <ColumnDefinition Width="55*"/>
+                    <ColumnDefinition Width="490*"/>-->
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60*"></RowDefinition>
+                    <RowDefinition Height="8*"></RowDefinition>
+                    <RowDefinition Height="5*"></RowDefinition>
+                    <RowDefinition Height="35*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <!--<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Search by title: "></TextBlock>
+                                        <TextBox MinWidth="550" Text="{Binding Path=SearchBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                    </TextBlock>-->
+                <DataGrid Grid.Row="0"
+                                        AutoGenerateColumns="False" 
+                                        IsReadOnly="True" 
+                                        ItemsSource="{Binding Path=Loans}"
+                                        SelectedItem="{Binding Path=SelectedLoan}"
+                                        Background="#C4C9C9"
+                                        AlternatingRowBackground="#D0D4D4"
+                                        ColumnWidth="*" Grid.ColumnSpan="5">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <!--<Setter Property="FontWeight" Value="Bold"/>-->
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="FontFamily" Value="Times New Roman"/>
+                            <Setter Property="Background" Value="#1E3232"></Setter>
+                            <Setter Property="Foreground" Value="White"></Setter>
+                            <Setter Property="Height" Value="16"></Setter>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" Binding="{Binding Path=DateOfLoan, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Payment Method" Binding="{Binding Path=LoanPaymentMethod.Title}" Width="20*"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Amount" Width="15*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                    <Binding Path="LoanAmount"></Binding>
+                                    <Binding Path="LoanPaymentMethod.Currency.CodeNumber"></Binding>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Payback amount" Width="15*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                    <Binding Path="TotalAmountPayback"></Binding>
+                                    <Binding Path="LoanPaymentMethod.Currency.CodeNumber"></Binding>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Payback balance" Width="15*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                    <Binding Path="LoanBalance"></Binding>
+                                    <Binding Path="LoanPaymentMethod.Currency.CodeNumber"></Binding>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Item.LoanGiver }" Value="Me">
+                                            <Setter Property="Foreground" Value="Green"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Item.LoanReceiver }" Value="Me">
+                                            <Setter Property="Foreground" Value="Red"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Giver" Binding="{Binding Path=LoanGiver}" Width="15*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <Trigger Property="Text" Value="Me">
+                                            <Setter Property="Foreground" Value="Green"></Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Receiver" Binding="{Binding Path=LoanReceiver}" Width="15*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <Trigger Property="Text" Value="Me">
+                                            <Setter Property="Foreground" Value="Red"></Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Path=LoanDescription}" Width="15*"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Is closed" Binding="{Binding Path=IsLoanClosed}" Width="10*"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Grid.Row="1" Margin="300,3,300,3" Command="{Binding Path=AddNewLoan}">Add</Button>
+                <TextBlock Text="P A Y B A C K S" TextAlignment="Center" FontWeight="Bold" Grid.Row="2" Grid.ColumnSpan="5" Grid.RowSpan="3"/>
+                <DataGrid Grid.Row="3" 
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True" 
+                          ItemsSource="{Binding Path=SelectedLoan.LoanPaybacks}"
+                          SelectedItem=""
+                          Background="#C4C9C9"
+                          AlternatingRowBackground="#D0D4D4"
+                          ColumnWidth="*" Grid.ColumnSpan="5">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="FontFamily" Value="Times New Roman"/>
+                            <Setter Property="Background" Value="#1E3232"></Setter>
+                            <Setter Property="Foreground" Value="White"></Setter>
+                            <Setter Property="Height" Value="14"></Setter>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Amount" Width="15*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                    <Binding Path="Amount"></Binding>
+                                    <Binding Path="CurrencyCodeNumber"></Binding>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="30*"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </TabItem>
         <TabItem Header="Test">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -1117,6 +1276,7 @@
             </Grid>
 
         </TabItem>
+
     </TabControl>
 
 </Window>

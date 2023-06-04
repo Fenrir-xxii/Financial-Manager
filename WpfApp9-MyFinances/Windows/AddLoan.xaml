@@ -1,13 +1,15 @@
-﻿<Window x:Class="WpfApp9_MyFinances.Windows.AddPaymentMethod"
+﻿<Window x:Class="WpfApp9_MyFinances.Windows.AddLoan"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp9_MyFinances.Windows"
-        xmlns:wpfx="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
-        Title="AddPaymentMethod" Height="400" Width="400">
+        xmlns:wpfx="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" 
+        xmlns:local1="clr-namespace:WpfApp9_MyFinances.Converters" xmlns:validationrules="clr-namespace:WpfApp9_MyFinances.ValidationRules"
+        Title="AddLoan" Height="450" Width="600">
+
     <Window.Resources>
         <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
             <Setter Property="Visibility" Value="Visible" />
@@ -507,41 +509,190 @@
         <Border Padding="10" BorderThickness="3" Background="DarkSlateGray">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="33*"></ColumnDefinition>
+                    <ColumnDefinition Width="33*"></ColumnDefinition>
+                    <ColumnDefinition Width="33*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="10*"></RowDefinition>
-                    <RowDefinition Height="80*"></RowDefinition>
-                    <RowDefinition Height="10*"></RowDefinition>
+                    <RowDefinition Height="75*"></RowDefinition>
+                    <RowDefinition Height="15*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBlock Text="New payment method" FontSize="20" FontWeight="Bold" TextAlignment="Center" Foreground="NavajoWhite" Grid.ColumnSpan="2"></TextBlock>
-                <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-                    <TextBlock Text="Title: "></TextBlock>
-                    <TextBox Text="{Binding Path=Title}"></TextBox>
-                    <TextBlock Text="Curency: "></TextBlock>
-                    <ComboBox ItemsSource="{Binding Path=Currencies}" SelectedItem="{Binding Path=SelectedCurrency}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock>
-                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
-                                    <TextBlock Text="["></TextBlock>
-                                    <TextBlock Text="{Binding Path=CodeLetter}"></TextBlock>
-                                    <TextBlock Text="]"></TextBlock>
-                                </TextBlock>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    <TextBlock Text="Current balance: "></TextBlock>
-                    <!--<TextBox Text="{Binding Path=CurrentBalance}"></TextBox>-->
-                    <wpfx:DecimalUpDown Value="{Binding Path=CurrentBalance, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FormatString="C" CultureInfo="uk-UA" Increment="0.01" TextAlignment="Left" Minimum="0.01" DefaultValue="0.01" Background="#C4C9C9"/>
-                    <TextBlock Text="Is cash?"></TextBlock>
-                    <CheckBox IsChecked="{Binding Path=IsCash, Mode=TwoWay}" Background="#FFC4C9C9"></CheckBox>
-                    <TextBlock Text="Description: "></TextBlock>
-                    <TextBox Text="{Binding Path=Description}"></TextBox>
-                </StackPanel>
-                <Button Grid.Row="2" Grid.Column="0" Command="{Binding Path=AddPaymentMethod}">ADD</Button>
-                <Button Grid.Row="2" Grid.Column="1" Command="{Binding Path=Cancel}">CANCEL</Button>
+                <TabControl Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="3">
+                    <TabItem Header="Giving">
+                        <AdornerDecorator>
+                            <Border BorderThickness="2">
+                                <Grid Margin="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40*"></ColumnDefinition>
+                                        <ColumnDefinition Width="20*"></ColumnDefinition>
+                                        <ColumnDefinition Width="40*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="85*"></RowDefinition>
+                                        <RowDefinition Height="15*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Grid.Row="0" Grid.ColumnSpan="3" Margin="2">
+                                        <TextBlock>Date:</TextBlock>
+                                        <wpfx:DateTimePicker Text="{Binding Path=GivingLoanModel.DateOfLoan}" Background="#C4C9C9" Format="LongDate" AutoCloseCalendar="True" CultureInfo="en"></wpfx:DateTimePicker>
+                                        <TextBlock>Provider:</TextBlock>
+                                        <ComboBox ItemsSource="{Binding Path=Providers}">
+                                            <ComboBox.SelectedItem>
+                                                <Binding Path="SelectedProvider">
+                                                    <Binding.ValidationRules>
+                                                        <validationrules:SelectionComboBoxValidationRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </ComboBox.SelectedItem>
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <TextBlock>Amount:</TextBlock>
+                                        <wpfx:DecimalUpDown Value="{Binding Path=GivingLoanModel.Amount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FormatString="F2" Increment="0.01" TextAlignment="Left" Minimum="0.01" DefaultValue="0.01" Background="#C4C9C9"/>
+                                        <TextBlock>Source payment method:</TextBlock>
+                                        <ComboBox Template="{DynamicResource ComboBoxTemplate1}" ItemsSource="{Binding Path=PaymentMethods}" Background="#FFC4C9C9" BorderBrush="#FF1E3232">
+                                            <ComboBox.SelectedItem>
+                                                <Binding Path="SelectedPaymentMethod">
+                                                    <Binding.ValidationRules>
+                                                        <validationrules:SelectionComboBoxValidationRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </ComboBox.SelectedItem>
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <TextBlock>Description / comment:</TextBlock>
+                                        <TextBox Text="{Binding Path=GivingLoanModel.Description}"></TextBox>
+                                        <TextBlock Text="Is payback?"></TextBlock>
+                                        <CheckBox IsChecked="{Binding Path=IsGivingLoanAPayback, Mode=TwoWay}" Background="#FFC4C9C9"></CheckBox>
+                                        <TextBlock>Source loan:</TextBlock>
+                                        <ComboBox Template="{DynamicResource ComboBoxTemplate1}" ItemsSource="{Binding Path=ReceivingLoans}" Background="#FFC4C9C9" BorderBrush="#FF1E3232">
+                                            <ComboBox.SelectedItem>
+                                                <Binding Path="SelectedReceivingLoan">
+                                                    <Binding.ValidationRules>
+                                                        <validationrules:SelectionComboBoxValidationRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </ComboBox.SelectedItem>
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock>
+                                                        <TextBlock Text="{Binding Path=Description}"></TextBlock>
+                                                        <TextBlock Text="("></TextBlock>
+                                                         <TextBlock Text="{Binding Path=Amount, StringFormat='F2'}"></TextBlock>
+                                                         <TextBlock Text=")"></TextBlock>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <TextBlock Text="Is loan closed?"></TextBlock>
+                                        <CheckBox IsChecked="{Binding Path=GivingLoanModel.IsLoanClosed, Mode=TwoWay}" IsEnabled="{Binding Path=IsGivingLoanAPayback}" Name="IsGLoanClosedCheckBox" Background="#FFC4C9C9"></CheckBox>
+
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Margin="2">
+                                        <Button Command="{Binding Path=SaveGivingLoan}" Height="30">Save</Button>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Grid.Column="2" Margin="2">
+                                        <Button Command="{Binding Path=Cancel}" Height="30">Cancel</Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </AdornerDecorator>
+                    </TabItem>
+                    <TabItem Header="Receiving">
+                        <AdornerDecorator>
+                            <Border BorderThickness="2">
+                                <Grid Margin="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40*"></ColumnDefinition>
+                                        <ColumnDefinition Width="20*"></ColumnDefinition>
+                                        <ColumnDefinition Width="40*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="85*"></RowDefinition>
+                                        <RowDefinition Height="15*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Grid.Row="0" Grid.ColumnSpan="3" Margin="2">
+                                        <TextBlock>Date:</TextBlock>
+                                        <wpfx:DateTimePicker Text="{Binding Path=ReceivingLoanModel.DateOfLoan}" Background="#C4C9C9" Format="LongDate" AutoCloseCalendar="True" CultureInfo="en"></wpfx:DateTimePicker>
+                                        <TextBlock>Provider:</TextBlock>
+                                        <ComboBox ItemsSource="{Binding Path=Providers}">
+                                            <ComboBox.SelectedItem>
+                                                <Binding Path="SelectedProvider">
+                                                    <Binding.ValidationRules>
+                                                        <validationrules:SelectionComboBoxValidationRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </ComboBox.SelectedItem>
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <TextBlock>Amount:</TextBlock>
+                                        <wpfx:DecimalUpDown Value="{Binding Path=ReceivingLoanModel.Amount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FormatString="F2" Increment="0.01" TextAlignment="Left" Minimum="0.01" DefaultValue="0.01" Background="#C4C9C9"/>
+                                        <TextBlock>Source payment method:</TextBlock>
+                                        <ComboBox Template="{DynamicResource ComboBoxTemplate1}" ItemsSource="{Binding Path=PaymentMethods}" Background="#FFC4C9C9" BorderBrush="#FF1E3232">
+                                            <ComboBox.SelectedItem>
+                                                <Binding Path="SelectedPaymentMethod">
+                                                    <Binding.ValidationRules>
+                                                        <validationrules:SelectionComboBoxValidationRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </ComboBox.SelectedItem>
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <TextBlock>Description / comment:</TextBlock>
+                                        <TextBox Text="{Binding Path=ReceivingLoanModel.Description}"></TextBox>
+                                        <TextBlock Text="Is payback?"></TextBlock>
+                                        <CheckBox IsChecked="{Binding Path=IsReceivingLoanAPayback, Mode=TwoWay}" Background="#FFC4C9C9"></CheckBox>
+                                        <TextBlock>Source loan:</TextBlock>
+                                        <ComboBox Template="{DynamicResource ComboBoxTemplate1}" ItemsSource="{Binding Path=GivingLoans}" Background="#FFC4C9C9" BorderBrush="#FF1E3232">
+                                            <ComboBox.SelectedItem>
+                                                <Binding Path="SelectedGivingLoan">
+                                                    <Binding.ValidationRules>
+                                                        <validationrules:SelectionComboBoxValidationRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </ComboBox.SelectedItem>
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock>
+                                                        <TextBlock Text="{Binding Path=Description}"></TextBlock>
+                                                        <TextBlock Text="("></TextBlock>
+                                                         <TextBlock Text="{Binding Path=Amount, StringFormat='F2'}"></TextBlock>
+                                                         <TextBlock Text=")"></TextBlock>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <TextBlock Text="Is loan closed?"></TextBlock>
+                                        <CheckBox IsChecked="{Binding Path=ReceivingLoanModel.IsLoanClosed, Mode=TwoWay}" IsEnabled="{Binding Path=IsReceivingLoanAPayback}" Name="IsRLoanClosedCheckBox" Background="#FFC4C9C9"></CheckBox>
+
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Margin="2">
+                                        <Button Command="{Binding Path=SaveReceivingLoan}" Height="30">Save</Button>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Grid.Column="2" Margin="2">
+                                        <Button Command="{Binding Path=Cancel}" Height="30">Cancel</Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </AdornerDecorator>
+                    </TabItem>
+                    
+                </TabControl>
+
             </Grid>
         </Border>
     </Grid>

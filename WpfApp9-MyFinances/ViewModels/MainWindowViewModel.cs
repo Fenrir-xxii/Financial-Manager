@@ -17,6 +17,7 @@ using WpfApp9_MyFinances.Windows;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 using System.Threading;
 using LiveCharts.Helpers;
+using WpfApp9_MyFinances.ModelsForWpfOnly;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
@@ -36,6 +37,9 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _allIncomes = new List<Income>();
         _allCurrencies = new List<Currency>();
         _allRecurringCharges = new List<RecurringCharge>();
+        _allGivingLoans = new List<GivingLoan>();
+        _allReceivingLoans = new List<ReceivingLoan>();
+        _allLoans = new List<Loan>();
         _categoryTypes = new List<string> { "Expense", "Income" };
         _selectedOperationType = String.Empty;
         _titleOfNewCategory = String.Empty;
@@ -71,6 +75,9 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             _allCurrencies.ForEach(c => Currencies.Add(new CurrencyViewModel(c)));
             _allRecurringCharges = await LoadRecurringChargesAsync();
             _allRecurringCharges.ForEach(rc => RecurringCharges.Add(new RecurringChargeViewModel(rc)));
+            _allReceivingLoans = await LoadReceivingLoansAsync();
+            _allGivingLoans = await LoadGivingLoansAsync();
+            CombineLoans();
             //_allCategoriesExp.ForEach(c => CategoriesExpItems.Add(new TreeViewItem { Header = c.Title }));
 
             OnPropertyChanged(nameof(PaymentMethods));
@@ -96,8 +103,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(FilteredExpenses));
         });
         (App.Current.MainWindow as MainWindow).CurrencyComboBox.SelectedIndex = 0;
-
-
+        // combine loans
+        
     }
     private Database3MyFinancesContext _db;
 
@@ -132,6 +139,14 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     public async Task<List<RecurringCharge>> LoadRecurringChargesAsync()
     {
         return await _db.RecurringCharges.Include(x => x.Periodicity).ToListAsync();
+    }
+    public async Task<List<GivingLoan>> LoadGivingLoansAsync()
+    {
+        return await _db.GivingLoans.Include(x => x.PaymentMethod).Include(x=> x.Provider).Include(x => x.ReceivingLoans).ToListAsync();
+    }
+    public async Task<List<ReceivingLoan>> LoadReceivingLoansAsync()
+    {
+        return await _db.ReceivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.GivingLoans).ToListAsync();
     }
     private List<PaymentMethod> _allPaymentMethods;
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
@@ -324,6 +339,52 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             Currencies = value;
             OnPropertyChanged(nameof(Currencies));
         }
+    }
+    private List<GivingLoan> _allGivingLoans;
+    private List<ReceivingLoan> _allReceivingLoans;
+    private List<Loan> _allLoans;
+    public ObservableCollection<LoanViewModel> Loans
+    {
+        get
+        {
+            var collection = new ObservableCollection<LoanViewModel>();
+            _allLoans.ForEach(l => collection.Add(new LoanViewModel(l)));
+            return collection;
+        }
+    }
+    private LoanViewModel _selectedLoan { get; set; }
+    public LoanViewModel SelectedLoan
+    {
+        get
+        {
+            if (_selectedLoan == null)
+            {
+                return Loans.FirstOrDefault();
+            }
+            return _selectedLoan;
+        }
+        set
+        {
+            _selectedLoan = value;
+            OnPropertyChanged(nameof(SelectedLoan));
+        }
+    }
+    public void CombineLoans()
+    {
+        var mainGivingLoans = _allGivingLoans.Where(x => x.ReceivingLoan == null).ToList();
+        var mainReceivingLoans = _allReceivingLoans.Where(x=> x.GivingLoan == null).ToList();
+        _allLoans.Clear();
+        mainGivingLoans.ForEach(l =>
+        {
+            var list = _allReceivingLoans.Where(x => x.GivingLoanId == l.Id).ToList();
+            _allLoans.Add(new Loan(l, list));
+        });
+        mainReceivingLoans.ForEach(l =>
+        {
+            var list = _allGivingLoans.Where(x => x.ReceivingLoanId == l.Id).ToList();
+            _allLoans.Add(new Loan(l, list));
+        });
+        OnPropertyChanged(nameof(Loans));
     }
     private string _selectedOperationType;
     public string SelectedOperationType
@@ -648,6 +709,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         UpdateRecuringCharges();
 
     }, x => true);
+    public ICommand AddNewLoan => new RelayCommand(x =>
+    {
+        var window = new AddLoan();
+        window.ShowDialog();
+        UpdateLoans();
+
+    }, x => true);
     public void UpdateCategories()
     {
         _allCategoriesExp.Clear();
@@ -726,6 +794,18 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             _allRecurringCharges = await LoadRecurringChargesAsync();
             _allRecurringCharges.ForEach(rc => RecurringCharges.Add(new RecurringChargeViewModel(rc)));
             OnPropertyChanged(nameof(RecurringCharges));
+        }).Wait();
+    }
+    public void UpdateLoans()
+    {
+        _allGivingLoans.Clear();
+        _allReceivingLoans.Clear();
+        Task.Run(async () =>
+        {
+            _allReceivingLoans = await LoadReceivingLoansAsync();
+            _allGivingLoans = await LoadGivingLoansAsync();
+            CombineLoans();
+            //OnPropertyChanged(nameof(RecurringCharges));
         }).Wait();
     }
     public ICommand ShowFullInfoOfRecurringCharge => new RelayCommand(x =>
