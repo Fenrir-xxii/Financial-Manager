@@ -604,6 +604,575 @@
                 </Grid>
             </Border>
         </TabItem>
+        
+        <TabItem Header="Recurring Charges">
+            <Border Padding="7" BorderThickness="4" Background="DarkSlateGray">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="10*"></RowDefinition>
+                        <RowDefinition Height="80*"></RowDefinition>
+                        <RowDefinition Height="10*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="R E C U R R I N G   C H A R G E S " Foreground="NavajoWhite" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    <DataGrid
+                        Grid.Row="1"
+                        AutoGenerateColumns="False" 
+                        IsReadOnly="True" 
+                        ItemsSource="{Binding Path=RecurringCharges}"
+                        SelectedItem="{Binding Path=SelectedRecurringCharge}"
+                        ColumnWidth="*"
+                        Background="#C4C9C9"
+                        AlternatingRowBackground="#D0D4D4">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="FontFamily" Value="Times New Roman"/>
+                                <Setter Property="Background" Value="#1E3232"></Setter>
+                                <Setter Property="Foreground" Value="White"></Setter>
+                                <Setter Property="Height" Value="18"></Setter>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Full info" Command="{Binding Path=ShowFullInfoOfRecurringCharge}"></MenuItem>
+                                <MenuItem Header="Delete" Command="{Binding Path=DeleteRecurringCharge}"></MenuItem>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <!--<DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" Width="3*"></DataGridTextColumn>-->
+                            <DataGridTextColumn Header="Name" Binding="{Binding Path=Title}" Width="15*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Amount" Width="10*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                        <Binding Path="Amount"></Binding>
+                                        <Binding Path="Currency.CodeNumber"></Binding>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency.CodeLetter}" Width="9*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Category" Binding="{Binding Path=Category.Title}" Width="10*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="SubCategory" Binding="{Binding Path=Subcategory.Title}" Width="10*"></DataGridTextColumn>
+                            <!--<DataGridTextColumn Header="Provider" Binding="{Binding Path=Provider.Title}" Width="10*"></DataGridTextColumn>-->
+                            <!--<DataGridTextColumn Header="Payment method" Binding="{Binding Path=PaymentMethod.Title}" Width="10*"></DataGridTextColumn>-->
+                            <DataGridTextColumn Header="Auto payment" Binding="{Binding Path=AutoPayment}" Width="10*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Periodicity" Binding="{Binding Path=PeriodicityText}" Width="10*"></DataGridTextColumn>
+                            <!--<DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="10*"></DataGridTextColumn>-->
+                            <DataGridTextColumn Header="Next Payment" Binding="{Binding Path=DateOfNextPayment, StringFormat='dd.MM.yyyy'}" Width="10*"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button Margin="200,5,200,5" Grid.Column="0" Grid.Row="2" Content="Add" Command="{Binding Path=AddRecuringCharge}">
+                        <!--<Button.Resources>
+                            -->
+                        <!--<Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="7"/>
+                            </Style>-->
+                        <!--
+                        </Button.Resources>-->
+                    </Button>
+                </Grid>
+            </Border>
+        </TabItem>
+        <TabItem Header="Loans">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <!--<ColumnDefinition Width="167*"/>
+                    <ColumnDefinition Width="68*"/>
+                    <ColumnDefinition Width="14*"/>
+                    <ColumnDefinition Width="55*"/>
+                    <ColumnDefinition Width="490*"/>-->
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60*"></RowDefinition>
+                    <RowDefinition Height="8*"></RowDefinition>
+                    <RowDefinition Height="5*"></RowDefinition>
+                    <RowDefinition Height="35*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <!--<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Search by title: "></TextBlock>
+                                        <TextBox MinWidth="550" Text="{Binding Path=SearchBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                    </TextBlock>-->
+                <DataGrid Grid.Row="0"
+                                        AutoGenerateColumns="False" 
+                                        IsReadOnly="True" 
+                                        ItemsSource="{Binding Path=Loans}"
+                                        SelectedItem="{Binding Path=SelectedLoan}"
+                                        Background="#C4C9C9"
+                                        AlternatingRowBackground="#D0D4D4"
+                                        ColumnWidth="*" Grid.ColumnSpan="5">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <!--<Setter Property="FontWeight" Value="Bold"/>-->
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="FontFamily" Value="Times New Roman"/>
+                            <Setter Property="Background" Value="#1E3232"></Setter>
+                            <Setter Property="Foreground" Value="White"></Setter>
+                            <Setter Property="Height" Value="16"></Setter>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" Binding="{Binding Path=DateOfLoan, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Payment Method" Binding="{Binding Path=LoanPaymentMethod.Title}" Width="20*"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Amount" Width="15*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                    <Binding Path="LoanAmount"></Binding>
+                                    <Binding Path="LoanPaymentMethod.Currency.CodeNumber"></Binding>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Payback amount" Width="15*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                    <Binding Path="TotalAmountPayback"></Binding>
+                                    <Binding Path="LoanPaymentMethod.Currency.CodeNumber"></Binding>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Payback balance" Width="15*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                    <Binding Path="LoanBalance"></Binding>
+                                    <Binding Path="LoanPaymentMethod.Currency.CodeNumber"></Binding>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Item.LoanGiver }" Value="Me">
+                                            <Setter Property="Foreground" Value="Green"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Item.LoanReceiver }" Value="Me">
+                                            <Setter Property="Foreground" Value="Red"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Giver" Binding="{Binding Path=LoanGiver}" Width="15*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <Trigger Property="Text" Value="Me">
+                                            <Setter Property="Foreground" Value="Green"></Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Receiver" Binding="{Binding Path=LoanReceiver}" Width="15*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <Trigger Property="Text" Value="Me">
+                                            <Setter Property="Foreground" Value="Red"></Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Path=LoanDescription}" Width="15*"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Is closed" Binding="{Binding Path=IsLoanClosed}" Width="10*"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Grid.Row="1" Margin="300,3,300,3" Command="{Binding Path=AddNewLoan}">Add</Button>
+                <TextBlock Text="P A Y B A C K S" TextAlignment="Center" FontWeight="Bold" Grid.Row="2" Grid.ColumnSpan="5" Grid.RowSpan="3"/>
+                <DataGrid Grid.Row="3" 
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True" 
+                          ItemsSource="{Binding Path=SelectedLoan.LoanPaybacks}"
+                          SelectedItem=""
+                          Background="#C4C9C9"
+                          AlternatingRowBackground="#D0D4D4"
+                          ColumnWidth="*" Grid.ColumnSpan="5">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="FontFamily" Value="Times New Roman"/>
+                            <Setter Property="Background" Value="#1E3232"></Setter>
+                            <Setter Property="Foreground" Value="White"></Setter>
+                            <Setter Property="Height" Value="14"></Setter>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Amount" Width="15*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                    <Binding Path="Amount"></Binding>
+                                    <Binding Path="CurrencyCodeNumber"></Binding>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="30*"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Statistics">
+            <TabControl>
+                <TabControl.Resources>
+                    <Style TargetType="TabPanel">
+                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                    </Style>
+                </TabControl.Resources>
+                <TabItem Header="Expenses">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="{Binding Path=DatePickerColumnWidthExp, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ColumnDefinition>
+                            <ColumnDefinition Width="87*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <DockPanel>
+                                <Button DockPanel.Dock="Top" Command="{Binding Path=ShowHideDatePickerColumnExp}" Background="OrangeRed">*</Button>
+                            </DockPanel>
+                            <TextBlock Text="From:"></TextBlock>
+                            <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=BeginDateExp}" Maximum="{Binding Path=EndDateExp}"></xctk:DateTimePicker>
+                            <TextBlock Text="To:"></TextBlock>
+                            <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=EndDateExp}" Minimum="{Binding Path=BeginDateExp}"></xctk:DateTimePicker>
+                            <TextBlock Text="Currency:"></TextBlock>
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Path=Currencies}" SelectedItem="{Binding Path=FilterSelectedCurrencyExp}" Name="CurrencyComboBoxExp">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=CodeLetter}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <!--<Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemovePaymentMethodFilterCommand}">x</Button>-->
+                            </StackPanel>
+                            <TextBlock Text="Payment method:"></TextBlock>
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Path=PaymentMethods}" SelectedItem="{Binding Path=FilterSelectedPaymentMethodExp}" Name="PaymentMethodComboBoxExp">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemovePaymentMethodExpFilter}" Height="20">x</Button>
+                            </StackPanel>
+                            <TextBlock Text="Provider:"></TextBlock>
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Path=Providers}" SelectedItem="{Binding Path=FilterSelectedProviderExp}" Name="ProviderComboBoxExp">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemoveProviderExpFilter}" Height="20">x</Button>
+                            </StackPanel>
+                            <TextBlock Text="Category:"></TextBlock>
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Path=CategoriesExp}" SelectedItem="{Binding Path=FilterSelectedCategoryExp}" Name="CategoryComboBoxExp">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemoveCategoryExpFilter}" Height="20">x</Button>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <TabControl Grid.Column="1">
+                            <TabItem Header="Columns">
+                                <lvc:CartesianChart Series="{Binding ChartCategoriesExp}" LegendLocation="Right" Background="#222E31" Foreground="White">
+                                    <lvc:CartesianChart.SeriesColors>
+                                        <lvc:ColorsCollection>
+                                            <Color>Orange</Color>
+                                        </lvc:ColorsCollection>
+                                    </lvc:CartesianChart.SeriesColors>
+                                    <lvc:CartesianChart.DataTooltip>
+                                        <lvc:DefaultTooltip Background="Black">
+
+                                        </lvc:DefaultTooltip>
+                                    </lvc:CartesianChart.DataTooltip>
+                                    <lvc:CartesianChart.AxisY>
+                                        <lvc:Axis Title="Expense count&#x0a; " LabelFormatter="{Binding Formatter}" Foreground="White">
+                                            <lvc:Axis.Separator>
+                                                <lvc:Separator StrokeThickness="2" StrokeDashArray="4" Step="1">
+                                                    <lvc:Separator.Stroke>
+                                                        <SolidColorBrush Color="#404F56" />
+                                                    </lvc:Separator.Stroke>
+                                                </lvc:Separator>
+                                            </lvc:Axis.Separator>
+                                        </lvc:Axis>
+                                    </lvc:CartesianChart.AxisY>
+                                    <lvc:CartesianChart.AxisX>
+                                        <lvc:Axis Title="&#x0a;Categories" Labels="{Binding LabelsExp}" Foreground="White">
+                                            <lvc:Axis.Separator>
+                                                <lvc:Separator StrokeThickness="0" StrokeDashArray="0">
+                                                    <lvc:Separator.Stroke>
+                                                        <SolidColorBrush Color="#404F56" />
+                                                    </lvc:Separator.Stroke>
+                                                </lvc:Separator>
+                                            </lvc:Axis.Separator>
+                                        </lvc:Axis>
+                                    </lvc:CartesianChart.AxisX>
+                                </lvc:CartesianChart>
+                            </TabItem>
+                            <TabItem Header="Pie">
+                                <lvc:PieChart LegendLocation="Right" Background="CadetBlue" DataClick="Chart_OnDataClick" Hoverable="False" DataTooltip="{x:Null}"
+                        Series="{Binding ChartCategoriesExpPie}">
+                                    <lvc:PieChart.Resources>
+                                        <Style TargetType="lvc:PieSeries">
+                                            <Setter Property="Foreground" Value="Black"></Setter>
+                                            <Setter Property="StrokeThickness" Value="1"></Setter>
+                                            <Setter Property="Stroke" Value="DarkGray"></Setter>
+                                        </Style>
+                                    </lvc:PieChart.Resources>
+                                </lvc:PieChart>
+                            </TabItem>
+                            <TabItem Header="List">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="10*"></RowDefinition>
+                                        <RowDefinition Height="90*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Search by title: "></TextBlock>
+                                        <TextBox MinWidth="550" Text="{Binding Path=SearchBoxExp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                    </TextBlock>
+                                    <DataGrid Grid.Row="1"
+                                        AutoGenerateColumns="False" 
+                                        IsReadOnly="True" 
+                                        ItemsSource="{Binding Path=FilteredExpenses}"
+                                        SelectedItem=""
+                                        Background="#C4C9C9"
+                                        AlternatingRowBackground="#D0D4D4"
+                                        ColumnWidth="*">
+                                        <DataGrid.ColumnHeaderStyle>
+                                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                                <!--<Setter Property="FontWeight" Value="Bold"/>-->
+                                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                                <Setter Property="FontFamily" Value="Times New Roman"/>
+                                                <Setter Property="Background" Value="#1E3232"></Setter>
+                                                <Setter Property="Foreground" Value="White"></Setter>
+                                                <Setter Property="Height" Value="16"></Setter>
+                                            </Style>
+                                        </DataGrid.ColumnHeaderStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Date" Binding="{Binding Path=DateOfExpense, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}" Width="20*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Category" Binding="{Binding Path=Category.Title}" Width="15*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Subcategory" Binding="{Binding Path=Subcategory.Title, TargetNullValue='-'}" Width="15*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Payment Method" Binding="{Binding Path=PaymentMethod.Title}" Width="20*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Amount" Width="15*">
+                                                <DataGridTextColumn.Binding>
+                                                    <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                                        <Binding Path="Amount"></Binding>
+                                                        <Binding Path="PaymentMethod.Currency.CodeNumber"></Binding>
+                                                    </MultiBinding>
+                                                </DataGridTextColumn.Binding>
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+                                        </DataGrid.Columns>
+
+                                    </DataGrid>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Incomes">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="{Binding Path=DatePickerColumnWidthInc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ColumnDefinition>
+                            <ColumnDefinition Width="87*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <DockPanel>
+                                <Button DockPanel.Dock="Top" Command="{Binding Path=ShowHideDatePickerColumnInc}" Background="OrangeRed">*</Button>
+                            </DockPanel>
+                            <TextBlock Text="From:"></TextBlock>
+                            <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=BeginDateInc}" Maximum="{Binding Path=EndDateInc}"></xctk:DateTimePicker>
+                            <TextBlock Text="To:"></TextBlock>
+                            <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=EndDateInc}" Minimum="{Binding Path=BeginDateInc}"></xctk:DateTimePicker>
+                            <TextBlock Text="Currency:"></TextBlock>
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Path=Currencies}" SelectedItem="{Binding Path=FilterSelectedCurrencyInc}" Name="CurrencyComboBoxInc">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=CodeLetter}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                            <TextBlock Text="Payment method:"></TextBlock>
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Path=PaymentMethods}" SelectedItem="{Binding Path=FilterSelectedPaymentMethodInc}" Name="PaymentMethodComboBoxInc">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemovePaymentMethodIncFilter}" Height="20">x</Button>
+                            </StackPanel>
+                            <TextBlock Text="Provider:"></TextBlock>
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Path=Providers}" SelectedItem="{Binding Path=FilterSelectedProviderInc}" Name="ProviderComboBoxInc">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemoveProviderIncFilter}" Height="20">x</Button>
+                            </StackPanel>
+                            <TextBlock Text="Category:"></TextBlock>
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Path=CategoriesInc}" SelectedItem="{Binding Path=FilterSelectedCategoryInc}" Name="CategoryComboBoxInc">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemoveCategoryIncFilter}" Height="20">x</Button>
+                            </StackPanel>
+                        </StackPanel>
+                        <TabControl Grid.Row="0" Grid.Column="1">
+                            <TabItem Header="Columns">
+                                <lvc:CartesianChart Series="{Binding ChartCategoriesInc}" LegendLocation="Right" Background="#222E31" Foreground="White">
+                                    <lvc:CartesianChart.SeriesColors>
+                                        <lvc:ColorsCollection>
+                                            <Color>Orange</Color>
+                                        </lvc:ColorsCollection>
+                                    </lvc:CartesianChart.SeriesColors>
+                                    <lvc:CartesianChart.DataTooltip>
+                                        <lvc:DefaultTooltip Background="Black">
+
+                                        </lvc:DefaultTooltip>
+                                    </lvc:CartesianChart.DataTooltip>
+                                    <lvc:CartesianChart.AxisY>
+                                        <lvc:Axis Title="Expense count&#x0a; " LabelFormatter="{Binding Formatter}" Foreground="White">
+                                            <lvc:Axis.Separator>
+                                                <lvc:Separator StrokeThickness="2" StrokeDashArray="4" Step="1">
+                                                    <lvc:Separator.Stroke>
+                                                        <SolidColorBrush Color="#404F56" />
+                                                    </lvc:Separator.Stroke>
+                                                </lvc:Separator>
+                                            </lvc:Axis.Separator>
+                                        </lvc:Axis>
+                                    </lvc:CartesianChart.AxisY>
+                                    <lvc:CartesianChart.AxisX>
+                                        <lvc:Axis Title="&#x0a;Categories" Labels="{Binding LabelsInc}" Foreground="White">
+                                            <lvc:Axis.Separator>
+                                                <lvc:Separator StrokeThickness="0" StrokeDashArray="0">
+                                                    <lvc:Separator.Stroke>
+                                                        <SolidColorBrush Color="#404F56" />
+                                                    </lvc:Separator.Stroke>
+                                                </lvc:Separator>
+                                            </lvc:Axis.Separator>
+                                        </lvc:Axis>
+                                    </lvc:CartesianChart.AxisX>
+                                </lvc:CartesianChart>
+                            </TabItem>
+                            <TabItem Header="Pie">
+                                <lvc:PieChart LegendLocation="Right" Background="CadetBlue" DataClick="Chart_OnDataClick" Hoverable="False" DataTooltip="{x:Null}"
+                        Series="{Binding ChartCategoriesIncPie}">
+                                    <lvc:PieChart.Resources>
+                                        <Style TargetType="lvc:PieSeries">
+                                            <Setter Property="Foreground" Value="Black"></Setter>
+                                            <Setter Property="StrokeThickness" Value="1"></Setter>
+                                            <Setter Property="Stroke" Value="DarkGray"></Setter>
+                                        </Style>
+                                    </lvc:PieChart.Resources>
+                                </lvc:PieChart>
+                            </TabItem>
+                            <TabItem Header="List">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="10*"></RowDefinition>
+                                        <RowDefinition Height="90*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Search by title: "></TextBlock>
+                                        <TextBox MinWidth="550" Text="{Binding Path=SearchBoxInc, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                    </TextBlock>
+                                    <DataGrid Grid.Row="1"
+                                        AutoGenerateColumns="False" 
+                                        IsReadOnly="True" 
+                                        ItemsSource="{Binding Path=FilteredIncomes}"
+                                        SelectedItem=""
+                                        Background="#C4C9C9"
+                                        AlternatingRowBackground="#D0D4D4"
+                                        ColumnWidth="*">
+                                        <DataGrid.ColumnHeaderStyle>
+                                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                                <!--<Setter Property="FontWeight" Value="Bold"/>-->
+                                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                                <Setter Property="FontFamily" Value="Times New Roman"/>
+                                                <Setter Property="Background" Value="#1E3232"></Setter>
+                                                <Setter Property="Foreground" Value="White"></Setter>
+                                                <Setter Property="Height" Value="16"></Setter>
+                                            </Style>
+                                        </DataGrid.ColumnHeaderStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Date" Binding="{Binding Path=DateOfIncome, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}" Width="20*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Category" Binding="{Binding Path=Category.Title}" Width="15*"></DataGridTextColumn>
+                                            <!--<DataGridTextColumn Header="Subcategory" Binding="{Binding Path=Subcategory.Title, TargetNullValue='-'}" Width="15*"></DataGridTextColumn>-->
+                                            <DataGridTextColumn Header="Payment Method" Binding="{Binding Path=PaymentMethod.Title}" Width="20*"></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Amount" Width="15*">
+                                                <DataGridTextColumn.Binding>
+                                                    <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
+                                                        <Binding Path="Amount"></Binding>
+                                                        <Binding Path="PaymentMethod.Currency.CodeNumber"></Binding>
+                                                    </MultiBinding>
+                                                </DataGridTextColumn.Binding>
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+                                        </DataGrid.Columns>
+
+                                    </DataGrid>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </TabItem>
         <TabItem Header="Categories">
             <Border Padding="7" BorderThickness="4" Background="DarkSlateGray">
                 <Grid>
@@ -771,479 +1340,7 @@
                 </Grid>
             </Border>
         </TabItem>
-        <TabItem Header="Recurring Charges">
-            <Border Padding="7" BorderThickness="4" Background="DarkSlateGray">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="10*"></RowDefinition>
-                        <RowDefinition Height="80*"></RowDefinition>
-                        <RowDefinition Height="10*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="R E C U R R I N G   C H A R G E S " Foreground="NavajoWhite" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                    <DataGrid
-                        Grid.Row="1"
-                        AutoGenerateColumns="False" 
-                        IsReadOnly="True" 
-                        ItemsSource="{Binding Path=RecurringCharges}"
-                        SelectedItem="{Binding Path=SelectedRecurringCharge}"
-                        ColumnWidth="*"
-                        Background="#C4C9C9"
-                        AlternatingRowBackground="#D0D4D4">
-                        <DataGrid.ColumnHeaderStyle>
-                            <Style TargetType="{x:Type DataGridColumnHeader}">
-                                <Setter Property="FontWeight" Value="Bold"/>
-                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                <Setter Property="FontFamily" Value="Times New Roman"/>
-                                <Setter Property="Background" Value="#1E3232"></Setter>
-                                <Setter Property="Foreground" Value="White"></Setter>
-                                <Setter Property="Height" Value="18"></Setter>
-                            </Style>
-                        </DataGrid.ColumnHeaderStyle>
-                        <DataGrid.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Full info" Command="{Binding Path=ShowFullInfoOfRecurringCharge}"></MenuItem>
-                                <MenuItem Header="Delete" Command="{Binding Path=DeleteRecurringCharge}"></MenuItem>
-                            </ContextMenu>
-                        </DataGrid.ContextMenu>
-                        <DataGrid.Columns>
-                            <!--<DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" Width="3*"></DataGridTextColumn>-->
-                            <DataGridTextColumn Header="Name" Binding="{Binding Path=Title}" Width="15*"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Amount" Width="10*">
-                                <DataGridTextColumn.Binding>
-                                    <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
-                                        <Binding Path="Amount"></Binding>
-                                        <Binding Path="Currency.CodeNumber"></Binding>
-                                    </MultiBinding>
-                                </DataGridTextColumn.Binding>
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="HorizontalAlignment" Value="Right" />
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency.CodeLetter}" Width="9*"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Category" Binding="{Binding Path=Category.Title}" Width="10*"></DataGridTextColumn>
-                            <DataGridTextColumn Header="SubCategory" Binding="{Binding Path=Subcategory.Title}" Width="10*"></DataGridTextColumn>
-                            <!--<DataGridTextColumn Header="Provider" Binding="{Binding Path=Provider.Title}" Width="10*"></DataGridTextColumn>-->
-                            <!--<DataGridTextColumn Header="Payment method" Binding="{Binding Path=PaymentMethod.Title}" Width="10*"></DataGridTextColumn>-->
-                            <DataGridTextColumn Header="Auto payment" Binding="{Binding Path=AutoPayment}" Width="10*"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Periodicity" Binding="{Binding Path=PeriodicityText}" Width="10*"></DataGridTextColumn>
-                            <!--<DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="10*"></DataGridTextColumn>-->
-                            <DataGridTextColumn Header="Next Payment" Binding="{Binding Path=DateOfNextPayment, StringFormat='dd.MM.yyyy'}" Width="10*"></DataGridTextColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <Button Margin="200,5,200,5" Grid.Column="0" Grid.Row="2" Content="Add" Command="{Binding Path=AddRecuringCharge}">
-                        <!--<Button.Resources>
-                            -->
-                        <!--<Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="7"/>
-                            </Style>-->
-                        <!--
-                        </Button.Resources>-->
-                    </Button>
-                </Grid>
-            </Border>
-        </TabItem>
-        <TabItem Header="Statistics">
-            <TabControl>
-                <TabControl.Resources>
-                    <Style TargetType="TabPanel">
-                        <Setter Property="HorizontalAlignment" Value="Right"/>
-                    </Style>
-                </TabControl.Resources>
-                <TabItem Header="Expenses">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="{Binding Path=DatePickerColumnWidthExp, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ColumnDefinition>
-                            <ColumnDefinition Width="87*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Row="0" Grid.Column="0">
-                            <DockPanel>
-                                <Button DockPanel.Dock="Top" Command="{Binding Path=ShowHideDatePickerColumnExpCommand}" Background="OrangeRed">*</Button>
-                            </DockPanel>
-                            <TextBlock Text="From:"></TextBlock>
-                            <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=BeginDateExp}" Maximum="{Binding Path=EndDateExp}"></xctk:DateTimePicker>
-                            <TextBlock Text="To:"></TextBlock>
-                            <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=EndDateExp}" Minimum="{Binding Path=BeginDateExp}"></xctk:DateTimePicker>
-                            <TextBlock Text="Currency:"></TextBlock>
-                            <StackPanel>
-                                <ComboBox ItemsSource="{Binding Path=Currencies}" SelectedItem="{Binding Path=FilterSelectedCurrency}" Name="CurrencyComboBox">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Path=CodeLetter}"></TextBlock>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                                <!--<Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemovePaymentMethodFilterCommand}">x</Button>-->
-                            </StackPanel>
-                            <TextBlock Text="Payment method:"></TextBlock>
-                            <StackPanel>
-                                <ComboBox ItemsSource="{Binding Path=PaymentMethods}" SelectedItem="{Binding Path=FilterSelectedPaymentMethod}" Name="PaymentMethodComboBox">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                                <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemovePaymentMethodFilterCommand}" Height="20">x</Button>
-                            </StackPanel>
-                            <TextBlock Text="Provider:"></TextBlock>
-                            <StackPanel>
-                                <ComboBox ItemsSource="{Binding Path=Providers}" SelectedItem="{Binding Path=FilterSelectedProvider}" Name="ProviderComboBox">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                                <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemoveProviderFilterCommand}" Height="20">x</Button>
-                            </StackPanel>
-                            <TextBlock Text="Category:"></TextBlock>
-                            <StackPanel>
-                                <ComboBox ItemsSource="{Binding Path=CategoriesExp}" SelectedItem="{Binding Path=FilterSelectedCategoryExp}" Name="CategoryComboBox">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                                <Button Background="SlateGray" Foreground="Red" FontWeight="Bold" Command="{Binding Path=RemoveCategoryFilterCommand}" Height="20">x</Button>
-                            </StackPanel>
-                        </StackPanel>
-
-                        <TabControl Grid.Column="1">
-                            <TabItem Header="Columns">
-                                <lvc:CartesianChart Series="{Binding ChartCategoriesExp}" LegendLocation="Right" Background="#222E31" Foreground="White">
-                                    <lvc:CartesianChart.SeriesColors>
-                                        <lvc:ColorsCollection>
-                                            <Color>Orange</Color>
-                                        </lvc:ColorsCollection>
-                                    </lvc:CartesianChart.SeriesColors>
-                                    <lvc:CartesianChart.DataTooltip>
-                                        <lvc:DefaultTooltip Background="Black">
-
-                                        </lvc:DefaultTooltip>
-                                    </lvc:CartesianChart.DataTooltip>
-                                    <lvc:CartesianChart.AxisY>
-                                        <lvc:Axis Title="Expense count&#x0a; " LabelFormatter="{Binding Formatter}" Foreground="White">
-                                            <lvc:Axis.Separator>
-                                                <lvc:Separator StrokeThickness="2" StrokeDashArray="4" Step="1">
-                                                    <lvc:Separator.Stroke>
-                                                        <SolidColorBrush Color="#404F56" />
-                                                    </lvc:Separator.Stroke>
-                                                </lvc:Separator>
-                                            </lvc:Axis.Separator>
-                                        </lvc:Axis>
-                                    </lvc:CartesianChart.AxisY>
-                                    <lvc:CartesianChart.AxisX>
-                                        <lvc:Axis Title="&#x0a;Categories" Labels="{Binding LabelsExp}" Foreground="White">
-                                            <lvc:Axis.Separator>
-                                                <lvc:Separator StrokeThickness="0" StrokeDashArray="0">
-                                                    <lvc:Separator.Stroke>
-                                                        <SolidColorBrush Color="#404F56" />
-                                                    </lvc:Separator.Stroke>
-                                                </lvc:Separator>
-                                            </lvc:Axis.Separator>
-                                        </lvc:Axis>
-                                    </lvc:CartesianChart.AxisX>
-                                </lvc:CartesianChart>
-                            </TabItem>
-                            <TabItem Header="Pie">
-                                <lvc:PieChart LegendLocation="Right" Background="CadetBlue" DataClick="Chart_OnDataClick" Hoverable="False" DataTooltip="{x:Null}"
-                        Series="{Binding ChartCategoriesExpPie}">
-                                    <lvc:PieChart.Resources>
-                                        <Style TargetType="lvc:PieSeries">
-                                            <Setter Property="Foreground" Value="Black"></Setter>
-                                            <Setter Property="StrokeThickness" Value="1"></Setter>
-                                            <Setter Property="Stroke" Value="DarkGray"></Setter>
-                                        </Style>
-                                    </lvc:PieChart.Resources>
-                                </lvc:PieChart>
-                            </TabItem>
-                            <TabItem Header="List">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="10*"></RowDefinition>
-                                        <RowDefinition Height="90*"></RowDefinition>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <TextBlock Text="Search by title: "></TextBlock>
-                                        <TextBox MinWidth="550" Text="{Binding Path=SearchBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                                    </TextBlock>
-                                    <DataGrid Grid.Row="1"
-                                        AutoGenerateColumns="False" 
-                                        IsReadOnly="True" 
-                                        ItemsSource="{Binding Path=FilteredExpenses}"
-                                        SelectedItem=""
-                                        Background="#C4C9C9"
-                                        AlternatingRowBackground="#D0D4D4"
-                                        ColumnWidth="*">
-                                        <DataGrid.ColumnHeaderStyle>
-                                            <Style TargetType="{x:Type DataGridColumnHeader}">
-                                                <!--<Setter Property="FontWeight" Value="Bold"/>-->
-                                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                                <Setter Property="FontFamily" Value="Times New Roman"/>
-                                                <Setter Property="Background" Value="#1E3232"></Setter>
-                                                <Setter Property="Foreground" Value="White"></Setter>
-                                                <Setter Property="Height" Value="16"></Setter>
-                                            </Style>
-                                        </DataGrid.ColumnHeaderStyle>
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Header="Date" Binding="{Binding Path=DateOfExpense, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
-                                            <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}" Width="20*"></DataGridTextColumn>
-                                            <DataGridTextColumn Header="Category" Binding="{Binding Path=Category.Title}" Width="15*"></DataGridTextColumn>
-                                            <DataGridTextColumn Header="Subcategory" Binding="{Binding Path=Subcategory.Title, TargetNullValue='-'}" Width="15*"></DataGridTextColumn>
-                                            <DataGridTextColumn Header="Payment Method" Binding="{Binding Path=PaymentMethod.Title}" Width="20*"></DataGridTextColumn>
-                                            <DataGridTextColumn Header="Amount" Width="15*">
-                                                <DataGridTextColumn.Binding>
-                                                    <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
-                                                        <Binding Path="Amount"></Binding>
-                                                        <Binding Path="PaymentMethod.Currency.CodeNumber"></Binding>
-                                                    </MultiBinding>
-                                                </DataGridTextColumn.Binding>
-                                                <DataGridTextColumn.ElementStyle>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="HorizontalAlignment" Value="Right" />
-                                                    </Style>
-                                                </DataGridTextColumn.ElementStyle>
-                                            </DataGridTextColumn>
-                                        </DataGrid.Columns>
-
-                                    </DataGrid>
-                                </Grid>
-                            </TabItem>
-                        </TabControl>
-                    </Grid>
-                </TabItem>
-                <TabItem Header="Incomes">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="{Binding Path=DatePickerColumnWidthInc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ColumnDefinition>
-                            <ColumnDefinition Width="87*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Row="0" Grid.Column="0">
-                            <DockPanel>
-                                <Button DockPanel.Dock="Top" Command="{Binding Path=ShowHideDatePickerColumnIncCommand}" Background="OrangeRed">*</Button>
-                            </DockPanel>
-                            <TextBlock Text="From:"></TextBlock>
-                            <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=BeginDateInc}" Maximum="{Binding Path=EndDateInc}"></xctk:DateTimePicker>
-                            <TextBlock Text="To:"></TextBlock>
-                            <xctk:DateTimePicker Format="Custom" FormatString="dd.MM.yyyy" AutoCloseCalendar="True" Value="{Binding Path=EndDateInc}" Minimum="{Binding Path=BeginDateInc}"></xctk:DateTimePicker>
-                        </StackPanel>
-                        <TabControl Grid.Row="0" Grid.Column="1">
-                            <TabItem Header="Columns">
-                                <lvc:CartesianChart Series="{Binding ChartCategoriesInc}" LegendLocation="Right" Background="#222E31" Foreground="White">
-                                    <lvc:CartesianChart.SeriesColors>
-                                        <lvc:ColorsCollection>
-                                            <Color>Orange</Color>
-                                        </lvc:ColorsCollection>
-                                    </lvc:CartesianChart.SeriesColors>
-                                    <lvc:CartesianChart.DataTooltip>
-                                        <lvc:DefaultTooltip Background="Black">
-
-                                        </lvc:DefaultTooltip>
-                                    </lvc:CartesianChart.DataTooltip>
-                                    <lvc:CartesianChart.AxisY>
-                                        <lvc:Axis Title="Expense count&#x0a; " LabelFormatter="{Binding Formatter}" Foreground="White">
-                                            <lvc:Axis.Separator>
-                                                <lvc:Separator StrokeThickness="2" StrokeDashArray="4" Step="1">
-                                                    <lvc:Separator.Stroke>
-                                                        <SolidColorBrush Color="#404F56" />
-                                                    </lvc:Separator.Stroke>
-                                                </lvc:Separator>
-                                            </lvc:Axis.Separator>
-                                        </lvc:Axis>
-                                    </lvc:CartesianChart.AxisY>
-                                    <lvc:CartesianChart.AxisX>
-                                        <lvc:Axis Title="&#x0a;Categories" Labels="{Binding LabelsInc}" Foreground="White">
-                                            <lvc:Axis.Separator>
-                                                <lvc:Separator StrokeThickness="0" StrokeDashArray="0">
-                                                    <lvc:Separator.Stroke>
-                                                        <SolidColorBrush Color="#404F56" />
-                                                    </lvc:Separator.Stroke>
-                                                </lvc:Separator>
-                                            </lvc:Axis.Separator>
-                                        </lvc:Axis>
-                                    </lvc:CartesianChart.AxisX>
-                                </lvc:CartesianChart>
-                            </TabItem>
-                            <TabItem Header="Pie">
-                                <lvc:PieChart LegendLocation="Right" Background="CadetBlue" DataClick="Chart_OnDataClick" Hoverable="False" DataTooltip="{x:Null}"
-                        Series="{Binding ChartCategoriesIncPie}">
-                                    <lvc:PieChart.Resources>
-                                        <Style TargetType="lvc:PieSeries">
-                                            <Setter Property="Foreground" Value="Black"></Setter>
-                                            <Setter Property="StrokeThickness" Value="1"></Setter>
-                                            <Setter Property="Stroke" Value="DarkGray"></Setter>
-                                        </Style>
-                                    </lvc:PieChart.Resources>
-                                </lvc:PieChart>
-                            </TabItem>
-                        </TabControl>
-                    </Grid>
-                </TabItem>
-            </TabControl>
-        </TabItem>
-        <TabItem Header="Loans">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <!--<ColumnDefinition Width="167*"/>
-                    <ColumnDefinition Width="68*"/>
-                    <ColumnDefinition Width="14*"/>
-                    <ColumnDefinition Width="55*"/>
-                    <ColumnDefinition Width="490*"/>-->
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="60*"></RowDefinition>
-                    <RowDefinition Height="8*"></RowDefinition>
-                    <RowDefinition Height="5*"></RowDefinition>
-                    <RowDefinition Height="35*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <!--<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <TextBlock Text="Search by title: "></TextBlock>
-                                        <TextBox MinWidth="550" Text="{Binding Path=SearchBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                                    </TextBlock>-->
-                <DataGrid Grid.Row="0"
-                                        AutoGenerateColumns="False" 
-                                        IsReadOnly="True" 
-                                        ItemsSource="{Binding Path=Loans}"
-                                        SelectedItem="{Binding Path=SelectedLoan}"
-                                        Background="#C4C9C9"
-                                        AlternatingRowBackground="#D0D4D4"
-                                        ColumnWidth="*" Grid.ColumnSpan="5">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}">
-                            <!--<Setter Property="FontWeight" Value="Bold"/>-->
-                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="FontFamily" Value="Times New Roman"/>
-                            <Setter Property="Background" Value="#1E3232"></Setter>
-                            <Setter Property="Foreground" Value="White"></Setter>
-                            <Setter Property="Height" Value="16"></Setter>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Date" Binding="{Binding Path=DateOfLoan, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Payment Method" Binding="{Binding Path=LoanPaymentMethod.Title}" Width="20*"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Amount" Width="15*">
-                            <DataGridTextColumn.Binding>
-                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
-                                    <Binding Path="LoanAmount"></Binding>
-                                    <Binding Path="LoanPaymentMethod.Currency.CodeNumber"></Binding>
-                                </MultiBinding>
-                            </DataGridTextColumn.Binding>
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Right" />
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Payback amount" Width="15*">
-                            <DataGridTextColumn.Binding>
-                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
-                                    <Binding Path="TotalAmountPayback"></Binding>
-                                    <Binding Path="LoanPaymentMethod.Currency.CodeNumber"></Binding>
-                                </MultiBinding>
-                            </DataGridTextColumn.Binding>
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Right" />
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Payback balance" Width="15*">
-                            <DataGridTextColumn.Binding>
-                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
-                                    <Binding Path="LoanBalance"></Binding>
-                                    <Binding Path="LoanPaymentMethod.Currency.CodeNumber"></Binding>
-                                </MultiBinding>
-                            </DataGridTextColumn.Binding>
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Right" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Item.LoanGiver }" Value="Me">
-                                            <Setter Property="Foreground" Value="Green"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Item.LoanReceiver }" Value="Me">
-                                            <Setter Property="Foreground" Value="Red"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Giver" Binding="{Binding Path=LoanGiver}" Width="15*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Style.Triggers>
-                                        <Trigger Property="Text" Value="Me">
-                                            <Setter Property="Foreground" Value="Green"></Setter>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                    <Setter Property="HorizontalAlignment" Value="Right" />
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Receiver" Binding="{Binding Path=LoanReceiver}" Width="15*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Style.Triggers>
-                                        <Trigger Property="Text" Value="Me">
-                                            <Setter Property="Foreground" Value="Red"></Setter>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                    <Setter Property="HorizontalAlignment" Value="Right" />
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Description" Binding="{Binding Path=LoanDescription}" Width="15*"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Is closed" Binding="{Binding Path=IsLoanClosed}" Width="10*"></DataGridTextColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-                <Button Grid.Row="1" Margin="300,3,300,3" Command="{Binding Path=AddNewLoan}">Add</Button>
-                <TextBlock Text="P A Y B A C K S" TextAlignment="Center" FontWeight="Bold" Grid.Row="2" Grid.ColumnSpan="5" Grid.RowSpan="3"/>
-                <DataGrid Grid.Row="3" 
-                          AutoGenerateColumns="False" 
-                          IsReadOnly="True" 
-                          ItemsSource="{Binding Path=SelectedLoan.LoanPaybacks}"
-                          SelectedItem=""
-                          Background="#C4C9C9"
-                          AlternatingRowBackground="#D0D4D4"
-                          ColumnWidth="*" Grid.ColumnSpan="5">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}">
-                            <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="FontFamily" Value="Times New Roman"/>
-                            <Setter Property="Background" Value="#1E3232"></Setter>
-                            <Setter Property="Foreground" Value="White"></Setter>
-                            <Setter Property="Height" Value="14"></Setter>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Amount" Width="15*">
-                            <DataGridTextColumn.Binding>
-                                <MultiBinding Converter="{StaticResource localizeCurrencyMultiConverter}">
-                                    <Binding Path="Amount"></Binding>
-                                    <Binding Path="CurrencyCodeNumber"></Binding>
-                                </MultiBinding>
-                            </DataGridTextColumn.Binding>
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Right" />
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="30*"></DataGridTextColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-        </TabItem>
-        <TabItem Header="Test">
+        <!--<TabItem Header="Test">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
@@ -1275,7 +1372,7 @@
                 </ListView>
             </Grid>
 
-        </TabItem>
+        </TabItem>-->
 
     </TabControl>
 

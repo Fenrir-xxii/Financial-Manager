@@ -24,8 +24,9 @@ namespace WpfApp9_MyFinances.ViewModels;
 public class MainWindowViewModel : NotifyPropertyChangedBase
 {
     public MainWindowViewModel() 
-    { 
-        
+    {
+
+        #region CreatingNewInstances
         _db = new Database3MyFinancesContext();
         _allPaymentMethods = new List<PaymentMethod>();
         _allCategoriesExp = new List<CategoriesExp>();
@@ -55,10 +56,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _endDateExp = DateTime.Now;
         _beginDateInc = DateTime.Now.AddDays(-7);
         _endDateInc = DateTime.Now;
-        _searchBox = String.Empty;
+        _searchBoxExp = String.Empty;
+        _searchBoxInc = String.Empty;
+        #endregion
 
-    Task.Run(async () =>
+        Task.Run(async () =>
         {
+            #region LoadFromDB
             _allPaymentMethods = await LoadPaymentMethodsAsync();
             _allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
             _allCategoriesExp = await LoadCategoriesExpAsync();
@@ -90,24 +94,21 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Incomes));
             OnPropertyChanged(nameof(Currencies));
             OnPropertyChanged(nameof(RecurringCharges));
-            //OnPropertyChanged(nameof(TotalInCash));
             OnPropertyChanged(nameof(TotalInCashAllCurrencies));
-            //OnPropertyChanged(nameof(TotalInCashless));
             OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
-            //OnPropertyChanged(nameof(TotalMoney));
             OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
             OnPropertyChanged(nameof(CategoriesExpChartValue));
             OnPropertyChanged(nameof(LabelsExp));
             OnPropertyChanged(nameof(ChartCategoriesExp));
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
             OnPropertyChanged(nameof(FilteredExpenses));
+            #endregion
         });
-        (App.Current.MainWindow as MainWindow).CurrencyComboBox.SelectedIndex = 0;
-        // combine loans
-        
+        (App.Current.MainWindow as MainWindow).CurrencyComboBoxExp.SelectedIndex = 0;
+        (App.Current.MainWindow as MainWindow).CurrencyComboBoxInc.SelectedIndex = 0;
     }
     private Database3MyFinancesContext _db;
-
+    #region LoadAsync
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
         return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
@@ -148,6 +149,9 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         return await _db.ReceivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.GivingLoans).ToListAsync();
     }
+    #endregion
+    
+    #region ViewModelData
     private List<PaymentMethod> _allPaymentMethods;
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
     {
@@ -369,44 +373,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedLoan));
         }
     }
-    public void CombineLoans()
-    {
-        var mainGivingLoans = _allGivingLoans.Where(x => x.ReceivingLoan == null).ToList();
-        var mainReceivingLoans = _allReceivingLoans.Where(x=> x.GivingLoan == null).ToList();
-        _allLoans.Clear();
-        mainGivingLoans.ForEach(l =>
-        {
-            var list = _allReceivingLoans.Where(x => x.GivingLoanId == l.Id).ToList();
-            _allLoans.Add(new Loan(l, list));
-        });
-        mainReceivingLoans.ForEach(l =>
-        {
-            var list = _allGivingLoans.Where(x => x.ReceivingLoanId == l.Id).ToList();
-            _allLoans.Add(new Loan(l, list));
-        });
-        OnPropertyChanged(nameof(Loans));
-    }
-    private string _selectedOperationType;
-    public string SelectedOperationType
-    {
-        get => _selectedOperationType;
-        set
-        {
-            _selectedOperationType = value;
-            OnPropertyChanged(nameof(SelectedOperationType));
-            OnPropertyChanged(nameof(IsCategoryTypeExp));
-        }
-    }
-    private string _titleOfNewCategory;
-    public string TitleOfNewCategory
-    {
-        get=> _titleOfNewCategory;
-        set
-        {
-            _titleOfNewCategory = value;
-            OnPropertyChanged(nameof(TitleOfNewCategory));
-        }
-    }
     private CategoryExpViewModel _selectedMainCategoryExpForSub;
     public CategoryExpViewModel SelectedMainCategoryExpForSub
     {
@@ -451,6 +417,60 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedRecurringCharge));
         }
     }
+    public ObservableCollection<string> TotalInCashAllCurrencies
+    {
+        get
+        {
+            var collection = new ObservableCollection<string>();
+            var groups = _allPaymentMethods.Where(x => x.IsCash == true).GroupBy(x => x.Currency);
+            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            totals.ForEach(x => collection.Add(x));
+            return collection;
+        }
+    }
+    public ObservableCollection<string> TotalInCashlessAllCurrencies
+    {
+        get
+        {
+            var collection = new ObservableCollection<string>();
+            var groups = _allPaymentMethods.Where(x => x.IsCash == false).GroupBy(x => x.Currency);
+            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            totals.ForEach(x => collection.Add(x));
+            return collection;
+        }
+    }
+    public ObservableCollection<string> TotalMoneyAllCurrencies
+    {
+        get
+        {
+            var collection = new ObservableCollection<string>();
+            var groups = _allPaymentMethods.GroupBy(x => x.Currency);
+            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            totals.ForEach(x => collection.Add(x));
+            return collection;
+        }
+    }
+    private string _selectedOperationType;
+    public string SelectedOperationType
+    {
+        get => _selectedOperationType;
+        set
+        {
+            _selectedOperationType = value;
+            OnPropertyChanged(nameof(SelectedOperationType));
+            OnPropertyChanged(nameof(IsCategoryTypeExp));
+        }
+    }
+    private string _titleOfNewCategory;
+    public string TitleOfNewCategory
+    {
+        get => _titleOfNewCategory;
+        set
+        {
+            _titleOfNewCategory = value;
+            OnPropertyChanged(nameof(TitleOfNewCategory));
+        }
+    }
     public bool IsCategoryTypeExp
     {
         get
@@ -467,6 +487,49 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IsNewCategoryASubcategory));
         }
     }
+    private bool _validNameOfNewCategory;
+    public bool ValidNameOfNewCategory
+    {
+        get => _validNameOfNewCategory;
+        set
+        {
+            _validNameOfNewCategory = value;
+            OnPropertyChanged(nameof(ValidNameOfNewCategory));
+        }
+    }
+    private bool _isNewCategoryASubcategory;
+    public bool IsNewCategoryASubcategory
+    {
+        get => _isNewCategoryASubcategory;
+        set
+        {
+            _isNewCategoryASubcategory = value;
+            OnPropertyChanged(nameof(IsNewCategoryASubcategory));
+        }
+    }
+    private string _titleOfNewProvider;
+    public string TitleOfNewProvider
+    {
+        get => _titleOfNewProvider;
+        set
+        {
+            _titleOfNewProvider = value;
+            OnPropertyChanged(nameof(TitleOfNewProvider));
+        }
+    }
+    private bool _validNameOfNewProvider;
+    public bool ValidNameOfNewProvider
+    {
+        get => _validNameOfNewProvider;
+        set
+        {
+            _validNameOfNewProvider = value;
+            OnPropertyChanged(nameof(ValidNameOfNewProvider));
+        }
+    }
+    #endregion
+
+    #region Commands
     public ICommand CheckTitleOfNewCategory => new RelayCommand(x =>
     {
         if (SelectedOperationType.Equals("Expense") && !(_isNewCategoryASubcategory))
@@ -482,10 +545,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
                 _validNameOfNewCategory = true;
             }
         }
-        else if(SelectedOperationType.Equals("Expense") && _isNewCategoryASubcategory)
+        else if (SelectedOperationType.Equals("Expense") && _isNewCategoryASubcategory)
         {
             var mainCat = _allCategoriesExp.FirstOrDefault(x => x.Title.ToLower().Equals(SelectedMainCategoryExpForSub.Title.ToLower()));
-            if(mainCat != null)
+            if (mainCat != null)
             {
                 var newSubCat = mainCat.SubcategoriesExps.FirstOrDefault(x => x.Title.Equals(_titleOfNewCategory));
                 if (newSubCat != null)
@@ -512,7 +575,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
                 _validNameOfNewCategory = true;
             }
         }
-    }, x => SelectedOperationType != null && _titleOfNewCategory.Length>0);
+    }, x => SelectedOperationType != null && _titleOfNewCategory.Length > 0);
     public ICommand AddNewCategory => new RelayCommand(x =>
     {
         if (SelectedOperationType.Equals("Expense") && !(_isNewCategoryASubcategory))
@@ -523,15 +586,15 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         else if (SelectedOperationType.Equals("Expense") && _isNewCategoryASubcategory)
         {
             var mainCat = _allCategoriesExp.FirstOrDefault(x => x.Title.Equals(SelectedMainCategoryExpForSub.Title));
-            if(mainCat != null)
+            if (mainCat != null)
             {
                 mainCat.SubcategoriesExps.Add(new SubcategoriesExp { Title = _titleOfNewCategory, CategoryId = mainCat.Id });
-            } 
+            }
         }
         else
         {
             var newCategory = new CategoriesInc { Title = _titleOfNewCategory };
-            _db.CategoriesIncs.Add(newCategory);    
+            _db.CategoriesIncs.Add(newCategory);
         }
         _db.SaveChanges();
         UpdateCategories();
@@ -541,50 +604,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         OnPropertyChanged(nameof(CategoriesIncItems));
 
     }, x => _validNameOfNewCategory);
-    private bool _validNameOfNewCategory;
-    public bool ValidNameOfNewCategory
-    {
-        get=> _validNameOfNewCategory;
-        set
-        {
-            _validNameOfNewCategory= value;
-            OnPropertyChanged(nameof(ValidNameOfNewCategory));
-        }
-    }
-    private bool _isNewCategoryASubcategory;
-    public bool IsNewCategoryASubcategory
-    {
-        get => _isNewCategoryASubcategory;
-        set
-        {
-            _isNewCategoryASubcategory= value;
-            OnPropertyChanged(nameof(IsNewCategoryASubcategory));
-        }
-    }
-    private string _titleOfNewProvider;
-    public string TitleOfNewProvider
-    {
-        get => _titleOfNewProvider;
-        set
-        {
-            _titleOfNewProvider = value;
-            OnPropertyChanged(nameof(TitleOfNewProvider));
-        }
-    }
-    private bool _validNameOfNewProvider;
-    public bool ValidNameOfNewProvider
-    {
-        get => _validNameOfNewProvider;
-        set
-        {
-            _validNameOfNewProvider = value;
-            OnPropertyChanged(nameof(ValidNameOfNewProvider));
-        }
-    }
     public ICommand CheckTitleOfNewProvider => new RelayCommand(x =>
     {
         var newProvider = _allProviders.FirstOrDefault(x => x.Title.ToLower().Equals(_titleOfNewProvider.ToLower()));
-        if(newProvider != null)
+        if (newProvider != null)
         {
             MessageBox.Show("Such title already exist", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
@@ -610,7 +633,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         // update all transactions from selectedPaymentMethod
         // check for changes
 
-        var pmFromDb = _db.PaymentMethods.Include(x => x.Currency).FirstOrDefault(x=> x.Id== _selectedPaymentMethod.Id);
+        var pmFromDb = _db.PaymentMethods.Include(x => x.Currency).FirstOrDefault(x => x.Id == _selectedPaymentMethod.Id);
         if (pmFromDb != null)
         {
             var pmLocal = _allPaymentMethods.FirstOrDefault(y => y.Id == pmFromDb.Id);
@@ -623,67 +646,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             }
         }
 
-    }, x => _selectedPaymentMethod !=null);
-    //public decimal TotalInCash
-    //{
-    //    get
-    //    {
-    //        return _allPaymentMethods.Where(x => x.IsCash == true).Sum(x => x.CurrentBalance);
-    //    }
-    //}
-    public ObservableCollection<string> TotalInCashAllCurrencies
-    {
-        get
-        {
-            var collection = new ObservableCollection<string>();
-            var groups = _allPaymentMethods.Where(x => x.IsCash == true).GroupBy(x => x.Currency);
-            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
-            totals.ForEach(x => collection.Add(x));
-            return collection;
-        }
-    }
-    //public decimal TotalInCashless
-    //{
-    //    get
-    //    {
-    //        return _allPaymentMethods.Where(x => x.IsCash == false).Sum(x => x.CurrentBalance);
-    //    }
-    //}
-    public ObservableCollection<string> TotalInCashlessAllCurrencies
-    {
-        get
-        {
-            var collection = new ObservableCollection<string>();
-            var groups = _allPaymentMethods.Where(x => x.IsCash == false).GroupBy(x => x.Currency);
-            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
-            totals.ForEach(x => collection.Add(x));
-            return collection;
-        }
-    }
-    //public decimal TotalMoney
-    //{
-    //    get
-    //    {
-    //        return _allPaymentMethods.Sum(x => x.CurrentBalance);
-    //    }
-    //}
-    public ObservableCollection<string> TotalMoneyAllCurrencies
-    {
-        get
-        {
-            var collection = new ObservableCollection<string>();
-            var groups = _allPaymentMethods.GroupBy(x => x.Currency);
-            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
-            totals.ForEach(x => collection.Add(x));
-            return collection;
-        }
-    }
+    }, x => _selectedPaymentMethod != null);
     public ICommand AddNewPaymentMethod => new RelayCommand(x =>
     {
         var window = new AddPaymentMethod();
         window.ShowDialog();
         UpdatePaymentMethods();
-        
+
     }, x => true);
     public ICommand AddTransaction => new RelayCommand(x =>
     {
@@ -716,6 +685,51 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         UpdateLoans();
 
     }, x => true);
+    public ICommand ShowFullInfoOfRecurringCharge => new RelayCommand(x =>
+    {
+        var window = new RecuringChargeFullInfo(_selectedRecurringCharge.Model);
+        window.ShowDialog();
+        // update recurring charges
+    }, x => _selectedRecurringCharge != null);
+    public ICommand DeleteRecurringCharge => new RelayCommand(x =>
+    {
+        try
+        {
+            _db.Remove(_selectedRecurringCharge.Model);
+            _db.SaveChanges();
+            UpdateRecuringCharges();
+            MessageBox.Show("Delete operation was successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            OnPropertyChanged(nameof(RecurringCharges));
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+    }, x => _selectedRecurringCharge != null);
+    #endregion
+    
+    #region Methods
+    public void CombineLoans()
+    {
+        var mainGivingLoans = _allGivingLoans.Where(x => x.ReceivingLoan == null).ToList();
+        var mainReceivingLoans = _allReceivingLoans.Where(x => x.GivingLoan == null).ToList();
+        _allLoans.Clear();
+        mainGivingLoans.ForEach(l =>
+        {
+            var list = _allReceivingLoans.Where(x => x.GivingLoanId == l.Id).ToList();
+            _allLoans.Add(new Loan(l, list));
+        });
+        mainReceivingLoans.ForEach(l =>
+        {
+            var list = _allGivingLoans.Where(x => x.ReceivingLoanId == l.Id).ToList();
+            _allLoans.Add(new Loan(l, list));
+        });
+        OnPropertyChanged(nameof(Loans));
+    }
+    #endregion
+
+    #region UpdateData
     public void UpdateCategories()
     {
         _allCategoriesExp.Clear();
@@ -808,36 +822,83 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             //OnPropertyChanged(nameof(RecurringCharges));
         }).Wait();
     }
-    public ICommand ShowFullInfoOfRecurringCharge => new RelayCommand(x =>
-    {
-        var window = new RecuringChargeFullInfo(_selectedRecurringCharge.Model);
-        window.ShowDialog();
-        // update recurring charges
-    }, x => _selectedRecurringCharge !=null);
-    public ICommand DeleteRecurringCharge => new RelayCommand(x =>
-    {
-        try
-        {
-            _db.Remove(_selectedRecurringCharge.Model);
-            _db.SaveChanges();
-            UpdateRecuringCharges();
-            MessageBox.Show("Delete operation was successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            OnPropertyChanged(nameof(RecurringCharges));
-        }
-        catch (Exception e)
-        {
-            MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+    #endregion
 
-    }, x => _selectedRecurringCharge != null);
-    private PaymentMethodViewModel? _filterSelectedPaymentMethod;
-    public PaymentMethodViewModel? FilterSelectedPaymentMethod
+    #region Filters
+    #region Expenses
+    private int _datePickerColumnWidthExp;
+    public int DatePickerColumnWidthExp
     {
-        get => _filterSelectedPaymentMethod;
+        get => _datePickerColumnWidthExp;
         set
         {
-            _filterSelectedPaymentMethod = value;
-            OnPropertyChanged(nameof(FilterSelectedPaymentMethod));
+            _datePickerColumnWidthExp = value;
+            OnPropertyChanged(nameof(DatePickerColumnWidthExp));
+        }
+    }
+    private bool _isDatePickerColumnHiddenExp;
+    public bool IsDatePickerColumnHiddenExp
+    {
+        get => _isDatePickerColumnHiddenExp;
+        set
+        {
+            _isDatePickerColumnHiddenExp = value;
+            OnPropertyChanged(nameof(IsDatePickerColumnHiddenExp));
+        }
+    }
+    public ICommand ShowHideDatePickerColumnExp => new RelayCommand(x =>
+    {
+        if (_isDatePickerColumnHiddenExp)
+        {
+            _datePickerColumnWidthExp = 105;
+        }
+        else
+        {
+            _datePickerColumnWidthExp = 15;
+        }
+        OnPropertyChanged(nameof(DatePickerColumnWidthExp));
+        _isDatePickerColumnHiddenExp = !_isDatePickerColumnHiddenExp;
+    }, x => true);
+    private DateTime _beginDateExp;
+    private DateTime _endDateExp;
+    public DateTime BeginDateExp
+    {
+        get => _beginDateExp;
+        set
+        {
+            _beginDateExp = value;
+            OnPropertyChanged(nameof(BeginDateExp));
+            OnPropertyChanged(nameof(CategoriesExpChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesExp));
+            OnPropertyChanged(nameof(ChartCategoriesExpPie));
+            OnPropertyChanged(nameof(FilterSelectedCategoryExp));
+            OnPropertyChanged(nameof(FilterSelectedProviderExp));
+            OnPropertyChanged(nameof(FilteredExpenses));
+        }
+    }
+    public DateTime EndDateExp
+    {
+        get => _endDateExp;
+        set
+        {
+            _endDateExp = value;
+            OnPropertyChanged(nameof(EndDateExp));
+            OnPropertyChanged(nameof(CategoriesExpChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesExp));
+            OnPropertyChanged(nameof(ChartCategoriesExpPie));
+            OnPropertyChanged(nameof(FilterSelectedCategoryExp));
+            OnPropertyChanged(nameof(FilterSelectedProviderExp));
+            OnPropertyChanged(nameof(FilteredExpenses));
+        }
+    }
+    private PaymentMethodViewModel? _filterSelectedPaymentMethodExp;
+    public PaymentMethodViewModel? FilterSelectedPaymentMethodExp
+    {
+        get => _filterSelectedPaymentMethodExp;
+        set
+        {
+            _filterSelectedPaymentMethodExp = value;
+            OnPropertyChanged(nameof(FilterSelectedPaymentMethodExp));
             OnPropertyChanged(nameof(CategoriesExpChartValue));
             OnPropertyChanged(nameof(ChartCategoriesExp));
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
@@ -845,18 +906,18 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(FilterSelectedCategoryExp));
         }
     }
-    public ICommand RemovePaymentMethodFilterCommand => new RelayCommand(x =>
+    public ICommand RemovePaymentMethodExpFilter => new RelayCommand(x =>
     {
-        (App.Current.MainWindow as MainWindow).PaymentMethodComboBox.SelectedItem = null;
-    }, x => _filterSelectedPaymentMethod!=null);
-    private ProviderViewModel? _filterSelectedProvider;
-    public ProviderViewModel? FilterSelectedProvider
+        (App.Current.MainWindow as MainWindow).PaymentMethodComboBoxExp.SelectedItem = null;
+    }, x => _filterSelectedPaymentMethodExp!=null);
+    private ProviderViewModel? _filterSelectedProviderExp;
+    public ProviderViewModel? FilterSelectedProviderExp
     {
-        get => _filterSelectedProvider;
+        get => _filterSelectedProviderExp;
         set
         {
-            _filterSelectedProvider = value;
-            OnPropertyChanged(nameof(FilterSelectedProvider));
+            _filterSelectedProviderExp = value;
+            OnPropertyChanged(nameof(FilterSelectedProviderExp));
             OnPropertyChanged(nameof(CategoriesExpChartValue));
             OnPropertyChanged(nameof(ChartCategoriesExp));
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
@@ -864,29 +925,29 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(FilterSelectedCategoryExp));
         }
     }
-    public ICommand RemoveProviderFilterCommand => new RelayCommand(x =>
+    public ICommand RemoveProviderExpFilter => new RelayCommand(x =>
     {
-        (App.Current.MainWindow as MainWindow).ProviderComboBox.SelectedItem = null;
-    }, x => _filterSelectedProvider != null);
-    private CurrencyViewModel _filterSelectedCurrency;
-    public CurrencyViewModel FilterSelectedCurrency
+        (App.Current.MainWindow as MainWindow).ProviderComboBoxExp.SelectedItem = null;
+    }, x => _filterSelectedProviderExp != null);
+    private CurrencyViewModel _filterSelectedCurrencyExp;
+    public CurrencyViewModel FilterSelectedCurrencyExp
     {
         get
         {
-            if (_filterSelectedCurrency == null)
+            if (_filterSelectedCurrencyExp == null)
             {
                 if(_allCurrencies == null)
                 {
-                    return _filterSelectedCurrency = new CurrencyViewModel();
+                    return _filterSelectedCurrencyExp = new CurrencyViewModel();
                 };
-                _filterSelectedCurrency = Currencies.FirstOrDefault();
+                _filterSelectedCurrencyExp = Currencies.FirstOrDefault();
             }
-            return _filterSelectedCurrency;
+            return _filterSelectedCurrencyExp;
         }
         set
         {
-            _filterSelectedCurrency = value;
-            OnPropertyChanged(nameof(FilterSelectedCurrency));
+            _filterSelectedCurrencyExp = value;
+            OnPropertyChanged(nameof(FilterSelectedCurrencyExp));
             OnPropertyChanged(nameof(CategoriesExpChartValue));
             OnPropertyChanged(nameof(ChartCategoriesExp));
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
@@ -902,28 +963,28 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             _filterSelectedCategoryExp = value;
             OnPropertyChanged(nameof(FilterSelectedCategoryExp));
-            OnPropertyChanged(nameof(FilterSelectedProvider));
+            OnPropertyChanged(nameof(FilterSelectedProviderExp));
             OnPropertyChanged(nameof(CategoriesExpChartValue));
             OnPropertyChanged(nameof(ChartCategoriesExp));
             OnPropertyChanged(nameof(ChartCategoriesExpPie));
             OnPropertyChanged(nameof(FilteredExpenses));
         }
     }
-    public ICommand RemoveCategoryFilterCommand => new RelayCommand(x =>
+    public ICommand RemoveCategoryExpFilter => new RelayCommand(x =>
     {
-        (App.Current.MainWindow as MainWindow).CategoryComboBox.SelectedItem = null;
+        (App.Current.MainWindow as MainWindow).CategoryComboBoxExp.SelectedItem = null;
     }, x => _filterSelectedCategoryExp != null);
-    private string _searchBox;
-    public string SearchBox
+    private string _searchBoxExp;
+    public string SearchBoxExp
     {
-        get => _searchBox;
+        get => _searchBoxExp;
         set
         {
-            if (_searchBox != value)
+            if (_searchBoxExp != value)
             {
-                _searchBox = value;
+                _searchBoxExp = value;
             }
-            OnPropertyChanged(nameof(SearchBox));
+            OnPropertyChanged(nameof(SearchBoxExp));
             OnPropertyChanged(nameof(FilteredExpenses));
         }
     }
@@ -933,18 +994,18 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             var collection = new ObservableCollection<ExpenseViewModel>();
 
-            var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).Where(e => e.Title.ToLower().Contains(_searchBox.ToLower()));
-            if (_filterSelectedCurrency != null)
+            var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).Where(e => e.Title.ToLower().Contains(_searchBoxExp.ToLower()));
+            if (_filterSelectedCurrencyExp != null)
             {
-                filter = filter.Where(x => x.PaymentMethod.Currency.Id == _filterSelectedCurrency.Id);
+                filter = filter.Where(x => x.PaymentMethod.Currency.Id == _filterSelectedCurrencyExp.Id);
             }
-            if (_filterSelectedPaymentMethod != null)
+            if (_filterSelectedPaymentMethodExp != null)
             {
-                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id);
+                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethodExp.Id);
             }
-            if (_filterSelectedProvider != null)
+            if (_filterSelectedProviderExp != null)
             {
-                filter = filter.Where(x => x.Provider.Id == _filterSelectedProvider.Id);
+                filter = filter.Where(x => x.Provider.Id == _filterSelectedProviderExp.Id);
             }
             if (_filterSelectedCategoryExp != null)
             {
@@ -956,6 +1017,202 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
+    #endregion
+
+    #region Incomes
+    private int _datePickerColumnWidthInc;
+    public int DatePickerColumnWidthInc
+    {
+        get => _datePickerColumnWidthInc;
+        set
+        {
+            _datePickerColumnWidthInc = value;
+            OnPropertyChanged(nameof(DatePickerColumnWidthInc));
+        }
+    }
+    private bool _isDatePickerColumnHiddenInc;
+    public bool IsDatePickerColumnHiddenInc
+    {
+        get => _isDatePickerColumnHiddenInc;
+        set
+        {
+            _isDatePickerColumnHiddenInc = value;
+            OnPropertyChanged(nameof(IsDatePickerColumnHiddenInc));
+        }
+    }
+    public ICommand ShowHideDatePickerColumnInc => new RelayCommand(x =>
+    {
+        if (_isDatePickerColumnHiddenInc)
+        {
+            _datePickerColumnWidthInc = 105;
+        }
+        else
+        {
+            _datePickerColumnWidthInc = 15;
+        }
+        OnPropertyChanged(nameof(DatePickerColumnWidthInc));
+        _isDatePickerColumnHiddenInc = !_isDatePickerColumnHiddenInc;
+    }, x => true);
+    private DateTime _beginDateInc;
+    private DateTime _endDateInc;
+    public DateTime BeginDateInc
+    {
+        get => _beginDateInc;
+        set
+        {
+            _beginDateInc = value;
+            OnPropertyChanged(nameof(BeginDateInc));
+            OnPropertyChanged(nameof(CategoriesIncChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesInc));
+            OnPropertyChanged(nameof(ChartCategoriesIncPie));
+            OnPropertyChanged(nameof(FilterSelectedCategoryInc));
+            OnPropertyChanged(nameof(FilterSelectedProviderInc));
+            OnPropertyChanged(nameof(FilteredIncomes));
+        }
+    }
+    public DateTime EndDateInc
+    {
+        get => _endDateInc;
+        set
+        {
+            _endDateInc = value;
+            OnPropertyChanged(nameof(EndDateInc));
+            OnPropertyChanged(nameof(CategoriesIncChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesInc));
+            OnPropertyChanged(nameof(ChartCategoriesIncPie));
+            OnPropertyChanged(nameof(FilterSelectedCategoryInc));
+            OnPropertyChanged(nameof(FilterSelectedProviderInc));
+            OnPropertyChanged(nameof(FilteredIncomes));
+        }
+    }
+    private PaymentMethodViewModel? _filterSelectedPaymentMethodInc;
+    public PaymentMethodViewModel? FilterSelectedPaymentMethodInc
+    {
+        get => _filterSelectedPaymentMethodInc;
+        set
+        {
+            _filterSelectedPaymentMethodInc = value;
+            OnPropertyChanged(nameof(FilterSelectedPaymentMethodInc));
+            OnPropertyChanged(nameof(CategoriesIncChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesInc));
+            OnPropertyChanged(nameof(ChartCategoriesIncPie));
+            OnPropertyChanged(nameof(FilteredIncomes));
+        }
+    }
+    public ICommand RemovePaymentMethodIncFilter => new RelayCommand(x =>
+    {
+        (App.Current.MainWindow as MainWindow).PaymentMethodComboBoxInc.SelectedItem = null;
+    }, x => _filterSelectedPaymentMethodInc != null);
+    private ProviderViewModel? _filterSelectedProviderInc;
+    public ProviderViewModel? FilterSelectedProviderInc
+    {
+        get => _filterSelectedProviderInc;
+        set
+        {
+            _filterSelectedProviderInc = value;
+            OnPropertyChanged(nameof(FilterSelectedProviderInc));
+            OnPropertyChanged(nameof(CategoriesIncChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesInc));
+            OnPropertyChanged(nameof(ChartCategoriesIncPie));
+            OnPropertyChanged(nameof(FilteredIncomes));
+        }
+    }
+    public ICommand RemoveProviderIncFilter => new RelayCommand(x =>
+    {
+        (App.Current.MainWindow as MainWindow).ProviderComboBoxInc.SelectedItem = null;
+    }, x => _filterSelectedProviderInc != null);
+    private CurrencyViewModel _filterSelectedCurrencyInc;
+    public CurrencyViewModel FilterSelectedCurrencyInc
+    {
+        get
+        {
+            if (_filterSelectedCurrencyInc == null)
+            {
+                if (_allCurrencies == null)
+                {
+                    return _filterSelectedCurrencyInc = new CurrencyViewModel();
+                };
+                _filterSelectedCurrencyInc = Currencies.FirstOrDefault();
+            }
+            return _filterSelectedCurrencyInc;
+        }
+        set
+        {
+            _filterSelectedCurrencyInc = value;
+            OnPropertyChanged(nameof(FilterSelectedCurrencyInc));
+            OnPropertyChanged(nameof(CategoriesIncChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesInc));
+            OnPropertyChanged(nameof(ChartCategoriesIncPie));
+            OnPropertyChanged(nameof(FilteredIncomes));
+        }
+    }
+    private CategoryIncViewModel _filterSelectedCategoryInc;
+    public CategoryIncViewModel FilterSelectedCategoryInc
+    {
+        get => _filterSelectedCategoryInc;
+        set
+        {
+            _filterSelectedCategoryInc = value;
+            OnPropertyChanged(nameof(FilterSelectedCategoryInc));
+            OnPropertyChanged(nameof(CategoriesIncChartValue));
+            OnPropertyChanged(nameof(ChartCategoriesInc));
+            OnPropertyChanged(nameof(ChartCategoriesIncPie));
+            OnPropertyChanged(nameof(FilteredIncomes));
+        }
+    }
+    public ICommand RemoveCategoryIncFilter => new RelayCommand(x =>
+    {
+        (App.Current.MainWindow as MainWindow).CategoryComboBoxInc.SelectedItem = null;
+    }, x => _filterSelectedCategoryInc != null);
+    private string _searchBoxInc;
+    public string SearchBoxInc
+    {
+        get => _searchBoxInc;
+        set
+        {
+            if (_searchBoxInc != value)
+            {
+                _searchBoxInc = value;
+            }
+            OnPropertyChanged(nameof(SearchBoxInc));
+            OnPropertyChanged(nameof(FilteredIncomes));
+        }
+    }
+    public ObservableCollection<IncomeViewModel> FilteredIncomes
+    {
+        get
+        {
+            var collection = new ObservableCollection<IncomeViewModel>();
+
+            var filter = Incomes.Where(x => x.DateOfIncome.Date >= _beginDateInc.Date && x.DateOfIncome.Date <= _endDateInc.Date).Where(e => e.Title.ToLower().Contains(_searchBoxInc.ToLower()));
+            if (_filterSelectedCurrencyInc != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Currency.Id == _filterSelectedCurrencyInc.Id);
+            }
+            if (_filterSelectedPaymentMethodInc != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethodInc.Id);
+            }
+            if (_filterSelectedProviderInc != null)
+            {
+                filter = filter.Where(x => x.Provider.Id == _filterSelectedProviderInc.Id);
+            }
+            if (_filterSelectedCategoryInc != null)
+            {
+                filter = filter.Where(x => x.Category.Id == _filterSelectedCategoryInc.Id);
+            }
+            var list = filter.OrderByDescending(x => x.DateOfIncome).ToList();
+            list.ForEach(collection.Add);
+
+            return collection;
+        }
+    }
+    #endregion
+
+    #endregion
+
+    #region Statistics
+    #region Expenses
     public ChartValues<int> CategoriesExpChartValue
     {
         get
@@ -966,17 +1223,17 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             //IEnumerable<IGrouping<int, ExpenseViewModel>>? res;
 
             var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date);
-            if (_filterSelectedCurrency != null)
+            if (_filterSelectedCurrencyExp != null)
             {
-                filter = filter.Where(x => x.PaymentMethod.Currency.Id == _filterSelectedCurrency.Id);
+                filter = filter.Where(x => x.PaymentMethod.Currency.Id == _filterSelectedCurrencyExp.Id);
             }
-            if (_filterSelectedPaymentMethod != null)
+            if (_filterSelectedPaymentMethodExp != null)
             {
-                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id);
+                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethodExp.Id);
             }
-            if(_filterSelectedProvider != null)
+            if(_filterSelectedProviderExp != null)
             {
-                filter = filter.Where(x => x.Provider.Id == _filterSelectedProvider.Id);
+                filter = filter.Where(x => x.Provider.Id == _filterSelectedProviderExp.Id);
             }
             if (_filterSelectedCategoryExp != null)
             {
@@ -1018,13 +1275,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             //var collection = new ObservableCollection<string>(Expenses.GroupBy(x => x.Category.Title).Select(g => g.Key));
             //var collection = new ObservableCollection<string>();
             var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date);
-            if (_filterSelectedPaymentMethod != null)
+            if (_filterSelectedPaymentMethodExp != null)
             {
-                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id);
+                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethodExp.Id);
             }
-            if (_filterSelectedProvider != null)
+            if (_filterSelectedProviderExp != null)
             {
-                filter = filter.Where(x => x.Provider.Id == _filterSelectedProvider.Id);
+                filter = filter.Where(x => x.Provider.Id == _filterSelectedProviderExp.Id);
             }
             if (_filterSelectedCategoryExp != null)
             {
@@ -1049,8 +1306,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
-    public Func<double, string> Formatter { get; set; } = value => String.Format("{0:0.##}", value).ToString();
-
     public SeriesCollection ChartCategoriesExpPie
     {
         get
@@ -1061,13 +1316,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             //var groups = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
 
             var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date);
-            if (_filterSelectedPaymentMethod != null)
+            if (_filterSelectedPaymentMethodExp != null)
             {
-                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id);
+                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethodExp.Id);
             }
-            if (_filterSelectedProvider != null)
+            if (_filterSelectedProviderExp != null)
             {
-                filter = filter.Where(x => x.Provider.Id == _filterSelectedProvider.Id);
+                filter = filter.Where(x => x.Provider.Id == _filterSelectedProviderExp.Id);
             }
             if (_filterSelectedCategoryExp != null)
             {
@@ -1103,19 +1358,37 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
+    #endregion
 
-    Func<ChartPoint, string> labelPoint = chartPoint =>
-        string.Format("{0:#.00} ({1:P2})", chartPoint.Y, chartPoint.Participation);
+    #region Incomes
     public ChartValues<int> CategoriesIncChartValue
     {
         get
         {
             var collection = new ChartValues<int>();
-            var groups = Incomes.GroupBy(x => x.CategoryId);
+            var filter = Incomes.Where(x => x.DateOfIncome.Date >= _beginDateInc.Date && x.DateOfIncome.Date <= _endDateInc.Date);
+            if (_filterSelectedCurrencyInc != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Currency.Id == _filterSelectedCurrencyInc.Id);
+            }
+            if (_filterSelectedPaymentMethodInc != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethodInc.Id);
+            }
+            if (_filterSelectedProviderInc != null)
+            {
+                filter = filter.Where(x => x.Provider.Id == _filterSelectedProviderInc.Id);
+            }
+            if (_filterSelectedCategoryInc != null)
+            {
+                filter = filter.Where(x => x.Category.Id == _filterSelectedCategoryInc.Id);
+            }
+            var groups = filter.GroupBy(x => x.CategoryId);
             foreach (var group in groups)
             {
                 collection.Add(group.Count());
             }
+            OnPropertyChanged(nameof(LabelsInc));
             return collection;
         }
     }
@@ -1123,7 +1396,21 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         get
         {
-            var collection = new ObservableCollection<string>(Incomes.GroupBy(x => x.Category.Title).Select(g => g.Key));
+            //var collection = new ObservableCollection<string>(Incomes.GroupBy(x => x.Category.Title).Select(g => g.Key));
+            var filter = Incomes.Where(x => x.DateOfIncome.Date >= _beginDateInc.Date && x.DateOfIncome.Date <= _endDateInc.Date);
+            if (_filterSelectedPaymentMethodInc != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethodInc.Id);
+            }
+            if (_filterSelectedProviderInc != null)
+            {
+                filter = filter.Where(x => x.Provider.Id == _filterSelectedProviderInc.Id);
+            }
+            if (_filterSelectedCategoryInc != null)
+            {
+                filter = filter.Where(x => x.Category.Id == _filterSelectedCategoryInc.Id);
+            }
+            var collection = new ObservableCollection<string>(filter.GroupBy(x => x.Category.Title).Select(g => g.Key));
             return collection;
         }
     }
@@ -1134,7 +1421,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             var collection = new SeriesCollection();
             var chart = new ColumnSeries()
             {
-                Values = CategoriesExpChartValue,
+                Values = CategoriesIncChartValue,
                 Title = "Incomes count",
             };
             collection.Add(chart);
@@ -1147,18 +1434,26 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             var collection = new SeriesCollection();
 
+            var filter = Incomes.Where(x => x.DateOfIncome.Date >= _beginDateInc.Date && x.DateOfIncome.Date <= _endDateInc.Date);
+            if (_filterSelectedPaymentMethodInc != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethodInc.Id);
+            }
+            if (_filterSelectedProviderInc != null)
+            {
+                filter = filter.Where(x => x.Provider.Id == _filterSelectedProviderInc.Id);
+            }
+            if (_filterSelectedCategoryInc != null)
+            {
+                filter = filter.Where(x => x.Category.Id == _filterSelectedCategoryInc.Id);
+            }
+            var groups = filter.GroupBy(x => x.CategoryId);
 
-            var groups = Incomes.GroupBy(x => x.CategoryId);
             foreach (var group in groups)
             {
                 var pie = new PieSeries
                 {
-                    //Title = group.Key.ToString(), //.Title,
                     Title = Incomes.FirstOrDefault(x => x.CategoryId == group.Key).Category.Title,
-                    //Values = new ChartValues<int>
-                    //    {
-                    //        group.Count(),
-                    //    },
                     Values = new ChartValues<decimal>
                         {
                             group.Sum(x => x.Amount),
@@ -1171,124 +1466,14 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
-    private DateTime _beginDateExp;
-    private DateTime _endDateExp;
-    public DateTime BeginDateExp
-    {
-        get => _beginDateExp;
-        set
-        {
-            _beginDateExp = value;
-            OnPropertyChanged(nameof(BeginDateExp));
-            OnPropertyChanged(nameof(CategoriesExpChartValue));
-            OnPropertyChanged(nameof(ChartCategoriesExp));
-            OnPropertyChanged(nameof(ChartCategoriesExpPie));
-            OnPropertyChanged(nameof(FilterSelectedCategoryExp));
-            OnPropertyChanged(nameof(FilterSelectedProvider));
-            OnPropertyChanged(nameof(FilteredExpenses));
-        }
-    }
-    public DateTime EndDateExp
-    {
-        get => _endDateExp;
-        set
-        {
-            _endDateExp = value;
-            OnPropertyChanged(nameof(EndDateExp));
-            OnPropertyChanged(nameof(CategoriesExpChartValue));
-            OnPropertyChanged(nameof(ChartCategoriesExp));
-            OnPropertyChanged(nameof(ChartCategoriesExpPie));
-            OnPropertyChanged(nameof(FilterSelectedCategoryExp));
-            OnPropertyChanged(nameof(FilterSelectedProvider));
-            OnPropertyChanged(nameof(FilteredExpenses));
-        }
-    }
-    private int _datePickerColumnWidthExp;
-    public int DatePickerColumnWidthExp
-    {
-        get => _datePickerColumnWidthExp;
-        set
-        {
-            _datePickerColumnWidthExp = value;
-            OnPropertyChanged(nameof(DatePickerColumnWidthExp));
-        }
-    }
-    private bool _isDatePickerColumnHiddenExp;
-    public bool IsDatePickerColumnHiddenExp
-    {
-        get => _isDatePickerColumnHiddenExp;
-        set
-        {
-            _isDatePickerColumnHiddenExp = value;
-            OnPropertyChanged(nameof(IsDatePickerColumnHiddenExp));
-        }
-    }
-    public ICommand ShowHideDatePickerColumnExpCommand => new RelayCommand(x =>
-    {
-        if(_isDatePickerColumnHiddenExp)
-        {
-            _datePickerColumnWidthExp = 105;
-        }
-        else
-        {
-            _datePickerColumnWidthExp = 15;
-        }
-        OnPropertyChanged(nameof(DatePickerColumnWidthExp));
-        _isDatePickerColumnHiddenExp = !_isDatePickerColumnHiddenExp;
-    }, x => true);
-    private DateTime _beginDateInc;
-    private DateTime _endDateInc;
-    public DateTime BeginDateInc
-    {
-        get => _beginDateInc;
-        set
-        {
-            _beginDateInc = value;
-            OnPropertyChanged(nameof(BeginDateInc));
-        }
-    }
-    public DateTime EndDateInc
-    {
-        get => _endDateInc;
-        set
-        {
-            _endDateInc = value;
-            OnPropertyChanged(nameof(EndDateInc));
-        }
-    }
-    private int _datePickerColumnWidthInc;
-    public int DatePickerColumnWidthInc
-    {
-        get => _datePickerColumnWidthInc;
-        set
-        {
-            _datePickerColumnWidthInc = value;
-            OnPropertyChanged(nameof(DatePickerColumnWidthInc));
-        }
-    }
-    private bool _isDatePickerColumnHiddenInc;
-    public bool IsDatePickerColumnHiddenInc
-    {
-        get => _isDatePickerColumnHiddenInc;
-        set
-        {
-            _isDatePickerColumnHiddenInc = value;
-            OnPropertyChanged(nameof(IsDatePickerColumnHiddenInc));
-        }
-    }
-    public ICommand ShowHideDatePickerColumnIncCommand => new RelayCommand(x =>
-    {
-        if (_isDatePickerColumnHiddenInc)
-        {
-            _datePickerColumnWidthInc = 105;
-        }
-        else
-        {
-            _datePickerColumnWidthInc = 15;
-        }
-        OnPropertyChanged(nameof(DatePickerColumnWidthInc));
-        _isDatePickerColumnHiddenInc = !_isDatePickerColumnHiddenInc;
-    }, x => true);
+    #endregion
+    public Func<double, string> Formatter { get; set; } = value => String.Format("{0:0.##}", value).ToString();
+    Func<ChartPoint, string> labelPoint = chartPoint =>
+        string.Format("{0:#.00} ({1:P2})", chartPoint.Y, chartPoint.Participation);
+    #endregion
+
+
+
     //TEST
     public ObservableCollection<string> TestScroll
     {
@@ -1298,4 +1483,27 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
+    //public decimal TotalInCash
+    //{
+    //    get
+    //    {
+    //        return _allPaymentMethods.Where(x => x.IsCash == true).Sum(x => x.CurrentBalance);
+    //    }
+    //}
+
+    //public decimal TotalInCashless
+    //{
+    //    get
+    //    {
+    //        return _allPaymentMethods.Where(x => x.IsCash == false).Sum(x => x.CurrentBalance);
+    //    }
+    //}
+
+    //public decimal TotalMoney
+    //{
+    //    get
+    //    {
+    //        return _allPaymentMethods.Sum(x => x.CurrentBalance);
+    //    }
+    //}
 }

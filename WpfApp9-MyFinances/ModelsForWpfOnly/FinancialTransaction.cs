@@ -4,13 +4,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using WpfApp9_MyFinances.Models;
 
 namespace WpfApp9_MyFinances.ModelsForWpfOnly;
 
 public enum TransactionType
 {
-    EXPENSE=0, INCOME, TRANSFER, EXCHANGE
+    EXPENSE=0, INCOME, TRANSFER, EXCHANGE, LOAN
 }
     
 public class FinancialTransaction
@@ -91,6 +92,56 @@ public class FinancialTransaction
             TransactionId = exchange.Id;
             TransactionType = TransactionType.EXCHANGE;
             CurrencyCode = exchange.From.Currency.CodeNumber;
+        }
+    }
+    public FinancialTransaction(GivingLoan loan)
+    {
+        if(loan.ReceivingLoan == null) // original loan (giving loan to someone)
+        {
+            Amount = -loan.Amount;
+            DateOfTransaction = loan.DateOfLoan;
+            Title = "Giving loan";
+            BalanceBefore = loan.PaymentMethod.GetBalanceForDate(DateOfTransaction);
+            BalanceAfter = BalanceBefore + Amount;
+            TransactionId = loan.Id;
+            TransactionType = TransactionType.LOAN;
+            CurrencyCode = loan.PaymentMethod.Currency.CodeNumber;
+        }
+        else // giving back loan that I previously received
+        {
+            Amount = -loan.Amount;
+            DateOfTransaction = loan.DateOfLoan;
+            Title = "Paying back loan";
+            BalanceBefore = loan.PaymentMethod.GetBalanceForDate(DateOfTransaction);
+            BalanceAfter = BalanceBefore + Amount;
+            TransactionId = loan.Id;
+            TransactionType = TransactionType.LOAN;
+            CurrencyCode = loan.PaymentMethod.Currency.CodeNumber;
+        }
+    }
+    public FinancialTransaction(ReceivingLoan loan)
+    {
+        if(loan.GivingLoan == null)  // original loan (receiving loan from someone)
+        {
+            Amount = loan.Amount;
+            DateOfTransaction = loan.DateOfLoan;
+            Title = "Receiving loan";
+            BalanceBefore = loan.PaymentMethod.GetBalanceForDate(DateOfTransaction);
+            BalanceAfter = BalanceBefore + Amount;
+            TransactionId = loan.Id;
+            TransactionType = TransactionType.LOAN;
+            CurrencyCode = loan.PaymentMethod.Currency.CodeNumber;
+        }
+        else   // receiving back loan that I previously gave
+        {
+            Amount = loan.Amount;
+            DateOfTransaction = loan.DateOfLoan;
+            Title = "Receiving loan payback";
+            BalanceBefore = loan.PaymentMethod.GetBalanceForDate(DateOfTransaction);
+            BalanceAfter = BalanceBefore + Amount;
+            TransactionId = loan.Id;
+            TransactionType = TransactionType.LOAN;
+            CurrencyCode = loan.PaymentMethod.Currency.CodeNumber;
         }
     }
     [NotMapped]

@@ -65,7 +65,7 @@ public class IncomeViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(DateOfIncome));
         }
     }
-    public int? ProviderId
+    public int ProviderId
     {
         get => Model.ProviderId;
         set
@@ -106,7 +106,7 @@ public class IncomeViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PaymentMethodId));
         }
     }
-    public ProviderViewModel? Provider
+    public ProviderViewModel Provider
     {
         get => new ProviderViewModel { Model = Model.Provider };
         set

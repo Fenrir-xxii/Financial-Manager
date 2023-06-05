@@ -151,6 +151,26 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
+    public ObservableCollection<GivingLoanViewModel> GivingLoans
+    {
+        get
+        {
+            var collection = new ObservableCollection<GivingLoanViewModel>();
+            var ln = _db.GivingLoans.AsNoTracking().Where(x=> x.PaymentMethodId==Id).Include(y => y.PaymentMethod).Include(p => p.PaymentMethod.Currency).Include(s => s.ReceivingLoans).Include(v => v.Provider).ToList();
+            ln.ForEach(l => collection.Add(new GivingLoanViewModel { Model = l }));
+            return collection;
+        }
+    }
+    public ObservableCollection<ReceivingLoanViewModel> ReceivingLoans
+    {
+        get
+        {
+            var collection = new ObservableCollection<ReceivingLoanViewModel>();
+            var ln = _db.ReceivingLoans.AsNoTracking().Where(x => x.PaymentMethodId == Id).Include(y => y.PaymentMethod).Include(p => p.PaymentMethod.Currency).Include(s => s.GivingLoans).Include(v => v.Provider).ToList();
+            ln.ForEach(l => collection.Add(new ReceivingLoanViewModel { Model = l }));
+            return collection;
+        }
+    }
     private List<FinancialTransaction> _allTransactions;
     public ObservableCollection<FinancialTransactionViewModel> Transactions
     {
@@ -311,6 +331,14 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         ExchangesIn.ToList().ForEach(transactionExc =>
         {
             temp.Add(new FinancialTransaction(transactionExc.Model, true));
+        });
+        GivingLoans.ToList().ForEach(transactionLoans =>
+        {
+            temp.Add(new FinancialTransaction(transactionLoans.Model));
+        });
+        ReceivingLoans.ToList().ForEach(transactionLoans =>
+        {
+            temp.Add(new FinancialTransaction(transactionLoans.Model));
         });
         _allTransactions.Clear();
         _allTransactions = temp.OrderByDescending(x => x.DateOfTransaction).ToList();

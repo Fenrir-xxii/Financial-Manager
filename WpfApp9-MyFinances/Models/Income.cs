@@ -17,7 +17,7 @@ public partial class Income
 
     public DateTime DateOfIncome { get; set; }
 
-    public int? ProviderId { get; set; }
+    public int ProviderId { get; set; }
 
     public int CategoryId { get; set; }
 
@@ -25,5 +25,5 @@ public partial class Income
 
     public virtual PaymentMethod PaymentMethod { get; set; } = null!;
 
-    public virtual Provider? Provider { get; set; }
+    public virtual Provider Provider { get; set; }
 }
