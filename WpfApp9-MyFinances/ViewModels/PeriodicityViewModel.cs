@@ -26,4 +26,13 @@ public class PeriodicityViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Title));
         }
     }
+    public override bool Equals(object? obj)
+    {
+        if (obj == null)
+            return false;
+        if (!(obj is PeriodicityViewModel))
+            return false;
+
+        return Model.Id.Equals((obj as PeriodicityViewModel).Model.Id);
+    }
 }

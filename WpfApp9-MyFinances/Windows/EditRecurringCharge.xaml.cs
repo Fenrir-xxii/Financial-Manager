@@ -17,14 +17,14 @@ using WpfApp9_MyFinances.ViewModels;
 namespace WpfApp9_MyFinances.Windows
 {
     /// <summary>
-    /// Interaction logic for RecuringChargeFullInfo.xaml
+    /// Interaction logic for EditRecuringCharge.xaml
     /// </summary>
-    public partial class RecuringChargeFullInfo : Window
+    public partial class EditRecurringCharge : Window
     {
-        public RecuringChargeFullInfo(RecurringCharge rc)
+        public EditRecurringCharge(RecurringCharge rc, Database3MyFinancesContext db)
         {
             InitializeComponent();
-            DataContext = new RecurringChargeViewModel(rc);
+            DataContext = new EditRecurringChargeViewModel(rc, db);
         }
     }
 }

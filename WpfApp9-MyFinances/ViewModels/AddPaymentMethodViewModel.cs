@@ -25,7 +25,7 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         _allCurrencies = _db.Currencies.ToList();
         OnPropertyChanged(nameof(Currencies));
     }
-
+    #region ViewModelData
     private List<Currency> _allCurrencies;
     public ObservableCollection<CurrencyViewModel> Currencies
     {
@@ -80,6 +80,9 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IsAddButtonEnabled));
         }
     }
+    #endregion
+
+    #region Commands
     public ICommand AddPaymentMethod => new RelayCommand(x =>
     {
         //MessageBox.Show("Success");
@@ -108,4 +111,5 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         var window = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive);
         window?.Close();
     }, x => true);
+    #endregion
 }

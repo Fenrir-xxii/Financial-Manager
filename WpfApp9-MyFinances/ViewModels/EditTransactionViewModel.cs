@@ -55,36 +55,13 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         _runUpdate = true;
         UpdatePlannedBalanceExc();
     }
-    public void Init()
-    {
-        _allPaymentMethods = new List<PaymentMethod>();
-        _allCategoriesExp = new List<CategoriesExp>();
-        _allCategoriesInc = new List<CategoriesInc>();
-        _allProviders = new List<Provider>();
-
-        Task.Run(async () =>
-        {
-            _allPaymentMethods = await LoadPaymentMethodsAsync();
-            _allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
-            _allCategoriesExp = await LoadCategoriesExpAsync();
-            _allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
-            _allCategoriesInc = await LoadCategoriesIncAsync();
-            _allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
-            _allProviders = await LoadProvidersAsync();
-            _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
-
-            OnPropertyChanged(nameof(PaymentMethods));
-            OnPropertyChanged(nameof(CategoriesExp));
-            OnPropertyChanged(nameof(CategoriesInc));
-            OnPropertyChanged(nameof(Providers));
-        }).Wait();
-        
-    }
+    private Database3MyFinancesContext _db;
     public ExpenseViewModel ExpenseModel { get; set; }
     public IncomeViewModel IncomeModel { get; set; }
     public TransferViewModel TransferModel { get; set; }
     public ExchangeViewModel ExchangeModel { get; set; }
-    private Database3MyFinancesContext _db;
+   
+    #region LoadAsync
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
         return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
@@ -101,8 +78,10 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
     {
         return await _db.Providers.ToListAsync();
     }
-    private List<PaymentMethod> _allPaymentMethods;
+    #endregion
 
+    #region ViewModelData
+    private List<PaymentMethod> _allPaymentMethods;
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
     {
         get
@@ -120,18 +99,6 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PaymentMethods));
         }
     }
-    //private PaymentMethodViewModel _selectedPaymentMethod;
-    //public PaymentMethodViewModel SelectedPaymentMethod
-    //{
-    //    get => _selectedPaymentMethod;
-    //    set
-    //    {
-    //        _selectedPaymentMethod = value;
-    //        OnPropertyChanged(nameof(SelectedPaymentMethod));
-    //        //OnPropertyChanged(nameof(PlannedBalanceExp));
-    //        OnPropertyChanged(nameof(PaymentMethodsForTransfer));
-    //    }
-    //}
     public ObservableCollection<PaymentMethodViewModel> PaymentMethodsForTransfer
     {
         get
@@ -269,16 +236,6 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(CategoriesInc));
         }
     }
-    //private CategoryIncViewModel _selectedCategoryInc;
-    //public CategoryIncViewModel SelectedCategoryInc
-    //{
-    //    get => _selectedCategoryInc;
-    //    set
-    //    {
-    //        _selectedCategoryInc = value;
-    //        OnPropertyChanged(nameof(SelectedCategoryInc));
-    //    }
-    //}
     private List<Provider> _allProviders;
     public ObservableCollection<ProviderViewModel> Providers
     {
@@ -297,16 +254,6 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Providers));
         }
     }
-    //private ProviderViewModel _selectedProvider;
-    //public ProviderViewModel SelectedProvider
-    //{
-    //    get => _selectedProvider;
-    //    set
-    //    {
-    //        _selectedProvider = value;
-    //        OnPropertyChanged(nameof(SelectedProvider));
-    //    }
-    //}
     private decimal _originalExpenseAmount;
     public decimal PlannedBalanceExp
     {
@@ -421,6 +368,37 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         }
     }
     private bool _runUpdate;
+    #endregion
+
+    #region Methods
+    public void Init()
+    {
+        _allPaymentMethods = new List<PaymentMethod>();
+        _allCategoriesExp = new List<CategoriesExp>();
+        _allCategoriesInc = new List<CategoriesInc>();
+        _allProviders = new List<Provider>();
+
+        Task.Run(async () =>
+        {
+            _allPaymentMethods = await LoadPaymentMethodsAsync();
+            _allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
+            _allCategoriesExp = await LoadCategoriesExpAsync();
+            _allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
+            _allCategoriesInc = await LoadCategoriesIncAsync();
+            _allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
+            _allProviders = await LoadProvidersAsync();
+            _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
+
+            OnPropertyChanged(nameof(PaymentMethods));
+            OnPropertyChanged(nameof(CategoriesExp));
+            OnPropertyChanged(nameof(CategoriesInc));
+            OnPropertyChanged(nameof(Providers));
+        }).Wait();
+
+    }
+    #endregion
+
+    #region UpdateData
     public void UpdatePlannedBalanceExp()
     {
         Task.Run(() =>
@@ -467,6 +445,9 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
             }
         });
     }
+    #endregion
+
+    #region Commands
     public ICommand SaveEditOfTransactionExp => new RelayCommand(x =>
     {
         ExpenseModel.Subcategory = _selectedSubCategoryExp;
@@ -553,4 +534,5 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         var window = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive);
         window?.Close();
     }, x => true);
+    #endregion
 }

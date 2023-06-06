@@ -26,6 +26,7 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
     }
     private Database3MyFinancesContext _db;
     public PaymentMethod Model { get; set; }
+    #region ViewModelData
     public int Id { get => Model.Id; }
     public string Title
     {
@@ -85,6 +86,7 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(CurrencyId));
         }
     }
+    #region AllTransactionsWindow
     public ObservableCollection<ExpenseViewModel> Expenses
     {
         get
@@ -199,50 +201,10 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedTransaction));
         }
     }
-    public ICommand EditTransaction => new RelayCommand(x =>
-    {
-        switch (SelectedTransaction.TransactionType)
-        {
-            case TransactionType.EXPENSE:
-                {
-                    var transaction = _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
-                    var subWindow = new EditTransaction(transaction, _db); // pass model of transaction (expense, income or transfer)
-                    subWindow.ShowDialog();
-                    UpdateExpenses();
-                    break;
-                }
-            case TransactionType.INCOME:
-                {
-                    var transaction = _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
-                    var subWindow = new EditTransaction(transaction, _db);
-                    subWindow.ShowDialog();
-                    UpdateIncomes();
-                    break;
-                }
-            case TransactionType.TRANSFER:
-                {
-                    var transaction = _db.Transfers.Include(t => t.From).Include(t=> t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId); //include
-                    var subWindow = new EditTransaction(transaction, _db);
-                    subWindow.ShowDialog();
-                    UpdateTransfers();
-                    break;
-                }
-            case TransactionType.EXCHANGE:
-                {
-                    var transaction = _db.Exchanges.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
-                    var subWindow = new EditTransaction(transaction, _db);
-                    subWindow.ShowDialog();
-                    UpdateExchanges();
-                    break;
-                }
-            default:
-                {
-                    //messageBox no selected item
-                    break;
-                }
-        }
+    #endregion
+    #endregion
 
-    }, x => SelectedTransaction != null);
+    #region UpdateData
     public void UpdateModel()
     {
         var modelFromDb = _db.PaymentMethods.AsNoTracking().Include(x => x.Currency).FirstOrDefault(x => x.Id == Id);
@@ -305,6 +267,9 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         OnPropertyChanged(nameof(ExchangesOut));
         OnPropertyChanged(nameof(CurrentBalance));
     }
+    #endregion
+
+    #region Methods
     public void CombineAllTransactions()
     {
         var temp = new List<FinancialTransaction>();
@@ -344,6 +309,62 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         _allTransactions = temp.OrderByDescending(x => x.DateOfTransaction).ToList();
         OnPropertyChanged(nameof(Transactions));
     }
+    public override bool Equals(object? obj)
+    {
+        if (obj == null)
+            return false;
+        if (!(obj is PaymentMethodViewModel))
+            return false;
+
+        return Model.Id.Equals((obj as PaymentMethodViewModel).Model.Id);
+    }
+    #endregion
+
+    #region Commands
+    public ICommand EditTransaction => new RelayCommand(x =>
+    {
+        switch (SelectedTransaction.TransactionType)
+        {
+            case TransactionType.EXPENSE:
+                {
+                    var transaction = _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                    var subWindow = new EditTransaction(transaction, _db); // pass model of transaction (expense, income or transfer)
+                    subWindow.ShowDialog();
+                    UpdateExpenses();
+                    break;
+                }
+            case TransactionType.INCOME:
+                {
+                    var transaction = _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                    var subWindow = new EditTransaction(transaction, _db);
+                    subWindow.ShowDialog();
+                    UpdateIncomes();
+                    break;
+                }
+            case TransactionType.TRANSFER:
+                {
+                    var transaction = _db.Transfers.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId); //include
+                    var subWindow = new EditTransaction(transaction, _db);
+                    subWindow.ShowDialog();
+                    UpdateTransfers();
+                    break;
+                }
+            case TransactionType.EXCHANGE:
+                {
+                    var transaction = _db.Exchanges.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                    var subWindow = new EditTransaction(transaction, _db);
+                    subWindow.ShowDialog();
+                    UpdateExchanges();
+                    break;
+                }
+            default:
+                {
+                    //messageBox no selected item
+                    break;
+                }
+        }
+
+    }, x => SelectedTransaction != null);
     public ICommand DeleteTransaction => new RelayCommand(x =>
     {
         switch (SelectedTransaction.TransactionType)
@@ -414,14 +435,6 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         }
 
     }, x => SelectedTransaction !=null);
-    public override bool Equals(object? obj)
-    {
-        if (obj == null)
-            return false;
-        if (!(obj is PaymentMethodViewModel))
-            return false;
-
-        return Model.Id.Equals((obj as PaymentMethodViewModel).Model.Id);
-    }
+    #endregion
 }
 

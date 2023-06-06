@@ -257,4 +257,13 @@ public class RecurringChargeViewModel : NotifyPropertyChangedBase
         //    OnPropertyChanged(nameof(DateOfStart));
         //}
     }
+    public override bool Equals(object? obj)
+    {
+        if (obj == null)
+            return false;
+        if (!(obj is RecurringChargeViewModel))
+            return false;
+
+        return Model.Id.Equals((obj as RecurringChargeViewModel).Model.Id);
+    }
 }

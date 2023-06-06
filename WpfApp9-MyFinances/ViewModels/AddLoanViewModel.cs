@@ -46,9 +46,29 @@ public class AddLoanViewModel : NotifyPropertyChangedBase
 
         });
     }
+    private Database3MyFinancesContext _db;
+    #region LoadAsync
+    public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
+    {
+        return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
+    }
+    public async Task<List<Provider>> LoadProvidersAsync()
+    {
+        return await _db.Providers.ToListAsync();
+    }
+    public async Task<List<GivingLoan>> LoadGivingLoanAsync()
+    {
+        return await _db.GivingLoans.ToListAsync();
+    }
+    public async Task<List<ReceivingLoan>> LoadReceivingLoanAsync()
+    {
+        return await _db.ReceivingLoans.ToListAsync();
+    }
+    #endregion
+
+    #region ViewModelData
     public GivingLoanViewModel GivingLoanModel { get; set; }
     public ReceivingLoanViewModel ReceivingLoanModel { get; set; }
-    private Database3MyFinancesContext _db;
     private bool _isGivingLoanAPayback;
     public bool IsGivingLoanAPayback
     {
@@ -83,24 +103,7 @@ public class AddLoanViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(GivingLoans));
         }
     }
-    public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
-    {
-        return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
-    }
-    public async Task<List<Provider>> LoadProvidersAsync()
-    {
-        return await _db.Providers.ToListAsync();
-    }
-    public async Task<List<GivingLoan>> LoadGivingLoanAsync()
-    {
-        return await _db.GivingLoans.ToListAsync();
-    }
-    public async Task<List<ReceivingLoan>> LoadReceivingLoanAsync()
-    {
-        return await _db.ReceivingLoans.ToListAsync();
-    }
     private List<PaymentMethod> _allPaymentMethods;
-
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
     {
         get
@@ -254,6 +257,9 @@ public class AddLoanViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IsSaveButtonEnabled));
         }
     }
+    #endregion
+
+    #region Commands
     public ICommand SaveGivingLoan => new RelayCommand(x =>
     {
 
@@ -322,4 +328,5 @@ public class AddLoanViewModel : NotifyPropertyChangedBase
         var window = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive);
         window?.Close();
     }, x => true);
+    #endregion
 }

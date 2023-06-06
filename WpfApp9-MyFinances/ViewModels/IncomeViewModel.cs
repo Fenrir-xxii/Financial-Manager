@@ -83,7 +83,6 @@ public class IncomeViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(CategoryId));
         }
     }
-    
     public CategoryIncViewModel Category
     {
         get => new CategoryIncViewModel { Model = Model.Category };

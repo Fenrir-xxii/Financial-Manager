@@ -687,7 +687,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }, x => true);
     public ICommand ShowFullInfoOfRecurringCharge => new RelayCommand(x =>
     {
-        var window = new RecuringChargeFullInfo(_selectedRecurringCharge.Model);
+        var window = new RecurringChargeFullInfo(_selectedRecurringCharge.Model);
         window.ShowDialog();
         // update recurring charges
     }, x => _selectedRecurringCharge != null);
@@ -707,8 +707,14 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         }
 
     }, x => _selectedRecurringCharge != null);
+    public ICommand EditRecurringCharge => new RelayCommand(x =>
+    {
+        var window = new EditRecurringCharge(_selectedRecurringCharge.Model, _db);
+        window.ShowDialog();
+        // update rc
+    }, x => _selectedRecurringCharge != null);
     #endregion
-    
+
     #region Methods
     public void CombineLoans()
     {
@@ -1316,6 +1322,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             //var groups = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
 
             var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date);
+            if (_filterSelectedCurrencyExp != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Currency.Id == _filterSelectedCurrencyExp.Id);
+            }
             if (_filterSelectedPaymentMethodExp != null)
             {
                 filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethodExp.Id);
@@ -1435,6 +1445,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             var collection = new SeriesCollection();
 
             var filter = Incomes.Where(x => x.DateOfIncome.Date >= _beginDateInc.Date && x.DateOfIncome.Date <= _endDateInc.Date);
+            if (_filterSelectedCurrencyInc != null)
+            {
+                filter = filter.Where(x => x.PaymentMethod.Currency.Id == _filterSelectedCurrencyInc.Id);
+            }
             if (_filterSelectedPaymentMethodInc != null)
             {
                 filter = filter.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethodInc.Id);

@@ -637,6 +637,7 @@
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Full info" Command="{Binding Path=ShowFullInfoOfRecurringCharge}"></MenuItem>
+                                <MenuItem Header="Edit" Command="{Binding Path=EditRecurringCharge}"></MenuItem>
                                 <MenuItem Header="Delete" Command="{Binding Path=DeleteRecurringCharge}"></MenuItem>
                             </ContextMenu>
                         </DataGrid.ContextMenu>

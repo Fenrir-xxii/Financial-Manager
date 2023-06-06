@@ -116,4 +116,13 @@ public class GivingLoanViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(ReceivingLoanId));
         }
     }
+    public override bool Equals(object? obj)
+    {
+        if (obj == null)
+            return false;
+        if (!(obj is GivingLoanViewModel))
+            return false;
+
+        return Model.Id.Equals((obj as GivingLoanViewModel).Model.Id);
+    }
 }

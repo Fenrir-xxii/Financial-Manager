@@ -12,19 +12,27 @@ using WpfApp9_MyFinances.Models;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
-public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
+public class EditRecurringChargeViewModel : NotifyPropertyChangedBase
 {
-    public AddRecurringChargeViewModel() 
+    public EditRecurringChargeViewModel() { }
+    public EditRecurringChargeViewModel(RecurringCharge rc, Database3MyFinancesContext db)
     {
-        Model = new RecurringChargeViewModel();
-        _db = new Database3MyFinancesContext();
+        Model = new RecurringChargeViewModel(rc);
+        _db = db;
+        //_selectedCategoryExp = new CategoryExpViewModel(rc.Category);
+        _selectedSubCategoryExp = (rc.SubcategoriesExp == null) ? null : new SubcategoryExpViewModel(rc.SubcategoriesExp);
+        _selectedPaymentMethod = (rc.PaymentMethod == null) ? null : new PaymentMethodViewModel(rc.PaymentMethod);
+
         _allPaymentMethods = new List<PaymentMethod>();
         _allCategoriesExp = new List<CategoriesExp>();
         _allProviders = new List<Provider>();
         _allCurrencies = new List<Currency>();
         _allPeriodicities = new List<Periodicity>();
+        //_selectedCategoryExp = new CategoryExpViewModel();
+        //_selectedProvider = new ProviderViewModel();
+        //_selectedCurrency = new CurrencyViewModel();
+        _selectedPeriodicity = new PeriodicityViewModel();
         _isSaveButtonEnabled = false;
-
         Task.Run(async () =>
         {
             _allPaymentMethods = await LoadPaymentMethodsAsync();
@@ -45,9 +53,12 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Periodicities));
 
         });
+        
     }
     private Database3MyFinancesContext _db;
     public RecurringChargeViewModel Model { get; set; }
+
+
     #region LoadAsync
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
@@ -57,13 +68,13 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
     {
         return await _db.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
     }
-    public async Task<List<Provider>> LoadProvidersAsync()
-    {
-        return await _db.Providers.ToListAsync();
-    }
     public async Task<List<Currency>> LoadCurrenciesAsync()
     {
         return await _db.Currencies.ToListAsync();
+    }
+    public async Task<List<Provider>> LoadProvidersAsync()
+    {
+        return await _db.Providers.ToListAsync();
     }
     public async Task<List<Periodicity>> LoadPeriodicitiesAsync()
     {
@@ -122,13 +133,24 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
     private CategoryExpViewModel _selectedCategoryExp;
     public CategoryExpViewModel SelectedCategoryExp
     {
-        get => _selectedCategoryExp;
+        get
+        {
+            if (Model == null)
+            {
+                return _selectedCategoryExp;
+            }
+            return Model.Category;
+        }
         set
         {
-            _selectedCategoryExp = value;
-            OnPropertyChanged(nameof(SelectedCategoryExp));
-            OnPropertyChanged(nameof(SubCategoriesExp));
-            OnPropertyChanged(nameof(IsSaveButtonEnabled));
+            if(value != Model.Category)
+            {
+                //_selectedCategoryExp = value;
+                Model.Category = value;
+                OnPropertyChanged(nameof(SelectedCategoryExp));
+                OnPropertyChanged(nameof(SubCategoriesExp));
+                OnPropertyChanged(nameof(IsSaveButtonEnabled));
+            }
         }
     }
     private List<SubcategoryExpViewModel> _subCategoriesExp;
@@ -271,13 +293,8 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
     #endregion
 
     #region Commands
-    public ICommand SaveRecurringCharge => new RelayCommand(x =>
+    public ICommand SaveEditRecurringCharge => new RelayCommand(x =>
     {
-        
-        Model.Provider = SelectedProvider;
-        Model.Category = SelectedCategoryExp;
-        Model.Currency = SelectedCurrency;
-        Model.Periodicity = SelectedPeriodicity;
         if (SelectedPaymentMethod != null)
         {
             Model.PaymentMethod = SelectedPaymentMethod;
@@ -288,7 +305,7 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
         }
         try
         {
-            _db.Add(Model.Model);
+            _db.Update(Model.Model);
             _db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }

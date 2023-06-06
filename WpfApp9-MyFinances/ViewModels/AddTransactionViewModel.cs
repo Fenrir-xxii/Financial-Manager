@@ -50,6 +50,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         });
     }
     private Database3MyFinancesContext _db;
+    #region LoadAsync
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
         return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
@@ -66,8 +67,10 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
     {
         return await _db.Providers.ToListAsync();
     }
-    private List<PaymentMethod> _allPaymentMethods;
+    #endregion
 
+    #region ViewModelData
+    private List<PaymentMethod> _allPaymentMethods;
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
     {
         get
@@ -600,6 +603,9 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IsSaveExcButtonEnabled));
         }
     }
+    #endregion
+
+    #region Commands
     public ICommand SaveTransactionExp => new RelayCommand(x =>
     {
         ExpenseTransaction.PaymentMethod = SelectedPaymentMethod;
@@ -699,4 +705,5 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         var window = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive);
         window?.Close();
     }, x => true);
+    #endregion
 }
