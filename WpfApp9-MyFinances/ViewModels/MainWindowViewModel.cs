@@ -139,7 +139,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }
     public async Task<List<RecurringCharge>> LoadRecurringChargesAsync()
     {
-        return await _db.RecurringCharges.Include(x => x.Periodicity).ToListAsync();
+        return await _db.RecurringCharges.Include(x => x.Periodicity).Include(y => y.Category).Include(v=> v.Currency).Include(s=> s.PaymentMethod).Include(e => e.Provider).ToListAsync();
     }
     public async Task<List<GivingLoan>> LoadGivingLoansAsync()
     {
@@ -709,7 +709,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }, x => _selectedRecurringCharge != null);
     public ICommand EditRecurringCharge => new RelayCommand(x =>
     {
-        var window = new EditRecurringCharge(_selectedRecurringCharge.Model, _db);
+        var window = new EditRecurringCharge(SelectedRecurringCharge.Model, _db);
         window.ShowDialog();
         // update rc
     }, x => _selectedRecurringCharge != null);

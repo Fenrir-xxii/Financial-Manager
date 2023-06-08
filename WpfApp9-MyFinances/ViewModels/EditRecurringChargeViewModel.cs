@@ -19,18 +19,25 @@ public class EditRecurringChargeViewModel : NotifyPropertyChangedBase
     {
         Model = new RecurringChargeViewModel(rc);
         _db = db;
+
+        Init();
         //_selectedCategoryExp = new CategoryExpViewModel(rc.Category);
         _selectedSubCategoryExp = (rc.SubcategoriesExp == null) ? null : new SubcategoryExpViewModel(rc.SubcategoriesExp);
         _selectedPaymentMethod = (rc.PaymentMethod == null) ? null : new PaymentMethodViewModel(rc.PaymentMethod);
+        //_selectedProvider = new ProviderViewModel(rc.Provider);
+        OnPropertyChanged(nameof(SelectedCategoryExp));
+        OnPropertyChanged(nameof(SelectedPaymentMethod));
+    }
+    private Database3MyFinancesContext _db;
+    public RecurringChargeViewModel Model { get; set; }
 
+    public void Init()
+    {
         _allPaymentMethods = new List<PaymentMethod>();
         _allCategoriesExp = new List<CategoriesExp>();
         _allProviders = new List<Provider>();
         _allCurrencies = new List<Currency>();
         _allPeriodicities = new List<Periodicity>();
-        //_selectedCategoryExp = new CategoryExpViewModel();
-        //_selectedProvider = new ProviderViewModel();
-        //_selectedCurrency = new CurrencyViewModel();
         _selectedPeriodicity = new PeriodicityViewModel();
         _isSaveButtonEnabled = false;
         Task.Run(async () =>
@@ -52,13 +59,8 @@ public class EditRecurringChargeViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Currencies));
             OnPropertyChanged(nameof(Periodicities));
 
-        });
-        
+        }).Wait();
     }
-    private Database3MyFinancesContext _db;
-    public RecurringChargeViewModel Model { get; set; }
-
-
     #region LoadAsync
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
@@ -135,25 +137,33 @@ public class EditRecurringChargeViewModel : NotifyPropertyChangedBase
     {
         get
         {
-            if (Model == null)
-            {
-                return _selectedCategoryExp;
-            }
-            return Model.Category;
+            return _selectedCategoryExp;
+            //if (Model == null)
+            //{
+            //    return _selectedCategoryExp;
+            //}
+            //return Model.Category;
         }
         set
         {
-            if(value != Model.Category)
+            if (value != null)
             {
-                //_selectedCategoryExp = value;
-                Model.Category = value;
+                _selectedCategoryExp = value;
                 OnPropertyChanged(nameof(SelectedCategoryExp));
                 OnPropertyChanged(nameof(SubCategoriesExp));
                 OnPropertyChanged(nameof(IsSaveButtonEnabled));
             }
+            //if (value != Model.Category)
+            //{
+            //    //_selectedCategoryExp = value;
+            //    Model.Category = value;
+            //    OnPropertyChanged(nameof(SelectedCategoryExp));
+            //    OnPropertyChanged(nameof(SubCategoriesExp));
+            //    OnPropertyChanged(nameof(IsSaveButtonEnabled));
+            //}
         }
     }
-    private List<SubcategoryExpViewModel> _subCategoriesExp;
+    //private List<SubcategoryExpViewModel> _subCategoriesExp;
     public ObservableCollection<SubcategoryExpViewModel> SubCategoriesExp
     {
         get
@@ -195,17 +205,17 @@ public class EditRecurringChargeViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Providers));
         }
     }
-    private ProviderViewModel _selectedProvider;
-    public ProviderViewModel SelectedProvider
-    {
-        get => _selectedProvider;
-        set
-        {
-            _selectedProvider = value;
-            OnPropertyChanged(nameof(SelectedProvider));
-            OnPropertyChanged(nameof(IsSaveButtonEnabled));
-        }
-    }
+    //private ProviderViewModel _selectedProvider;
+    //public ProviderViewModel SelectedProvider
+    //{
+    //    get => _selectedProvider;
+    //    set
+    //    {
+    //        _selectedProvider = value;
+    //        OnPropertyChanged(nameof(SelectedProvider));
+    //        OnPropertyChanged(nameof(IsSaveButtonEnabled));
+    //    }
+    //}
     private List<Currency> _allCurrencies;
     public ObservableCollection<CurrencyViewModel> Currencies
     {
@@ -267,10 +277,10 @@ public class EditRecurringChargeViewModel : NotifyPropertyChangedBase
             {
                 return false;
             }
-            if (_selectedProvider == null)
-            {
-                return false;
-            }
+            //if (_selectedProvider == null)
+            //{
+            //    return false;
+            //}
             if (_selectedCategoryExp == null)
             {
                 return false;

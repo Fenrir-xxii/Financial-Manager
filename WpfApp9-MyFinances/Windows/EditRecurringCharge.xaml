@@ -530,7 +530,7 @@
                     <TextBlock>Category:</TextBlock>
                     <ComboBox ItemsSource="{Binding Path=CategoriesExp}">
                         <ComboBox.SelectedItem>
-                            <Binding Path="SelectedCategoryExp">
+                            <Binding Path="Model.Category">
                                 <Binding.ValidationRules>
                                     <validationrules:SelectionComboBoxValidationRule ValidatesOnTargetUpdated="True"/>
                                 </Binding.ValidationRules>
@@ -593,9 +593,9 @@
                     <ComboBox Template="{DynamicResource ComboBoxTemplate1}" ItemsSource="{Binding Path=PaymentMethods}" Background="#FFC4C9C9" BorderBrush="#FF1E3232">
                         <ComboBox.SelectedItem>
                             <Binding Path="SelectedPaymentMethod">
-                                <Binding.ValidationRules>
+                                <!--<Binding.ValidationRules>
                                     <validationrules:SelectionComboBoxValidationRule ValidatesOnTargetUpdated="True"/>
-                                </Binding.ValidationRules>
+                                </Binding.ValidationRules>-->
                             </Binding>
                         </ComboBox.SelectedItem>
                         <ComboBox.ItemTemplate>

@@ -31,13 +31,23 @@ public class RecurringChargeViewModel : NotifyPropertyChangedBase
     }
     public CategoryExpViewModel Category
     {
-        get => new CategoryExpViewModel { Model = Model.Category };
+        get
+        {
+            if(Model==null)
+            {
+                return new CategoryExpViewModel();
+            }
+            return new CategoryExpViewModel { Model = Model.Category };
+        }
         set
         {
-            Model.Category = value.Model;
-            Model.CategoryId = value.Model.Id;
-            OnPropertyChanged(nameof(Category));
-            OnPropertyChanged(nameof(CategoryId));
+            if (value != null)
+            {
+                Model.Category = value.Model;
+                Model.CategoryId = value.Model.Id;
+                OnPropertyChanged(nameof(Category));
+                OnPropertyChanged(nameof(CategoryId));
+            }
         }
     }
     public int CategoryId
@@ -112,10 +122,13 @@ public class RecurringChargeViewModel : NotifyPropertyChangedBase
         get => new CurrencyViewModel { Model = Model.Currency };
         set
         {
-            Model.Currency = value.Model;
-            Model.CurrencyId = value.Model.Id;
-            OnPropertyChanged(nameof(Currency));
-            OnPropertyChanged(nameof(CurrencyId));
+            if (value != null)
+            {
+                Model.Currency = value.Model;
+                Model.CurrencyId = value.Model.Id;
+                OnPropertyChanged(nameof(Currency));
+                OnPropertyChanged(nameof(CurrencyId));
+            }
         }
     }
     public int? PaymentMethodId
@@ -174,13 +187,17 @@ public class RecurringChargeViewModel : NotifyPropertyChangedBase
     }
     public PeriodicityViewModel Periodicity
     {
-        get => new PeriodicityViewModel { Model = Model.Periodicity };
+        //get => new PeriodicityViewModel { Model = Model.Periodicity };
+        get => new PeriodicityViewModel(Model.Periodicity);
         set
         {
-            Model.Periodicity = value.Model;
-            Model.PeriodicityId = value.Model.Id;
-            OnPropertyChanged(nameof(Periodicity));
-            OnPropertyChanged(nameof(PeriodicityId));
+            if (value != null)
+            {
+                Model.Periodicity = value.Model;
+                Model.PeriodicityId = value.Model.Id;
+                OnPropertyChanged(nameof(Periodicity));
+                OnPropertyChanged(nameof(PeriodicityId));
+            }
         }
     }
     public int PeriodicityCounter
