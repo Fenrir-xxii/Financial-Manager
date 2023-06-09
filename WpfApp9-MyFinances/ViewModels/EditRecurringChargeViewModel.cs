@@ -30,7 +30,7 @@ public class EditRecurringChargeViewModel : NotifyPropertyChangedBase
     }
     private Database3MyFinancesContext _db;
     public RecurringChargeViewModel Model { get; set; }
-
+    #region Methods
     public void Init()
     {
         _allPaymentMethods = new List<PaymentMethod>();
@@ -61,6 +61,8 @@ public class EditRecurringChargeViewModel : NotifyPropertyChangedBase
 
         }).Wait();
     }
+    #endregion
+    
     #region LoadAsync
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
@@ -163,7 +165,6 @@ public class EditRecurringChargeViewModel : NotifyPropertyChangedBase
             //}
         }
     }
-    //private List<SubcategoryExpViewModel> _subCategoriesExp;
     public ObservableCollection<SubcategoryExpViewModel> SubCategoriesExp
     {
         get
@@ -205,17 +206,6 @@ public class EditRecurringChargeViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Providers));
         }
     }
-    //private ProviderViewModel _selectedProvider;
-    //public ProviderViewModel SelectedProvider
-    //{
-    //    get => _selectedProvider;
-    //    set
-    //    {
-    //        _selectedProvider = value;
-    //        OnPropertyChanged(nameof(SelectedProvider));
-    //        OnPropertyChanged(nameof(IsSaveButtonEnabled));
-    //    }
-    //}
     private List<Currency> _allCurrencies;
     public ObservableCollection<CurrencyViewModel> Currencies
     {
@@ -273,25 +263,27 @@ public class EditRecurringChargeViewModel : NotifyPropertyChangedBase
     {
         get
         {
-            if (_selectedPaymentMethod == null)
-            {
-                return false;
-            }
-            //if (_selectedProvider == null)
+            // //TO-DO
+
+            //if (_selectedPaymentMethod == null)
             //{
             //    return false;
             //}
-            if (_selectedCategoryExp == null)
-            {
-                return false;
-            }
-            if (_selectedCategoryExp != null)
-            {
-                if (_selectedCategoryExp.Subcategories.Count > 0 && _selectedSubCategoryExp == null)
-                {
-                    return false;
-                }
-            }
+            ////if (_selectedProvider == null)
+            ////{
+            ////    return false;
+            ////}
+            //if (_selectedCategoryExp == null)
+            //{
+            //    return false;
+            //}
+            //if (_selectedCategoryExp != null)
+            //{
+            //    if (_selectedCategoryExp.Subcategories.Count > 0 && _selectedSubCategoryExp == null)
+            //    {
+            //        return false;
+            //    }
+            //}
             return true;
         }
         set
@@ -328,7 +320,7 @@ public class EditRecurringChargeViewModel : NotifyPropertyChangedBase
         {
             if (item.DataContext == this) item.Close();
         }
-    }, x => true);
+    }, x => IsSaveButtonEnabled);
     public ICommand Cancel => new RelayCommand(x =>
     {
         //Application.Current.Windows[1].Close();

@@ -110,10 +110,17 @@ public class GivingLoanViewModel : NotifyPropertyChangedBase
         get => new ReceivingLoanViewModel { Model = Model.ReceivingLoan };   // check for null
         set
         {
-            Model.ReceivingLoan = (value == null) ? null : value.Model;
-            Model.ReceivingLoanId = (value == null) ? null : value.Model.Id;
-            OnPropertyChanged(nameof(ReceivingLoan));
-            OnPropertyChanged(nameof(ReceivingLoanId));
+            if(value!=null)
+            {
+                Model.ReceivingLoan = value.Model;
+                Model.ReceivingLoanId = value.Model.Id;
+                OnPropertyChanged(nameof(ReceivingLoan));
+                OnPropertyChanged(nameof(ReceivingLoanId));
+            }
+            //Model.ReceivingLoan = (value == null) ? null : value.Model;
+            //Model.ReceivingLoanId = (value == null) ? null : value.Model.Id;
+            //OnPropertyChanged(nameof(ReceivingLoan));
+            //OnPropertyChanged(nameof(ReceivingLoanId));
         }
     }
     public override bool Equals(object? obj)

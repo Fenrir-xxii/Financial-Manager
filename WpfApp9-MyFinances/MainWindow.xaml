@@ -718,6 +718,12 @@
                             <Setter Property="Height" Value="16"></Setter>
                         </Style>
                     </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Edit" Command="{Binding Path=EditLoan}"></MenuItem>
+                            <MenuItem Header="Delete" Command="{Binding Path=DeleteLoan}"></MenuItem>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Date" Binding="{Binding Path=DateOfLoan, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
                         <DataGridTextColumn Header="Payment Method" Binding="{Binding Path=LoanPaymentMethod.Title}" Width="20*"></DataGridTextColumn>
@@ -802,7 +808,7 @@
                           AutoGenerateColumns="False" 
                           IsReadOnly="True" 
                           ItemsSource="{Binding Path=SelectedLoan.LoanPaybacks}"
-                          SelectedItem=""
+                          SelectedItem="{Binding Path=SelectedLoanPayback}"
                           Background="#C4C9C9"
                           AlternatingRowBackground="#D0D4D4"
                           ColumnWidth="*" Grid.ColumnSpan="5">
@@ -817,6 +823,11 @@
                             <Setter Property="Height" Value="14"></Setter>
                         </Style>
                     </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Edit" Command="{Binding Path=EditLoanPayback}"></MenuItem>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, StringFormat=dd.MM.yyyy}" Width="15*"></DataGridTextColumn>
                         <DataGridTextColumn Header="Amount" Width="15*">

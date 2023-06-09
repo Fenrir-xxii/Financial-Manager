@@ -373,6 +373,19 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedLoan));
         }
     }
+    private LoanPayback _selectedLoanPayback;
+    public LoanPayback SelectedLoanPayback
+    {
+        get
+        {
+            return _selectedLoanPayback;
+        }
+        set
+        {
+            _selectedLoanPayback = value;   
+            OnPropertyChanged(nameof(SelectedLoanPayback));
+        }
+    }
     private CategoryExpViewModel _selectedMainCategoryExpForSub;
     public CategoryExpViewModel SelectedMainCategoryExpForSub
     {
@@ -712,6 +725,26 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         var window = new EditRecurringCharge(SelectedRecurringCharge.Model, _db);
         window.ShowDialog();
         // update rc
+    }, x => _selectedRecurringCharge != null);
+    public ICommand EditLoan => new RelayCommand(x =>
+    {
+        var window = new EditLoan(SelectedLoan.Model, _db);
+        window.ShowDialog();
+        // update loans
+    }, x => _selectedLoan != null);
+    public ICommand EditLoanPayback => new RelayCommand(x =>
+    {
+        // get loan from payback
+        //if (_selectedLoan.LoanPaybacks.Count > 0)
+        //{
+        //    var paybackList = _allGivingLoans.FirstOrDefault(x => x.Id == _selectedLoan.Model.Id).ReceivingLoans.ToList();
+        //    var paybackLoan = paybackList.FirstOrDefault( x=> x.Id == _selectedLoan.Model.Id);
+        //}
+
+
+        var window = new EditLoan(SelectedLoanPayback, SelectedLoan.Model, _db);
+        window.ShowDialog();
+        // update loans
     }, x => _selectedRecurringCharge != null);
     #endregion
 

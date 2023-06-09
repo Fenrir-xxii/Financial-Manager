@@ -11,6 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WpfApp9_MyFinances.Models;
+using WpfApp9_MyFinances.ModelsForWpfOnly;
+using WpfApp9_MyFinances.ViewModels;
 
 namespace WpfApp9_MyFinances.Windows
 {
@@ -19,9 +22,35 @@ namespace WpfApp9_MyFinances.Windows
     /// </summary>
     public partial class EditLoan : Window
     {
-        public EditLoan()
+        public EditLoan(Loan loan, Database3MyFinancesContext db)
         {
             InitializeComponent();
+            DataContext = new EditLoanViewModel(loan, db);
+            if(loan.LoanGiver.Equals("Me"))
+            {
+                GivingTab.IsSelected = true;
+                ReceivingTab.IsEnabled = false;
+            }
+            else
+            {
+                GivingTab.IsEnabled = false;
+                ReceivingTab.IsSelected = true;
+            }
+        }
+        public EditLoan(LoanPayback payback, Loan loan, Database3MyFinancesContext db)
+        {
+            InitializeComponent();
+            DataContext = new EditLoanViewModel(payback, loan, db);
+            if (loan.LoanGiver.Equals("Me"))
+            {
+                ReceivingTab.IsSelected = true;
+                GivingTab.IsEnabled = false;
+            }
+            else
+            {
+                ReceivingTab.IsEnabled = false;
+                GivingTab.IsSelected = true;
+            }
         }
     }
 }
