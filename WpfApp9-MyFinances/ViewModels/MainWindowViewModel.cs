@@ -58,6 +58,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _endDateInc = DateTime.Now;
         _searchBoxExp = String.Empty;
         _searchBoxInc = String.Empty;
+        _lastExpenseId = -1;
+        _lastIncomeId = -1;
         #endregion
 
         Task.Run(async () =>
@@ -106,6 +108,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         });
         (App.Current.MainWindow as MainWindow).CurrencyComboBoxExp.SelectedIndex = 0;
         (App.Current.MainWindow as MainWindow).CurrencyComboBoxInc.SelectedIndex = 0;
+        //_lastExpenseId = Expenses.Max(x => x.Id);
     }
     private Database3MyFinancesContext _db;
     #region LoadAsync
@@ -129,9 +132,17 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         return await _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e=> e.Provider).ToListAsync();
     }
+    public async Task<List<Expense>> LoadExpensesAsync(int id)
+    {
+        return await _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).Where(x => x.Id>id).ToListAsync();
+    }
     public async Task<List<Income>> LoadIncomesAsync()
     {
         return await _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).ToListAsync();
+    }
+    public async Task<List<Income>> LoadIncomesAsync(int id)
+    {
+        return await _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).Where(x => x.Id > id).ToListAsync();
     }
     public async Task<List<Currency>> LoadCurrenciesAsync()
     {
@@ -306,6 +317,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             var collection = new ObservableCollection<ExpenseViewModel>();
             _allExpenses.ForEach(e => collection.Add(new ExpenseViewModel(e)));
+            if (_allExpenses.Count > 0)
+            {
+                _lastExpenseId = _allExpenses.Max(x => x.Id);
+            }
             return collection;
         }
         set
@@ -321,6 +336,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             var collection = new ObservableCollection<IncomeViewModel>();
             _allIncomes.ForEach(i => collection.Add(new IncomeViewModel(i)));
+            if(_allIncomes.Count > 0)
+            {
+                _lastIncomeId = _allIncomes.Max(x => x.Id);
+            }
             return collection;
         }
         set
@@ -540,6 +559,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(ValidNameOfNewProvider));
         }
     }
+    private int _lastExpenseId;
+    private int _lastIncomeId;
     #endregion
 
     #region Commands
@@ -795,8 +816,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }
     public void UpdatePaymentMethods()
     {
-        _allPaymentMethods.Clear();
-        PaymentMethods.Clear();
+        //_allPaymentMethods.Clear();
+        //PaymentMethods.Clear();
         //Thread.Sleep(1000); 
         //var newDb = new Database3MyFinancesContext();
         var updatedPaymentMethods = new List<PaymentMethod>();
@@ -805,9 +826,39 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             updatedPaymentMethods = newDb.PaymentMethods.Include(x=> x.Currency).ToList();
         }
-        // check for changes
-        _allPaymentMethods = updatedPaymentMethods;
-        _allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
+        bool hasChanges = false;
+        updatedPaymentMethods.ForEach(x =>
+        {
+            var localPm = _allPaymentMethods.FirstOrDefault(p => p.Id == x.Id);
+            if (localPm !=null)
+            {
+                if(x.CurrentBalance != localPm.CurrentBalance)
+                {
+                    // update
+                    _allPaymentMethods.Remove(localPm);
+                    PaymentMethods.Remove(PaymentMethods.FirstOrDefault(p => p.Id==x.Id));
+                    _allPaymentMethods.Add(x);
+                    PaymentMethods.Add(new PaymentMethodViewModel(x));
+                    _allPaymentMethods.OrderBy(x => x.Id);
+                    PaymentMethods.OrderBy(x => x.Id);
+                    hasChanges = true;
+                }
+            }
+            else
+            {
+                _allPaymentMethods.Add(x);
+                PaymentMethods.Add(new PaymentMethodViewModel(x));
+                hasChanges = true;
+            }
+        });
+
+        if(!hasChanges)
+        {
+            return;
+        }
+        //_allPaymentMethods = updatedPaymentMethods;
+        //PaymentMethods.Clear();
+        //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
         OnPropertyChanged(nameof(TotalInCashAllCurrencies));
         OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
         OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
@@ -820,22 +871,39 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }
     public void UpdateExpenses()
     {
-        _allExpenses.Clear();
-        Expenses.Clear();
+        //_allExpenses.Clear();
+        //Expenses.Clear();
+        //Task.Run(async () =>
+        //{
+        //    _allExpenses = await LoadExpensesAsync();
+        //    _allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
+        //}).Wait();
+
+        //_allExpenses.Clear();
+        //Expenses.Clear();
         Task.Run(async () =>
         {
-            _allExpenses = await LoadExpensesAsync();
-            _allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
+            var newExpenses = await LoadExpensesAsync(_lastExpenseId);
+            _allExpenses.AddRange(newExpenses);
+            newExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
+            //_allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
         }).Wait();
     }
     public void UpdateIncomes()
     {
-        _allIncomes.Clear();
-        Incomes.Clear();
+        //_allIncomes.Clear();
+        //Incomes.Clear();
+        //Task.Run(async () =>
+        //{
+        //    _allIncomes = await LoadIncomesAsync();
+        //    _allIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
+        //}).Wait();
+
         Task.Run(async () =>
         {
-            _allIncomes = await LoadIncomesAsync();
-            _allIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
+            var newIncomes = await LoadIncomesAsync(_lastIncomeId);
+            _allIncomes.AddRange(newIncomes);
+            newIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
         }).Wait();
     }
     public void UpdateRecuringCharges()

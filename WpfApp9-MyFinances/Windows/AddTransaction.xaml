@@ -565,7 +565,7 @@
                                 <StackPanel Grid.Row="0" Grid.ColumnSpan="3" Margin="2">
                                     <TextBlock>Date:</TextBlock>
                                     <!--<DatePicker SelectedDateFormat="Long" FirstDayOfWeek="Monday" SelectedDate="{Binding Path=ExpenseTransaction.DateOfExpense}" Background="#C4C9C9"></DatePicker>-->
-                                    <wpfx:DateTimePicker Text="{Binding Path=ExpenseTransaction.DateOfExpense}" Background="#C4C9C9" Format="LongDate" AutoCloseCalendar="True" CultureInfo="en"></wpfx:DateTimePicker>
+                                        <wpfx:DateTimePicker Text="{Binding Path=ExpenseTransaction.DateOfExpense}" Background="#C4C9C9" Format="LongDate" AutoCloseCalendar="True" CultureInfo="en-US"></wpfx:DateTimePicker>
                                     <TextBlock>Product name/title:</TextBlock>
                                     <!--<TextBox Text="{Binding Path= ExpenseTransaction.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>-->
                                     <TextBox>
