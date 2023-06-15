@@ -454,6 +454,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         get
         {
             var collection = new ObservableCollection<string>();
+            var test = _allPaymentMethods.Where(x => x.IsCash == true).GroupBy(x => x.Currency.Id);
             var groups = _allPaymentMethods.Where(x => x.IsCash == true).GroupBy(x => x.Currency);
             List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
             totals.ForEach(x => collection.Add(x));
