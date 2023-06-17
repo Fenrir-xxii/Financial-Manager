@@ -10,7 +10,7 @@ namespace WpfApp9_MyFinances.ViewModels;
 
 public class CurrencyViewModel : NotifyPropertyChangedBase
 {
-    public CurrencyViewModel() { }
+    public CurrencyViewModel() { Model = new Currency(); }
     public CurrencyViewModel(Currency currency)
     {
         Model = currency;
@@ -53,4 +53,6 @@ public class CurrencyViewModel : NotifyPropertyChangedBase
 
         return Model.Id.Equals((obj as CurrencyViewModel).Model.Id);
     }
+    //public override int GetHashCode() =>
+    //  new { Id, CodeNumber, CodeLetter, Title }.GetHashCode();
 }

@@ -20,14 +20,6 @@ public partial class Currency
 
         return Id.Equals((obj as Currency).Id);
     }
-    //public override int GetHashCode()
-    //{
-    //    // Which is preferred?
-
-    //    return base.GetHashCode();
-
-    //    //return this.FooId.GetHashCode();
-    //}
     public override int GetHashCode() =>
       new { Id, CodeNumber, CodeLetter, Title }.GetHashCode();
 

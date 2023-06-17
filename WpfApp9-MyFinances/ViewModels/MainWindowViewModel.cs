@@ -62,50 +62,164 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _lastIncomeId = -1;
         #endregion
 
+        //Task.Run(async () =>
+        //{
+        //    #region LoadFromDB
+        //    _allPaymentMethods = await LoadPaymentMethodsAsync();
+        //    _allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
+        //    _allCategoriesExp = await LoadCategoriesExpAsync();
+        //    _allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
+        //    _allCategoriesInc = await LoadCategoriesIncAsync();
+        //    _allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
+        //    _allProviders = await LoadProvidersAsync();
+        //    _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
+        //    _allExpenses = await LoadExpensesAsync();
+        //    _allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
+        //    _allIncomes = await LoadIncomesAsync();
+        //    _allIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
+        //    _allCurrencies = await LoadCurrenciesAsync();
+        //    _allCurrencies.ForEach(c => Currencies.Add(new CurrencyViewModel(c)));
+        //    _allRecurringCharges = await LoadRecurringChargesAsync();
+        //    _allRecurringCharges.ForEach(rc => RecurringCharges.Add(new RecurringChargeViewModel(rc)));
+        //    _allReceivingLoans = await LoadReceivingLoansAsync();
+        //    _allGivingLoans = await LoadGivingLoansAsync();
+        //    CombineLoans();
+        //    //_allCategoriesExp.ForEach(c => CategoriesExpItems.Add(new TreeViewItem { Header = c.Title }));
+
+        //    OnPropertyChanged(nameof(PaymentMethods));
+        //    OnPropertyChanged(nameof(CategoriesExp));
+        //    OnPropertyChanged(nameof(CategoriesExpItems));
+        //    OnPropertyChanged(nameof(CategoriesInc));
+        //    OnPropertyChanged(nameof(CategoriesIncItems));
+        //    OnPropertyChanged(nameof(Providers));
+        //    OnPropertyChanged(nameof(Expenses));
+        //    OnPropertyChanged(nameof(Incomes));
+        //    OnPropertyChanged(nameof(Currencies));
+        //    OnPropertyChanged(nameof(RecurringCharges));
+        //    OnPropertyChanged(nameof(TotalInCashAllCurrencies));
+        //    OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
+        //    OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
+        //    OnPropertyChanged(nameof(CategoriesExpChartValue));
+        //    OnPropertyChanged(nameof(LabelsExp));
+        //    OnPropertyChanged(nameof(ChartCategoriesExp));
+        //    OnPropertyChanged(nameof(ChartCategoriesExpPie));
+        //    OnPropertyChanged(nameof(FilteredExpenses));
+        //    #endregion
+        //});
+
+
+
         Task.Run(async () =>
         {
             #region LoadFromDB
-            _allPaymentMethods = await LoadPaymentMethodsAsync();
-            _allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
-            _allCategoriesExp = await LoadCategoriesExpAsync();
-            _allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
-            _allCategoriesInc = await LoadCategoriesIncAsync();
-            _allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
-            _allProviders = await LoadProvidersAsync();
-            _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
-            _allExpenses = await LoadExpensesAsync();
-            _allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
-            _allIncomes = await LoadIncomesAsync();
-            _allIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
-            _allCurrencies = await LoadCurrenciesAsync();
-            _allCurrencies.ForEach(c => Currencies.Add(new CurrencyViewModel(c)));
-            _allRecurringCharges = await LoadRecurringChargesAsync();
-            _allRecurringCharges.ForEach(rc => RecurringCharges.Add(new RecurringChargeViewModel(rc)));
-            _allReceivingLoans = await LoadReceivingLoansAsync();
-            _allGivingLoans = await LoadGivingLoansAsync();
-            CombineLoans();
-            //_allCategoriesExp.ForEach(c => CategoriesExpItems.Add(new TreeViewItem { Header = c.Title }));
+            Thread t0 = new Thread(async () =>
+            {
+                _allPaymentMethods = await LoadPaymentMethodsAsync();
+                //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
+                Parallel.ForEach(_allPaymentMethods, p =>
+                {
+                    PaymentMethods.Add(new PaymentMethodViewModel(p));
+                });
+                OnPropertyChanged(nameof(PaymentMethods));
+                OnPropertyChanged(nameof(TotalInCashAllCurrencies));
+                OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
+                OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
+            });
+            t0.Start();
+            Thread t1 = new Thread(async () =>
+            {
+                _allCategoriesExp = await LoadCategoriesExpAsync();
+                //_allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
+                Parallel.ForEach(_allCategoriesExp, c =>
+                {
+                    CategoriesExp.Add(new CategoryExpViewModel(c));
+                });
 
-            OnPropertyChanged(nameof(PaymentMethods));
-            OnPropertyChanged(nameof(CategoriesExp));
-            OnPropertyChanged(nameof(CategoriesExpItems));
-            OnPropertyChanged(nameof(CategoriesInc));
-            OnPropertyChanged(nameof(CategoriesIncItems));
-            OnPropertyChanged(nameof(Providers));
-            OnPropertyChanged(nameof(Expenses));
-            OnPropertyChanged(nameof(Incomes));
-            OnPropertyChanged(nameof(Currencies));
-            OnPropertyChanged(nameof(RecurringCharges));
-            OnPropertyChanged(nameof(TotalInCashAllCurrencies));
-            OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
-            OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
-            OnPropertyChanged(nameof(CategoriesExpChartValue));
-            OnPropertyChanged(nameof(LabelsExp));
-            OnPropertyChanged(nameof(ChartCategoriesExp));
-            OnPropertyChanged(nameof(ChartCategoriesExpPie));
-            OnPropertyChanged(nameof(FilteredExpenses));
+                _allCategoriesInc = await LoadCategoriesIncAsync();
+                //_allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
+                Parallel.ForEach(_allCategoriesInc, c =>
+                {
+                    CategoriesInc.Add(new CategoryIncViewModel(c));
+                });
+
+                OnPropertyChanged(nameof(CategoriesExp));
+                OnPropertyChanged(nameof(CategoriesExpItems));
+                OnPropertyChanged(nameof(CategoriesInc));
+                OnPropertyChanged(nameof(CategoriesIncItems));
+                OnPropertyChanged(nameof(CategoriesExpChartValue));
+                OnPropertyChanged(nameof(LabelsExp));
+                OnPropertyChanged(nameof(ChartCategoriesExp));
+                OnPropertyChanged(nameof(ChartCategoriesExpPie));
+                OnPropertyChanged(nameof(FilteredExpenses));
+                OnPropertyChanged(nameof(CategoriesIncChartValue));
+                OnPropertyChanged(nameof(LabelsInc));
+                OnPropertyChanged(nameof(ChartCategoriesInc));
+                OnPropertyChanged(nameof(ChartCategoriesIncPie));
+                OnPropertyChanged(nameof(FilteredIncomes));
+            });
+            t1.Start();
+            Thread t2 = new Thread(async () =>
+            {
+                _allProviders = await LoadProvidersAsync();
+                //_allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
+                Parallel.ForEach(_allProviders, p =>
+                {
+                    Providers.Add(new ProviderViewModel(p));
+                });
+
+                _allExpenses = await LoadExpensesAsync();
+                //_allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
+                Parallel.ForEach(_allExpenses, e =>
+                {
+                    Expenses.Add(new ExpenseViewModel(e));
+                });
+
+                _allIncomes = await LoadIncomesAsync();
+                //_allIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
+                Parallel.ForEach(_allIncomes, i =>
+                {
+                    Incomes.Add(new IncomeViewModel(i));
+                });
+
+                OnPropertyChanged(nameof(Providers));
+                OnPropertyChanged(nameof(Expenses));
+                OnPropertyChanged(nameof(Incomes));
+            });
+            t2.Start();
+            Thread t3 = new Thread(async () =>
+            {
+                _allCurrencies = await LoadCurrenciesAsync();
+                //_allCurrencies.ForEach(c => Currencies.Add(new CurrencyViewModel(c)));
+                Parallel.ForEach(_allCurrencies, c =>
+                {
+                    Currencies.Add(new CurrencyViewModel(c));
+                });
+
+                _allRecurringCharges = await LoadRecurringChargesAsync();
+                //_allRecurringCharges.ForEach(rc => RecurringCharges.Add(new RecurringChargeViewModel(rc)));
+                Parallel.ForEach(_allRecurringCharges, rc =>
+                {
+                    RecurringCharges.Add(new RecurringChargeViewModel(rc));
+                });
+
+                _allReceivingLoans = await LoadReceivingLoansAsync();
+                _allGivingLoans = await LoadGivingLoansAsync();
+
+                OnPropertyChanged(nameof(Currencies));
+                OnPropertyChanged(nameof(RecurringCharges));
+            });
+            t3.Start();
+
+
+            t0.Join();
+            t1.Join();
+            t2.Join();
+            t3.Join();
+            CombineLoans();
+            
             #endregion
-        });
+        }).Wait();
+        //MessageBox.Show("end");
         (App.Current.MainWindow as MainWindow).CurrencyComboBoxExp.SelectedIndex = 0;
         (App.Current.MainWindow as MainWindow).CurrencyComboBoxInc.SelectedIndex = 0;
         //_lastExpenseId = Expenses.Max(x => x.Id);
@@ -114,51 +228,99 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     #region LoadAsync
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
-        return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
+        //return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.PaymentMethods.Include(x => x.Currency).ToListAsync();
+        }
     }
     public async Task<List<CategoriesExp>> LoadCategoriesExpAsync()
     {
-        return await _db.CategoriesExps.Include(x=> x.SubcategoriesExps).ToListAsync();
+        //return await _db.CategoriesExps.Include(x=> x.SubcategoriesExps).ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
+        }
     }
     public async Task<List<CategoriesInc>> LoadCategoriesIncAsync()
     {
-        return await _db.CategoriesIncs.ToListAsync();
+        //return await _db.CategoriesIncs.ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.CategoriesIncs.ToListAsync();
+        }
     }
     public async Task<List<Provider>> LoadProvidersAsync()
     {
-        return await _db.Providers.ToListAsync();
+        //return await _db.Providers.ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.Providers.ToListAsync();
+        }
     }
     public async Task<List<Expense>> LoadExpensesAsync()
     {
-        return await _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e=> e.Provider).ToListAsync();
+        //return await _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e=> e.Provider).ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.PaymentMethod.Currency).Include(e => e.SubcategoriesExp).Include(e => e.Provider).ToListAsync();
+        }
     }
     public async Task<List<Expense>> LoadExpensesAsync(int id)
     {
-        return await _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).Where(x => x.Id>id).ToListAsync();
+        //return await _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).Where(x => x.Id>id).ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.PaymentMethod.Currency).Include(e => e.SubcategoriesExp).Include(e => e.Provider).Where(x => x.Id > id).ToListAsync();
+        }
     }
     public async Task<List<Income>> LoadIncomesAsync()
     {
-        return await _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).ToListAsync();
+        //return await _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.PaymentMethod.Currency).Include(i => i.Provider).ToListAsync();
+        }
     }
     public async Task<List<Income>> LoadIncomesAsync(int id)
     {
-        return await _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).Where(x => x.Id > id).ToListAsync();
+        //return await _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).Where(x => x.Id > id).ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.PaymentMethod.Currency).Include(i => i.Provider).Where(x => x.Id > id).ToListAsync();
+        }
     }
     public async Task<List<Currency>> LoadCurrenciesAsync()
     {
-        return await _db.Currencies.ToListAsync();
+        //return await _db.Currencies.ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.Currencies.ToListAsync();
+        }
     }
     public async Task<List<RecurringCharge>> LoadRecurringChargesAsync()
     {
-        return await _db.RecurringCharges.Include(x => x.Periodicity).Include(y => y.Category).Include(v=> v.Currency).Include(s=> s.PaymentMethod).Include(e => e.Provider).ToListAsync();
+        //return await _db.RecurringCharges.Include(x => x.Periodicity).Include(y => y.Category).Include(v=> v.Currency).Include(s=> s.PaymentMethod).Include(e => e.Provider).ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.RecurringCharges.Include(x => x.Periodicity).Include(y => y.Category).Include(v => v.Currency).Include(s => s.PaymentMethod).Include(e => e.Provider).ToListAsync();
+        }
     }
     public async Task<List<GivingLoan>> LoadGivingLoansAsync()
     {
-        return await _db.GivingLoans.Include(x => x.PaymentMethod).Include(x=> x.Provider).Include(x => x.ReceivingLoans).ToListAsync();
+        //return await _db.GivingLoans.Include(x => x.PaymentMethod).Include(x=> x.Provider).Include(x => x.ReceivingLoans).ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.GivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.ReceivingLoans).Include(x=> x.PaymentMethod.Currency).ToListAsync();
+        }
     }
     public async Task<List<ReceivingLoan>> LoadReceivingLoansAsync()
     {
-        return await _db.ReceivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.GivingLoans).ToListAsync();
+        //return await _db.ReceivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.GivingLoans).ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.ReceivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.GivingLoans).Include(x => x.PaymentMethod.Currency).ToListAsync();
+        }
     }
     #endregion
     
@@ -454,7 +616,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         get
         {
             var collection = new ObservableCollection<string>();
-            var test = _allPaymentMethods.Where(x => x.IsCash == true).GroupBy(x => x.Currency.Id);
+            //var test = _allPaymentMethods.Where(x => x.IsCash == true).GroupBy(x => x.Currency.Id);
             var groups = _allPaymentMethods.Where(x => x.IsCash == true).GroupBy(x => x.Currency);
             List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
             totals.ForEach(x => collection.Add(x));
@@ -821,54 +983,81 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         //PaymentMethods.Clear();
         //Thread.Sleep(1000); 
         //var newDb = new Database3MyFinancesContext();
-        var updatedPaymentMethods = new List<PaymentMethod>();
+        Task.Run(() =>
+        {
+            var updatedPaymentMethods = new List<PaymentMethod>();
 
-        using (var newDb = new Database3MyFinancesContext())
-        {
-            updatedPaymentMethods = newDb.PaymentMethods.Include(x=> x.Currency).ToList();
-        }
-        bool hasChanges = false;
-        updatedPaymentMethods.ForEach(x =>
-        {
-            var localPm = _allPaymentMethods.FirstOrDefault(p => p.Id == x.Id);
-            if (localPm !=null)
+            using (var newDb = new Database3MyFinancesContext())
             {
-                if(x.CurrentBalance != localPm.CurrentBalance)
+                updatedPaymentMethods = newDb.PaymentMethods.Include(x => x.Currency).ToList();
+            }
+            bool hasChanges = false;
+            //updatedPaymentMethods.ForEach(x =>
+            //{
+            //    var localPm = _allPaymentMethods.FirstOrDefault(p => p.Id == x.Id);
+            //    if (localPm != null)
+            //    {
+            //        if (x.CurrentBalance != localPm.CurrentBalance)
+            //        {
+            //            // update
+            //            _allPaymentMethods.Remove(localPm);
+            //            PaymentMethods.Remove(PaymentMethods.FirstOrDefault(p => p.Id == x.Id));
+            //            _allPaymentMethods.Add(x);
+            //            PaymentMethods.Add(new PaymentMethodViewModel(x));
+            //            _allPaymentMethods.OrderBy(x => x.Id);
+            //            PaymentMethods.OrderBy(x => x.Id);
+            //            hasChanges = true;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        _allPaymentMethods.Add(x);
+            //        PaymentMethods.Add(new PaymentMethodViewModel(x));
+            //        hasChanges = true;
+            //    }
+            //});
+            Parallel.ForEach(updatedPaymentMethods, x =>
+            {
+                var localPm = _allPaymentMethods.FirstOrDefault(p => p.Id == x.Id);
+                if (localPm != null)
                 {
-                    // update
-                    _allPaymentMethods.Remove(localPm);
-                    PaymentMethods.Remove(PaymentMethods.FirstOrDefault(p => p.Id==x.Id));
+                    if (x.CurrentBalance != localPm.CurrentBalance)
+                    {
+                        // update
+                        _allPaymentMethods.Remove(localPm);
+                        PaymentMethods.Remove(PaymentMethods.FirstOrDefault(p => p.Id == x.Id));
+                        _allPaymentMethods.Add(x);
+                        PaymentMethods.Add(new PaymentMethodViewModel(x));
+                        _allPaymentMethods.OrderBy(x => x.Id);
+                        PaymentMethods.OrderBy(x => x.Id);
+                        hasChanges = true;
+                    }
+                }
+                else
+                {
                     _allPaymentMethods.Add(x);
                     PaymentMethods.Add(new PaymentMethodViewModel(x));
-                    _allPaymentMethods.OrderBy(x => x.Id);
-                    PaymentMethods.OrderBy(x => x.Id);
                     hasChanges = true;
                 }
-            }
-            else
-            {
-                _allPaymentMethods.Add(x);
-                PaymentMethods.Add(new PaymentMethodViewModel(x));
-                hasChanges = true;
-            }
-        });
+            });
 
-        if(!hasChanges)
-        {
-            return;
-        }
-        //_allPaymentMethods = updatedPaymentMethods;
-        //PaymentMethods.Clear();
-        //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
-        OnPropertyChanged(nameof(TotalInCashAllCurrencies));
-        OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
-        OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
-        OnPropertyChanged(nameof(PaymentMethods));
-        OnPropertyChanged(nameof(CategoriesExpChartValue));
-        OnPropertyChanged(nameof(LabelsExp));
-        OnPropertyChanged(nameof(ChartCategoriesExp));
-        OnPropertyChanged(nameof(ChartCategoriesExpPie));
-        OnPropertyChanged(nameof(FilteredExpenses));
+            if (!hasChanges)
+            {
+                return;
+            }
+            //_allPaymentMethods = updatedPaymentMethods;
+            //PaymentMethods.Clear();
+            //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
+            OnPropertyChanged(nameof(TotalInCashAllCurrencies));
+            OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
+            OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
+            OnPropertyChanged(nameof(PaymentMethods));
+            OnPropertyChanged(nameof(CategoriesExpChartValue));
+            OnPropertyChanged(nameof(LabelsExp));
+            OnPropertyChanged(nameof(ChartCategoriesExp));
+            OnPropertyChanged(nameof(ChartCategoriesExpPie));
+            OnPropertyChanged(nameof(FilteredExpenses));
+        });
     }
     public void UpdateExpenses()
     {
