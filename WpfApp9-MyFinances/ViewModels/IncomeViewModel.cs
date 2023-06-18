@@ -12,7 +12,7 @@ public class IncomeViewModel : NotifyPropertyChangedBase
 {
     public IncomeViewModel() 
     {
-        Model= new Income();    
+        Model = new Income();
     }
     public IncomeViewModel(Income income)
     {

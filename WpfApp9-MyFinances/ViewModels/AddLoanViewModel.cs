@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows;
 using WpfApp9_MyFinances.Models;
 using WpfApp9_MyFinances.Windows;
+using System.Threading;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
@@ -31,38 +32,97 @@ public class AddLoanViewModel : NotifyPropertyChangedBase
 
         Task.Run(async () =>
         {
-            _allPaymentMethods = await LoadPaymentMethodsAsync();
-            _allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
-            _allProviders = await LoadProvidersAsync();
-            _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p))); 
-            _allGivingLoans = await LoadGivingLoanAsync();
-            _allGivingLoans.ForEach(l => GivingLoans.Add(new GivingLoanViewModel(l)));
-            _allReceivingLoans = await LoadReceivingLoanAsync();
-            _allReceivingLoans.ForEach(l => ReceivingLoans.Add(new ReceivingLoanViewModel(l)));
-            OnPropertyChanged(nameof(PaymentMethods));
-            OnPropertyChanged(nameof(Providers));
-            OnPropertyChanged(nameof(GivingLoans));
-            OnPropertyChanged(nameof(ReceivingLoans));
+            //_allPaymentMethods = await LoadPaymentMethodsAsync();
+            //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
+            //_allProviders = await LoadProvidersAsync();
+            //_allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p))); 
+            //_allGivingLoans = await LoadGivingLoanAsync();
+            //_allGivingLoans.ForEach(l => GivingLoans.Add(new GivingLoanViewModel(l)));
+            //_allReceivingLoans = await LoadReceivingLoanAsync();
+            //_allReceivingLoans.ForEach(l => ReceivingLoans.Add(new ReceivingLoanViewModel(l)));
+            //OnPropertyChanged(nameof(PaymentMethods));
+            //OnPropertyChanged(nameof(Providers));
+            //OnPropertyChanged(nameof(GivingLoans));
+            //OnPropertyChanged(nameof(ReceivingLoans));
 
-        });
+
+            Thread t0 = new Thread(async () =>
+            {
+                _allPaymentMethods = await LoadPaymentMethodsAsync();
+                Parallel.ForEach(_allPaymentMethods, p =>
+                {
+                    PaymentMethods.Add(new PaymentMethodViewModel(p));
+                });
+                OnPropertyChanged(nameof(PaymentMethods));
+            });
+            t0.Start();
+            Thread t1 = new Thread(async () =>
+            {
+                _allProviders = await LoadProvidersAsync();
+                Parallel.ForEach(_allProviders, p =>
+                {
+                    Providers.Add(new ProviderViewModel(p));
+                });
+
+                _allGivingLoans = await LoadGivingLoanAsync();
+                Parallel.ForEach(_allGivingLoans, l =>
+                {
+                    GivingLoans.Add(new GivingLoanViewModel(l));
+                });
+
+                _allReceivingLoans = await LoadReceivingLoanAsync();
+                Parallel.ForEach(_allReceivingLoans, l =>
+                {
+                    ReceivingLoans.Add(new ReceivingLoanViewModel(l));
+                });
+
+                OnPropertyChanged(nameof(Providers));
+                OnPropertyChanged(nameof(GivingLoans));
+                OnPropertyChanged(nameof(ReceivingLoans));
+            });
+            t1.Start();
+           
+
+            t0.Join();
+            t1.Join();
+
+        }).Wait();
     }
     private Database3MyFinancesContext _db;
     #region LoadAsync
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
-        return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
+        //return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.PaymentMethods.Include(x => x.Currency).ToListAsync();
+        }
     }
     public async Task<List<Provider>> LoadProvidersAsync()
     {
-        return await _db.Providers.ToListAsync();
+        //return await _db.Providers.ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.Providers.ToListAsync();
+        }
     }
     public async Task<List<GivingLoan>> LoadGivingLoanAsync()
     {
-        return await _db.GivingLoans.ToListAsync();
+        //return await _db.GivingLoans.ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            //return await context.GivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.ReceivingLoans).Include(x => x.PaymentMethod.Currency).ToListAsync();
+            return await context.GivingLoans.ToListAsync();
+        }
     }
     public async Task<List<ReceivingLoan>> LoadReceivingLoanAsync()
     {
-        return await _db.ReceivingLoans.ToListAsync();
+        //return await _db.ReceivingLoans.ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            //return await context.ReceivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.GivingLoans).Include(x => x.PaymentMethod.Currency).ToListAsync();
+            return await context.ReceivingLoans.ToListAsync();
+        }
     }
     #endregion
 

@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
@@ -34,38 +35,92 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
 
         Task.Run(async () =>
         {
-            _allPaymentMethods = await LoadPaymentMethodsAsync();
-            _allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
-            _allCategoriesExp = await LoadCategoriesExpAsync();
-            _allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
-            _allCategoriesInc = await LoadCategoriesIncAsync();
-            _allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
-            _allProviders = await LoadProvidersAsync();
-            _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));    
+            Thread t0 = new Thread(async () =>
+            {
+                _allPaymentMethods = await LoadPaymentMethodsAsync();
+                Parallel.ForEach(_allPaymentMethods, p =>
+                {
+                    PaymentMethods.Add(new PaymentMethodViewModel(p));
+                });
+                OnPropertyChanged(nameof(PaymentMethods));
+            });
+            t0.Start();
+            Thread t1 = new Thread(async () =>
+            {
+                _allCategoriesExp = await LoadCategoriesExpAsync();
+                Parallel.ForEach(_allCategoriesExp, c =>
+                {
+                    CategoriesExp.Add(new CategoryExpViewModel(c));
+                });
 
-            OnPropertyChanged(nameof(PaymentMethods));
-            OnPropertyChanged(nameof(CategoriesExp));
-            OnPropertyChanged(nameof(CategoriesInc));
-            OnPropertyChanged(nameof(Providers));
+                _allCategoriesInc = await LoadCategoriesIncAsync();
+                Parallel.ForEach(_allCategoriesInc, c =>
+                {
+                    CategoriesInc.Add(new CategoryIncViewModel(c));
+                });
+
+                _allProviders = await LoadProvidersAsync();
+                Parallel.ForEach(_allProviders, p =>
+                {
+                    Providers.Add(new ProviderViewModel(p));
+                });
+                OnPropertyChanged(nameof(CategoriesExp));
+                OnPropertyChanged(nameof(CategoriesInc));
+                OnPropertyChanged(nameof(Providers));
+            });
+
+            t1.Start();
+            t0.Join();
+            t1.Join();
+
+            //_allPaymentMethods = await LoadPaymentMethodsAsync();
+            //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
+            //_allCategoriesExp = await LoadCategoriesExpAsync();
+            //_allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
+            //_allCategoriesInc = await LoadCategoriesIncAsync();
+            //_allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
+            //_allProviders = await LoadProvidersAsync();
+            //_allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));    
+
+            //OnPropertyChanged(nameof(PaymentMethods));
+            //OnPropertyChanged(nameof(CategoriesExp));
+            //OnPropertyChanged(nameof(CategoriesInc));
+            //OnPropertyChanged(nameof(Providers));
         });
     }
     private Database3MyFinancesContext _db;
     #region LoadAsync
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
-        return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
+        //return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.PaymentMethods.Include(x => x.Currency).ToListAsync();
+        }
     }
     public async Task<List<CategoriesExp>> LoadCategoriesExpAsync()
     {
-        return await _db.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
+        //return await _db.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
+        }
     }
     public async Task<List<CategoriesInc>> LoadCategoriesIncAsync()
     {
-        return await _db.CategoriesIncs.ToListAsync();
+        //return await _db.CategoriesIncs.ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.CategoriesIncs.ToListAsync();
+        }
     }
     public async Task<List<Provider>> LoadProvidersAsync()
     {
-        return await _db.Providers.ToListAsync();
+        //return await _db.Providers.ToListAsync();
+        using (var context = new Database3MyFinancesContext())
+        {
+            return await context.Providers.ToListAsync();
+        }
     }
     #endregion
 
@@ -620,16 +675,20 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             _db.Add(ExpenseTransaction.Model);
             _db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            foreach (Window item in Application.Current.Windows)
+            {
+                if (item.DataContext == this) item.Close();
+            }
         }
         catch(Exception e)
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         
-        foreach (Window item in Application.Current.Windows)
-        {
-            if (item.DataContext == this) item.Close();
-        }
+        //foreach (Window item in Application.Current.Windows)
+        //{
+        //    if (item.DataContext == this) item.Close();
+        //}
         //Application.Current.Windows[];
         //Application.Current.Windows[windowId].Close();
     }, x => IsSaveExpButtonEnabled);
@@ -644,16 +703,20 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             _db.Add(IncomeTransaction.Model);
             _db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            foreach (Window item in Application.Current.Windows)
+            {
+                if (item.DataContext == this) item.Close();
+            }
         }
         catch (Exception e)
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         
-        foreach (Window item in Application.Current.Windows)
-        {
-            if (item.DataContext == this) item.Close();
-        }
+        //foreach (Window item in Application.Current.Windows)
+        //{
+        //    if (item.DataContext == this) item.Close();
+        //}
     }, x => IsSaveIncButtonEnabled);
     public ICommand SaveTransactionTransf => new RelayCommand(x =>
     {
@@ -665,16 +728,20 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             _db.Add(TransferTransaction.Model);
             _db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            foreach (Window item in Application.Current.Windows)
+            {
+                if (item.DataContext == this) item.Close();
+            }
         }
         catch (Exception e)
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
        
-        foreach (Window item in Application.Current.Windows)
-        {
-            if (item.DataContext == this) item.Close();
-        }
+        //foreach (Window item in Application.Current.Windows)
+        //{
+        //    if (item.DataContext == this) item.Close();
+        //}
     }, x => IsSaveTfrButtonEnabled);
     public ICommand SaveTransactionExc => new RelayCommand(x =>
     {
@@ -688,16 +755,20 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             _db.Add(ExchangeTransaction.Model);
             _db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            foreach (Window item in Application.Current.Windows)
+            {
+                if (item.DataContext == this) item.Close();
+            }
         }
         catch (Exception e)
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
-        foreach (Window item in Application.Current.Windows)
-        {
-            if (item.DataContext == this) item.Close();
-        }
+        //foreach (Window item in Application.Current.Windows)
+        //{
+        //    if (item.DataContext == this) item.Close();
+        //}
     }, x => IsSaveExcButtonEnabled);
     public ICommand CancelTransaction => new RelayCommand(x =>
     {

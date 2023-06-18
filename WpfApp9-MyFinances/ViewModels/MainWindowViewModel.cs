@@ -201,9 +201,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
                 {
                     RecurringCharges.Add(new RecurringChargeViewModel(rc));
                 });
+                Task.Run(async () =>
+                {
+                    _allReceivingLoans = await LoadReceivingLoansAsync();
+                    _allGivingLoans = await LoadGivingLoansAsync();
+                }).Wait();
 
-                _allReceivingLoans = await LoadReceivingLoansAsync();
-                _allGivingLoans = await LoadGivingLoansAsync();
+                CombineLoans();
 
                 OnPropertyChanged(nameof(Currencies));
                 OnPropertyChanged(nameof(RecurringCharges));
@@ -215,10 +219,11 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             t1.Join();
             t2.Join();
             t3.Join();
-            CombineLoans();
+            //CombineLoans();
             
             #endregion
-        }).Wait();
+        });
+       
         //MessageBox.Show("end");
         (App.Current.MainWindow as MainWindow).CurrencyComboBoxExp.SelectedIndex = 0;
         (App.Current.MainWindow as MainWindow).CurrencyComboBoxInc.SelectedIndex = 0;
