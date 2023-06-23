@@ -45,18 +45,62 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
             //OnPropertyChanged(nameof(Currencies));
             //OnPropertyChanged(nameof(Periodicities));
 
-            Thread t0 = new Thread(async () =>
-            {
+            //Thread t0 = new Thread(async () =>
+            //{
+            //    _allPaymentMethods = await LoadPaymentMethodsAsync();
+            //    Parallel.ForEach(_allPaymentMethods, p =>
+            //    {
+            //        PaymentMethods.Add(new PaymentMethodViewModel(p));
+            //    });
+            //    OnPropertyChanged(nameof(PaymentMethods));
+            //});
+            //t0.Start();
+            //Thread t1 = new Thread(async () =>
+            //{
+            //    _allCategoriesExp = await LoadCategoriesExpAsync();
+            //    Parallel.ForEach(_allCategoriesExp, c =>
+            //    {
+            //        CategoriesExp.Add(new CategoryExpViewModel(c));
+            //    });
+
+            //    _allProviders = await LoadProvidersAsync();
+            //    Parallel.ForEach(_allProviders, p =>
+            //    {
+            //        Providers.Add(new ProviderViewModel(p));
+            //    });
+            //    OnPropertyChanged(nameof(CategoriesExp));
+            //    OnPropertyChanged(nameof(Providers));
+            //});
+            //t1.Start();
+            //Thread t2 = new Thread(async () =>
+            //{
+            //    _allCurrencies = await LoadCurrenciesAsync();
+            //    Parallel.ForEach(_allCurrencies, c =>
+            //    {
+            //        Currencies.Add(new CurrencyViewModel(c));
+            //    });
+
+            //    _allPeriodicities = await LoadPeriodicitiesAsync();
+            //    Parallel.ForEach(_allPeriodicities, p =>
+            //    {
+            //        Periodicities.Add(new PeriodicityViewModel(p));
+            //    });
+            //    OnPropertyChanged(nameof(Currencies));
+            //    OnPropertyChanged(nameof(Periodicities));
+            //});
+            //t2.Start();
+
+            //t0.Join();
+            //t1.Join();
+            //t2.Join();
+
                 _allPaymentMethods = await LoadPaymentMethodsAsync();
                 Parallel.ForEach(_allPaymentMethods, p =>
                 {
                     PaymentMethods.Add(new PaymentMethodViewModel(p));
                 });
                 OnPropertyChanged(nameof(PaymentMethods));
-            });
-            t0.Start();
-            Thread t1 = new Thread(async () =>
-            {
+
                 _allCategoriesExp = await LoadCategoriesExpAsync();
                 Parallel.ForEach(_allCategoriesExp, c =>
                 {
@@ -70,10 +114,7 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
                 });
                 OnPropertyChanged(nameof(CategoriesExp));
                 OnPropertyChanged(nameof(Providers));
-            });
-            t1.Start();
-            Thread t2 = new Thread(async () =>
-            {
+
                 _allCurrencies = await LoadCurrenciesAsync();
                 Parallel.ForEach(_allCurrencies, c =>
                 {
@@ -87,57 +128,51 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
                 });
                 OnPropertyChanged(nameof(Currencies));
                 OnPropertyChanged(nameof(Periodicities));
-            });
-            t2.Start();
 
-            t0.Join();
-            t1.Join();
-            t2.Join();
-
-        }).Wait();
+        });
     }
     private Database3MyFinancesContext _db;
     public RecurringChargeViewModel Model { get; set; }
     #region LoadAsync
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
     {
-        //return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
-        using (var context = new Database3MyFinancesContext())
-        {
-            return await context.PaymentMethods.Include(x => x.Currency).ToListAsync();
-        }
+        return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
+        //using (var context = new Database3MyFinancesContext())
+        //{
+        //    return await context.PaymentMethods.Include(x => x.Currency).ToListAsync();
+        //}
     }
     public async Task<List<CategoriesExp>> LoadCategoriesExpAsync()
     {
-        //return await _db.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
-        using (var context = new Database3MyFinancesContext())
-        {
-            return await context.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
-        }
+        return await _db.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
+        //using (var context = new Database3MyFinancesContext())
+        //{
+        //    return await context.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
+        //}
     }
     public async Task<List<Provider>> LoadProvidersAsync()
     {
-        //return await _db.Providers.ToListAsync();
-        using (var context = new Database3MyFinancesContext())
-        {
-            return await context.Providers.ToListAsync();
-        }
+        return await _db.Providers.ToListAsync();
+        //using (var context = new Database3MyFinancesContext())
+        //{
+        //    return await context.Providers.ToListAsync();
+        //}
     }
     public async Task<List<Currency>> LoadCurrenciesAsync()
     {
-        //return await _db.Currencies.ToListAsync();
-        using (var context = new Database3MyFinancesContext())
-        {
-            return await context.Currencies.ToListAsync();
-        }
+        return await _db.Currencies.ToListAsync();
+        //using (var context = new Database3MyFinancesContext())
+        //{
+        //    return await context.Currencies.ToListAsync();
+        //}
     }
     public async Task<List<Periodicity>> LoadPeriodicitiesAsync()
     {
-        //return await _db.Periodicities.ToListAsync();
-        using (var context = new Database3MyFinancesContext())
-        {
-            return await context.Periodicities.ToListAsync();
-        }
+        return await _db.Periodicities.ToListAsync();
+        //using (var context = new Database3MyFinancesContext())
+        //{
+        //    return await context.Periodicities.ToListAsync();
+        //}
     }
     #endregion
 
