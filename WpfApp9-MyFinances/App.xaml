@@ -2,9 +2,27 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WpfApp9_MyFinances" 
-             xmlns:local1="clr-namespace:WpfApp9_MyFinances.Converters" xmlns:Demo1="clr-namespace:WpfApp9_MyFinances.ViewModels"
+             xmlns:local1="clr-namespace:WpfApp9_MyFinances.Converters"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!--<local1:LocalizeCurrencyMultiConverter x:Key="localizeCurrencyMultiConverter"/>-->
+        <!--<ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Assets/Styles.xaml"/>
+                <ResourceDictionary Source="Assets/ToggleSwitchStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            --><!--<Demo:MainWindowViewModel x:Key="DemoViewModel"/>--><!--
+            <local1:LocalizeCurrencyMultiConverter x:Key="localizeCurrencyMultiConverter"/>
+            <BooleanToVisibilityConverter x:Key="VisibilityConverter"/>
+        </ResourceDictionary>-->
+        <!--<ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <local1:LocalizeCurrencyMultiConverter x:Key="localizeCurrencyMultiConverter"/>
+        </ResourceDictionary>-->
         <local1:LocalizeCurrencyMultiConverter x:Key="localizeCurrencyMultiConverter"/>
     </Application.Resources>
 </Application>

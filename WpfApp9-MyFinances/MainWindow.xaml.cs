@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfApp9_MyFinances.ViewModels;
+using System.Diagnostics;
+using MahApps.Metro.Controls;
 
 namespace WpfApp9_MyFinances
 {
@@ -47,5 +49,23 @@ namespace WpfApp9_MyFinances
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
+
+        //private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        //{
+        //    MahApps.Metro.Controls.ToggleSwitch toggleSwitch = sender as MahApps.Metro.Controls.ToggleSwitch;
+        //    if (toggleSwitch != null)
+        //    {
+        //        if (toggleSwitch.IsOn == true)
+        //        {
+        //            progress.IsActive = true;
+        //            progress.Visibility = Visibility.Visible;
+        //        }
+        //        else
+        //        {
+        //            progress.IsActive = false;
+        //            progress.Visibility = Visibility.Collapsed;
+        //        }
+        //    }
+        //}
     }
 }
