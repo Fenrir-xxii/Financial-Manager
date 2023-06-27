@@ -579,8 +579,8 @@
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <StackPanel Grid.Column="1" Grid.Row="0">
-                        <Button>Update</Button>
+                    <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
+                        <Button Width="60" Height="25" Command="{Binding Path=UpdatePM}">Update</Button>
                     </StackPanel>
                    
                     
