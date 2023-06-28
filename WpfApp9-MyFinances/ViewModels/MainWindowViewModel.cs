@@ -143,16 +143,16 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     public MainWindowViewModel()
     {
 
-        _allPaymentMethods = new List<PaymentMethod>();
-        _allCategoriesExp = new List<CategoriesExp>();
+        //_allPaymentMethods = new List<PaymentMethod>();
+        //_allCategoriesExp = new List<CategoriesExp>();
         _categoriesExpItems = new ObservableCollection<TreeViewItem>();
-        _allCategoriesInc = new List<CategoriesInc>();
+        //_allCategoriesInc = new List<CategoriesInc>();
         _categoriesIncItems = new ObservableCollection<TreeViewItem>();
-        _allProviders = new List<Provider>();
-        _allExpenses = new List<Expense>();
-        _allIncomes = new List<Income>();
-        _allCurrencies = new List<Currency>();
-        _allRecurringCharges = new List<Models.RecurringCharge>();
+        //_allProviders = new List<Provider>();
+        //_allExpenses = new List<Expense>();
+        //_allIncomes = new List<Income>();
+        //_allCurrencies = new List<Currency>();
+        //_allRecurringCharges = new List<RecurringCharge>();
         _allGivingLoans = new List<GivingLoan>();
         _allReceivingLoans = new List<ReceivingLoan>();
         _allLoans = new List<Loan>();
@@ -191,7 +191,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _allGivingLoans = _repo.GivingLoans;
         _allReceivingLoans = _repo.ReceivingLoans;
         _recurringChargeModels = _repo.RecurringCharges;
-
+        CombineLoans();
 
         //MessageBox.Show("end");
         (App.Current.MainWindow as MainWindow).CurrencyComboBoxExp.SelectedIndex = 0;
@@ -300,7 +300,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     #endregion
     
     #region ViewModelData
-    private List<PaymentMethod> _allPaymentMethods;
+    //private List<PaymentMethod> _allPaymentMethods;
     private List<PaymentMethodViewModel> _pmModels;
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
     {
@@ -333,7 +333,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedPaymentMethod));
         }
     }
-    private List<CategoriesExp> _allCategoriesExp;
+    //private List<CategoriesExp> _allCategoriesExp;
     private List<CategoryExpViewModel> _categoryExpModels;
     public ObservableCollection<CategoryExpViewModel> CategoriesExp
     {
@@ -398,7 +398,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             //OnPropertyChanged(nameof(CategoriesExp));
         }
     }
-    private List<CategoriesInc> _allCategoriesInc;
+    //private List<CategoriesInc> _allCategoriesInc;
     private List<CategoryIncViewModel> _categoryIncModels;
     public ObservableCollection<CategoryIncViewModel> CategoriesInc
     {
@@ -473,7 +473,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
-    private List<Provider> _allProviders;
+    //private List<Provider> _allProviders;
     private List<ProviderViewModel> _providerModels;
     public ObservableCollection<ProviderViewModel> Providers
     {
@@ -491,7 +491,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Providers));
         }
     }
-    private List<Expense> _allExpenses;
+    //private List<Expense> _allExpenses;
     private List<ExpenseViewModel> _expenseModels;
     public ObservableCollection<ExpenseViewModel> Expenses
     {
@@ -512,7 +512,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Expenses));    
         }
     }
-    private List<Income> _allIncomes;
+    //private List<Income> _allIncomes;
     private List<IncomeViewModel> _incomeModels;
     public ObservableCollection<IncomeViewModel> Incomes
     {
@@ -533,7 +533,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Incomes));
         }
     }
-    private List<Currency> _allCurrencies;
+    //private List<Currency> _allCurrencies;
     private List<CurrencyViewModel> _currencyModels;
     public ObservableCollection<CurrencyViewModel> Currencies
     {
@@ -602,7 +602,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedMainCategoryExpForSub));
         }
     }
-    private List<RecurringCharge> _allRecurringCharges;
+    //private List<RecurringCharge> _allRecurringCharges;
     private List<RecurringChargeViewModel> _recurringChargeModels;
     public ObservableCollection<RecurringChargeViewModel> RecurringCharges
     {
@@ -783,7 +783,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         if (SelectedOperationType.Equals("Expense") && !(_isNewCategoryASubcategory))
         {
-            var newCat = _allCategoriesExp.FirstOrDefault(x => x.Title.ToLower().Equals(_titleOfNewCategory.ToLower()));
+            //var newCat = _allCategoriesExp.FirstOrDefault(x => x.Title.ToLower().Equals(_titleOfNewCategory.ToLower()));
+            var newCat = _categoryExpModels.FirstOrDefault(x => x.Model.Title.ToLower().Equals(_titleOfNewCategory.ToLower()));
             if (newCat != null)
             {
                 MessageBox.Show("Such title already exist", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -796,10 +797,11 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         }
         else if (SelectedOperationType.Equals("Expense") && _isNewCategoryASubcategory)
         {
-            var mainCat = _allCategoriesExp.FirstOrDefault(x => x.Title.ToLower().Equals(SelectedMainCategoryExpForSub.Title.ToLower()));
+            //var mainCat = _allCategoriesExp.FirstOrDefault(x => x.Title.ToLower().Equals(SelectedMainCategoryExpForSub.Title.ToLower()));
+            var mainCat = _categoryExpModels.FirstOrDefault(x => x.Model.Title.ToLower().Equals(SelectedMainCategoryExpForSub.Title.ToLower()));
             if (mainCat != null)
             {
-                var newSubCat = mainCat.SubcategoriesExps.FirstOrDefault(x => x.Title.Equals(_titleOfNewCategory));
+                var newSubCat = mainCat.Model.SubcategoriesExps.FirstOrDefault(x => x.Title.Equals(_titleOfNewCategory));
                 if (newSubCat != null)
                 {
                     MessageBox.Show("Such title already exist", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -813,7 +815,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         }
         else
         {
-            var newCat = _allCategoriesInc.FirstOrDefault(x => x.Title.ToLower().Equals(_titleOfNewCategory.ToLower()));
+            //var newCat = _allCategoriesInc.FirstOrDefault(x => x.Title.ToLower().Equals(_titleOfNewCategory.ToLower()));
+            var newCat = _categoryIncModels.FirstOrDefault(x => x.Model.Title.ToLower().Equals(_titleOfNewCategory.ToLower()));
             if (newCat != null)
             {
                 MessageBox.Show("Such title already exist", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -830,22 +833,25 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         if (SelectedOperationType.Equals("Expense") && !(_isNewCategoryASubcategory))
         {
             var newCategory = new CategoriesExp { Title = _titleOfNewCategory };
-            _db.CategoriesExps.Add(newCategory);
+            //_db.CategoriesExps.Add(newCategory);
+            _repo.Add(newCategory);
         }
         else if (SelectedOperationType.Equals("Expense") && _isNewCategoryASubcategory)
         {
-            var mainCat = _allCategoriesExp.FirstOrDefault(x => x.Title.Equals(SelectedMainCategoryExpForSub.Title));
+            //var mainCat = _allCategoriesExp.FirstOrDefault(x => x.Title.Equals(SelectedMainCategoryExpForSub.Title));
+            var mainCat = _categoryExpModels.FirstOrDefault(x => x.Model.Title.Equals(SelectedMainCategoryExpForSub.Title));
             if (mainCat != null)
             {
-                mainCat.SubcategoriesExps.Add(new SubcategoriesExp { Title = _titleOfNewCategory, CategoryId = mainCat.Id });
+                mainCat.Model.SubcategoriesExps.Add(new SubcategoriesExp { Title = _titleOfNewCategory, CategoryId = mainCat.Id });
             }
         }
         else
         {
             var newCategory = new CategoriesInc { Title = _titleOfNewCategory };
-            _db.CategoriesIncs.Add(newCategory);
+            //_db.CategoriesIncs.Add(newCategory);
+            _repo.Add(newCategory);
         }
-        _db.SaveChanges();
+        //_db.SaveChanges();
         UpdateCategories();
         OnPropertyChanged(nameof(CategoriesExp));
         OnPropertyChanged(nameof(CategoriesExpItems));
@@ -855,7 +861,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }, x => _validNameOfNewCategory);
     public ICommand CheckTitleOfNewProvider => new RelayCommand(x =>
     {
-        var newProvider = _allProviders.FirstOrDefault(x => x.Title.ToLower().Equals(_titleOfNewProvider.ToLower()));
+        //var newProvider = _allProviders.FirstOrDefault(x => x.Title.ToLower().Equals(_titleOfNewProvider.ToLower()));
+        var newProvider = _providerModels.FirstOrDefault(x => x.Model.Title.ToLower().Equals(_titleOfNewProvider.ToLower()));
         if (newProvider != null)
         {
             MessageBox.Show("Such title already exist", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -869,8 +876,9 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     public ICommand AddNewProvider => new RelayCommand(x =>
     {
         var newProvider = new Provider { Title = _titleOfNewProvider };
-        _db.Providers.Add(newProvider);
-        _db.SaveChanges();
+        //_db.Providers.Add(newProvider);
+        //_db.SaveChanges();
+        _repo.Add(newProvider);
         UpdateProviders();
         OnPropertyChanged(nameof(Providers));
 
@@ -882,13 +890,16 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         // update all transactions from selectedPaymentMethod
         // check for changes
 
-        var pmFromDb = _db.PaymentMethods.Include(x => x.Currency).FirstOrDefault(x => x.Id == _selectedPaymentMethod.Id);
+        //var pmFromDb = _db.PaymentMethods.Include(x => x.Currency).FirstOrDefault(x => x.Id == _selectedPaymentMethod.Id);
+        var pmFromDb = _repo.GetPMById(_selectedPaymentMethod.Id);
         if (pmFromDb != null)
         {
-            var pmLocal = _allPaymentMethods.FirstOrDefault(y => y.Id == pmFromDb.Id);
+            //var pmLocal = _allPaymentMethods.FirstOrDefault(y => y.Id == pmFromDb.Id);
+            //var pmViewModel = _pmModels.FirstOrDefault(y => y.Id == pmFromDb.Id);
+            var pmLocal = _pmModels.FirstOrDefault(y => y.Id == pmFromDb.Id);
             if (pmLocal != null)
             {
-                pmLocal = pmFromDb;
+                pmLocal = new PaymentMethodViewModel(pmFromDb);
                 OnPropertyChanged(nameof(PaymentMethods));
                 //_allPaymentMethods.Remove(_allPaymentMethods.FirstOrDefault(y => y.Id == pm.Id));
                 //_allPaymentMethods.Add(pm);
@@ -944,8 +955,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         try
         {
-            _db.Remove(_selectedRecurringCharge.Model);
-            _db.SaveChanges();
+            //_db.Remove(_selectedRecurringCharge.Model);
+            //_db.SaveChanges();
+            _repo.Remove(_selectedRecurringCharge.Model);
+
             UpdateRecuringCharges();
             MessageBox.Show("Delete operation was successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             OnPropertyChanged(nameof(RecurringCharges));
@@ -1015,33 +1028,42 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     #region UpdateData
     public void UpdateCategories()
     {
-        if (_autoUpdate)
-        {
-            _allCategoriesExp.Clear();
-            _allCategoriesInc.Clear();
-            CategoriesExp.Clear();
-            CategoriesInc.Clear();
-            Task.Run(async () =>
-            {
-                //_allCategoriesExp = await LoadCategoriesExpAsync();
-                _allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
-                //_allCategoriesInc = await LoadCategoriesIncAsync();
-                _allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
-            }).Wait();
-        }
+        //if (_autoUpdate)
+        //{
+        //    _allCategoriesExp.Clear();
+        //    _allCategoriesInc.Clear();
+        //    CategoriesExp.Clear();
+        //    CategoriesInc.Clear();
+        //    Task.Run(async () =>
+        //    {
+        //        //_allCategoriesExp = await LoadCategoriesExpAsync();
+        //        _allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
+        //        //_allCategoriesInc = await LoadCategoriesIncAsync();
+        //        _allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
+        //    }).Wait();
+        //}
+        CategoriesExp.Clear();
+        CategoriesInc.Clear();
+        _repo.UpdateCategories();
+        _categoryExpModels = _repo.CategoriesExp;
+        _categoryIncModels = _repo.CategoriesInc;
     }
     public void UpdateProviders()
     {
-        if (_autoUpdate)
-        {
-            _allProviders.Clear();
-            Providers.Clear();
-            Task.Run(async () =>
-            {
-               //_allProviders = await LoadProvidersAsync();
-                _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
-            }).Wait();
-        }
+
+        //_allProviders.Clear();
+        //Providers.Clear();
+        //Task.Run(async () =>
+        //{
+        //    //_allProviders = await LoadProvidersAsync();
+        //    _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
+        //}).Wait();
+
+        Providers.Clear();
+        _repo.UpdateProviders();
+        _providerModels = _repo.Providers;
+
+
     }
     public void UpdatePaymentMethods()
     {
@@ -1053,12 +1075,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             Task.Run(() =>
             {
-                var updatedPaymentMethods = new List<PaymentMethod>();
+                //var updatedPaymentMethods = new List<PaymentMethod>();
 
-                using (var newDb = new Database3MyFinancesContext())
-                {
-                    updatedPaymentMethods = newDb.PaymentMethods.Include(x => x.Currency).ToList();
-                }
+                //using (var newDb = new Database3MyFinancesContext())
+                //{
+                //    updatedPaymentMethods = newDb.PaymentMethods.Include(x => x.Currency).ToList();
+                //}
+                var updatedPaymentMethods = _repo.GetPM();
                 bool hasChanges = false;
                 //updatedPaymentMethods.ForEach(x =>
                 //{
@@ -1086,24 +1109,26 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
                 //});
                 updatedPaymentMethods.ForEach(x =>
                 {
-                    var localPm = _allPaymentMethods.FirstOrDefault(p => p.Id == x.Id);
+                    //var localPm = _allPaymentMethods.FirstOrDefault(p => p.Id == x.Id);
+                    var localPm = _pmModels.FirstOrDefault(p => p.Id == x.Id);
+
                     if (localPm != null)
                     {
                         if (x.CurrentBalance != localPm.CurrentBalance)
                         {
                             // update
-                            _allPaymentMethods.Remove(localPm);
+                            //_allPaymentMethods.Remove(localPm);
                             PaymentMethods.Remove(PaymentMethods.FirstOrDefault(p => p.Id == x.Id));
-                            _allPaymentMethods.Add(x);
+                            //_allPaymentMethods.Add(x);
                             PaymentMethods.Add(new PaymentMethodViewModel(x));
-                            _allPaymentMethods.OrderBy(x => x.Id);
+                            //_allPaymentMethods.OrderBy(x => x.Id);
                             PaymentMethods.OrderBy(x => x.Id);
                             hasChanges = true;
                         }
                     }
                     else
                     {
-                        _allPaymentMethods.Add(x);
+                        //_allPaymentMethods.Add(x);
                         PaymentMethods.Add(new PaymentMethodViewModel(x));
                         hasChanges = true;
                     }
@@ -1172,17 +1197,21 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }
     public void UpdateRecuringCharges()
     {
-        if (_autoUpdate)
-        {
-            _allRecurringCharges.Clear();
-            RecurringCharges.Clear();
-            Task.Run(async () =>
-            {
-                //_allRecurringCharges = await LoadRecurringChargesAsync();
-                //_allRecurringCharges.ForEach(rc => RecurringCharges.Add(new RecurringChargeViewModel(rc)));
-                //OnPropertyChanged(nameof(RecurringCharges));
-            }).Wait();
-        }
+        //if (_autoUpdate)
+        //{
+        //    _allRecurringCharges.Clear();
+        //    RecurringCharges.Clear();
+        //    Task.Run(async () =>
+        //    {
+        //        //_allRecurringCharges = await LoadRecurringChargesAsync();
+        //        //_allRecurringCharges.ForEach(rc => RecurringCharges.Add(new RecurringChargeViewModel(rc)));
+        //        //OnPropertyChanged(nameof(RecurringCharges));
+        //    }).Wait();
+        //}
+        RecurringCharges.Clear();
+        _repo.UpdateRecurringCharges();
+        _recurringChargeModels = _repo.RecurringCharges;
+
     }
     public void UpdateLoans()
     {
@@ -1313,7 +1342,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             if (_filterSelectedCurrencyExp == null)
             {
-                if(_allCurrencies == null)
+                //if(_allCurrencies == null)
+                if (_currencyModels == null)
                 {
                     return _filterSelectedCurrencyExp = new CurrencyViewModel();
                 };
@@ -1505,7 +1535,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             if (_filterSelectedCurrencyInc == null)
             {
-                if (_allCurrencies == null)
+                //if (_allCurrencies == null)
+                if (_currencyModels == null)
                 {
                     return _filterSelectedCurrencyInc = new CurrencyViewModel();
                 };

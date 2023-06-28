@@ -289,5 +289,167 @@ public sealed class DbRepo
             RecurringCharges = value;
         }
     }
+    public PaymentMethod? GetPMById(int id)
+    {
+        return _db.PaymentMethods.Include(x => x.Currency).FirstOrDefault(x => x.Id == id);
+    }
+    public void UpdateProviders()
+    {
+        _allProviders.Clear();
+        Task.Run(async () =>
+        {
+            _allProviders = await LoadProvidersAsync();
+            Parallel.ForEach(_allProviders, p =>
+            {
+                Providers.Add(new ProviderViewModel(p));
+            });
+        }).Wait();
 
+        //Parallel.ForEach(_allProviders, p =>
+        //{
+        //    Providers.Add(new ProviderViewModel(p));
+        //});
+    }
+    public void UpdateCategories()
+    {
+        _allCategoriesExp.Clear();
+        _allCategoriesInc.Clear();
+
+        Task.Run(async () =>
+        {
+            _allCategoriesExp = await LoadCategoriesExpAsync();
+            Parallel.ForEach(_allCategoriesExp, c =>
+            {
+                CategoriesExp.Add(new CategoryExpViewModel(c));
+            });
+            _allCategoriesInc = await LoadCategoriesIncAsync();
+            Parallel.ForEach(_allCategoriesInc, c =>
+            {
+                CategoriesInc.Add(new CategoryIncViewModel(c));
+            });
+        }).Wait();
+    }
+    public void UpdateRecurringCharges()
+    {
+        _allRecurringCharges.Clear();
+        Task.Run(async () =>
+        {
+            _allRecurringCharges = await LoadRecurringChargesAsync();
+            Parallel.ForEach(_allRecurringCharges, rc =>
+            {
+                RecurringCharges.Add(new RecurringChargeViewModel(rc));
+            });
+        });
+    }
+    public void UpdateExpenses()
+    {
+        _allExpenses.Clear();
+        Task.Run(async () =>
+        {
+            _allExpenses = await LoadExpensesAsync();
+            Parallel.ForEach(_allExpenses, e =>
+            {
+                Expenses.Add(new ExpenseViewModel(e));
+            });
+        });
+    }
+    public void UpdateExpenses(int beginId)
+    {
+        Task.Run(async () =>
+        {
+            var newExpenses = await LoadExpensesAsync(beginId);
+            _allExpenses.AddRange(newExpenses);
+            Parallel.ForEach(newExpenses, e =>
+            {
+                Expenses.Add(new ExpenseViewModel(e));
+            });
+        });
+    }
+    public void UpdateIncomes()
+    {
+        _allIncomes.Clear();
+        Task.Run(async () =>
+        {
+            _allIncomes = await LoadIncomesAsync();
+            Parallel.ForEach(_allIncomes, i =>
+            {
+                Incomes.Add(new IncomeViewModel(i));
+            });
+        });
+    }
+    public void UpdateIncomes(int beginId)
+    {
+        Task.Run(async () =>
+        {
+            var newIncomes = await LoadIncomesAsync(beginId);
+            _allIncomes.AddRange(newIncomes);
+            Parallel.ForEach(newIncomes, i =>
+            {
+                Incomes.Add(new IncomeViewModel(i));
+            });
+        });
+    }
+    public void UpdatePM()
+    {
+        Task.Run(async () =>
+        {
+            _allPaymentMethods = await LoadPaymentMethodsAsync();
+            Parallel.ForEach(_allPaymentMethods, p =>
+            {
+                PaymentMethods.Add(new PaymentMethodViewModel(p));
+            });
+        });
+    }
+
+
+    public void Add(CategoriesExp category)
+    {
+        if(category == null)
+        {
+            return;
+        }
+        _db.CategoriesExps.Add(category);
+        _db.SaveChanges();
+        UpdateCategories();
+    }
+    public void Add(CategoriesInc category)
+    {
+        if (category == null)
+        {
+            return;
+        }
+        _db.CategoriesIncs.Add(category);
+        _db.SaveChanges();
+        UpdateCategories();
+    }
+    public void Add(Provider provider)
+    {
+        if(provider == null)
+        {
+            return;
+        }
+        _db.Providers.Add(provider);
+        _db.SaveChanges();
+        UpdateProviders();
+    }
+
+
+    public void Remove(RecurringCharge rc)
+    {
+        if(rc == null)
+        {
+            return;
+        }
+        _db.RecurringCharges.Remove(rc);
+        _db.SaveChanges();
+        UpdateRecurringCharges();
+    }
+
+
+    public List<PaymentMethod> GetPM()
+    {
+        UpdatePM();
+        return _allPaymentMethods;
+    }
+   
 }
