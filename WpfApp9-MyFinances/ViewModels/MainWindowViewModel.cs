@@ -1215,18 +1215,21 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }
     public void UpdateLoans()
     {
-        if (_autoUpdate)
-        {
-            _allGivingLoans.Clear();
-            _allReceivingLoans.Clear();
-            Task.Run(async () =>
-            {
-                //_allReceivingLoans = await LoadReceivingLoansAsync();
-                //_allGivingLoans = await LoadGivingLoansAsync();
-                //CombineLoans();
-                //OnPropertyChanged(nameof(RecurringCharges));
-            }).Wait();
-        }
+
+            //_allGivingLoans.Clear();
+            //_allReceivingLoans.Clear();
+            _allGivingLoans = _repo.GivingLoans;
+            _allReceivingLoans = _repo.ReceivingLoans;
+            CombineLoans();
+
+            //Task.Run(async () =>
+            //{
+               
+            //    //_allReceivingLoans = await LoadReceivingLoansAsync();
+            //    //_allGivingLoans = await LoadGivingLoansAsync();
+            //    //CombineLoans();
+            //    //OnPropertyChanged(nameof(RecurringCharges));
+            //}).Wait();
     }
     #endregion
 

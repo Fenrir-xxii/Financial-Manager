@@ -11,6 +11,7 @@ using System.Windows;
 using WpfApp9_MyFinances.Models;
 using WpfApp9_MyFinances.Windows;
 using System.Threading;
+using WpfApp9_MyFinances.Repo;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
@@ -20,138 +21,145 @@ public class AddLoanViewModel : NotifyPropertyChangedBase
     {
         GivingLoanModel = new GivingLoanViewModel { DateOfLoan = DateTime.Today};
         ReceivingLoanModel = new ReceivingLoanViewModel { DateOfLoan = DateTime.Today };
-        _db = new Database3MyFinancesContext();
+        //_db = new Database3MyFinancesContext();
+        _repo = DbRepo.Instance;
 
-        _allPaymentMethods = new List<PaymentMethod>();
-        _allProviders = new List<Provider>();
-        _allReceivingLoans = new List<ReceivingLoan>();
-        _allGivingLoans = new List<GivingLoan>();
+        //_allPaymentMethods = new List<PaymentMethod>();
+        //_allProviders = new List<Provider>();
+       // _allReceivingLoans = new List<ReceivingLoan>();
+        //_allGivingLoans = new List<GivingLoan>();
         _isSaveButtonEnabled = false;
         _isGivingLoanAPayback = false;
         _isReceivingLoanAPayback = false;
 
-        Task.Run(async () =>
-        {
-            //_allPaymentMethods = await LoadPaymentMethodsAsync();
-            //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
-            //_allProviders = await LoadProvidersAsync();
-            //_allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p))); 
-            //_allGivingLoans = await LoadGivingLoanAsync();
-            //_allGivingLoans.ForEach(l => GivingLoans.Add(new GivingLoanViewModel(l)));
-            //_allReceivingLoans = await LoadReceivingLoanAsync();
-            //_allReceivingLoans.ForEach(l => ReceivingLoans.Add(new ReceivingLoanViewModel(l)));
-            //OnPropertyChanged(nameof(PaymentMethods));
-            //OnPropertyChanged(nameof(Providers));
-            //OnPropertyChanged(nameof(GivingLoans));
-            //OnPropertyChanged(nameof(ReceivingLoans));
+        _pmModels = _repo.PaymentMethods;
+        _providerModels = _repo.Providers;
+        _allGivingLoans = _repo.GivingLoans;
+        _allReceivingLoans = _repo.ReceivingLoans;
+
+        //Task.Run(async () =>
+        //{
+        //    //_allPaymentMethods = await LoadPaymentMethodsAsync();
+        //    //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
+        //    //_allProviders = await LoadProvidersAsync();
+        //    //_allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p))); 
+        //    //_allGivingLoans = await LoadGivingLoanAsync();
+        //    //_allGivingLoans.ForEach(l => GivingLoans.Add(new GivingLoanViewModel(l)));
+        //    //_allReceivingLoans = await LoadReceivingLoanAsync();
+        //    //_allReceivingLoans.ForEach(l => ReceivingLoans.Add(new ReceivingLoanViewModel(l)));
+        //    //OnPropertyChanged(nameof(PaymentMethods));
+        //    //OnPropertyChanged(nameof(Providers));
+        //    //OnPropertyChanged(nameof(GivingLoans));
+        //    //OnPropertyChanged(nameof(ReceivingLoans));
 
 
-            //Thread t0 = new Thread(async () =>
-            //{
-            //    _allPaymentMethods = await LoadPaymentMethodsAsync();
-            //    Parallel.ForEach(_allPaymentMethods, p =>
-            //    {
-            //        PaymentMethods.Add(new PaymentMethodViewModel(p));
-            //    });
-            //    OnPropertyChanged(nameof(PaymentMethods));
-            //});
-            //t0.Start();
-            //Thread t1 = new Thread(async () =>
-            //{
-            //    _allProviders = await LoadProvidersAsync();
-            //    Parallel.ForEach(_allProviders, p =>
-            //    {
-            //        Providers.Add(new ProviderViewModel(p));
-            //    });
+        //    //Thread t0 = new Thread(async () =>
+        //    //{
+        //    //    _allPaymentMethods = await LoadPaymentMethodsAsync();
+        //    //    Parallel.ForEach(_allPaymentMethods, p =>
+        //    //    {
+        //    //        PaymentMethods.Add(new PaymentMethodViewModel(p));
+        //    //    });
+        //    //    OnPropertyChanged(nameof(PaymentMethods));
+        //    //});
+        //    //t0.Start();
+        //    //Thread t1 = new Thread(async () =>
+        //    //{
+        //    //    _allProviders = await LoadProvidersAsync();
+        //    //    Parallel.ForEach(_allProviders, p =>
+        //    //    {
+        //    //        Providers.Add(new ProviderViewModel(p));
+        //    //    });
 
-            //    _allGivingLoans = await LoadGivingLoanAsync();
-            //    Parallel.ForEach(_allGivingLoans, l =>
-            //    {
-            //        GivingLoans.Add(new GivingLoanViewModel(l));
-            //    });
+        //    //    _allGivingLoans = await LoadGivingLoanAsync();
+        //    //    Parallel.ForEach(_allGivingLoans, l =>
+        //    //    {
+        //    //        GivingLoans.Add(new GivingLoanViewModel(l));
+        //    //    });
 
-            //    _allReceivingLoans = await LoadReceivingLoanAsync();
-            //    Parallel.ForEach(_allReceivingLoans, l =>
-            //    {
-            //        ReceivingLoans.Add(new ReceivingLoanViewModel(l));
-            //    });
+        //    //    _allReceivingLoans = await LoadReceivingLoanAsync();
+        //    //    Parallel.ForEach(_allReceivingLoans, l =>
+        //    //    {
+        //    //        ReceivingLoans.Add(new ReceivingLoanViewModel(l));
+        //    //    });
 
-            //    OnPropertyChanged(nameof(Providers));
-            //    OnPropertyChanged(nameof(GivingLoans));
-            //    OnPropertyChanged(nameof(ReceivingLoans));
-            //});
-            //t1.Start();
+        //    //    OnPropertyChanged(nameof(Providers));
+        //    //    OnPropertyChanged(nameof(GivingLoans));
+        //    //    OnPropertyChanged(nameof(ReceivingLoans));
+        //    //});
+        //    //t1.Start();
 
 
-            //t0.Join();
-            //t1.Join();
-                _allPaymentMethods = await LoadPaymentMethodsAsync();
-                Parallel.ForEach(_allPaymentMethods, p =>
-                {
-                    PaymentMethods.Add(new PaymentMethodViewModel(p));
-                });
-                OnPropertyChanged(nameof(PaymentMethods));
+        //    //t0.Join();
+        //    //t1.Join();
+        //        _allPaymentMethods = await LoadPaymentMethodsAsync();
+        //        Parallel.ForEach(_allPaymentMethods, p =>
+        //        {
+        //            PaymentMethods.Add(new PaymentMethodViewModel(p));
+        //        });
+        //        OnPropertyChanged(nameof(PaymentMethods));
 
-                _allProviders = await LoadProvidersAsync();
-                Parallel.ForEach(_allProviders, p =>
-                {
-                    Providers.Add(new ProviderViewModel(p));
-                });
+        //        _allProviders = await LoadProvidersAsync();
+        //        Parallel.ForEach(_allProviders, p =>
+        //        {
+        //            Providers.Add(new ProviderViewModel(p));
+        //        });
 
-                _allGivingLoans = await LoadGivingLoanAsync();
-                Parallel.ForEach(_allGivingLoans, l =>
-                {
-                    GivingLoans.Add(new GivingLoanViewModel(l));
-                });
+        //        _allGivingLoans = await LoadGivingLoanAsync();
+        //        Parallel.ForEach(_allGivingLoans, l =>
+        //        {
+        //            GivingLoans.Add(new GivingLoanViewModel(l));
+        //        });
 
-                _allReceivingLoans = await LoadReceivingLoanAsync();
-                Parallel.ForEach(_allReceivingLoans, l =>
-                {
-                    ReceivingLoans.Add(new ReceivingLoanViewModel(l));
-                });
+        //        _allReceivingLoans = await LoadReceivingLoanAsync();
+        //        Parallel.ForEach(_allReceivingLoans, l =>
+        //        {
+        //            ReceivingLoans.Add(new ReceivingLoanViewModel(l));
+        //        });
 
-                OnPropertyChanged(nameof(Providers));
-                OnPropertyChanged(nameof(GivingLoans));
-                OnPropertyChanged(nameof(ReceivingLoans));
+        //        OnPropertyChanged(nameof(Providers));
+        //        OnPropertyChanged(nameof(GivingLoans));
+        //        OnPropertyChanged(nameof(ReceivingLoans));
 
-        });
+        //});
     }
-    private Database3MyFinancesContext _db;
+    //private Database3MyFinancesContext _db;
+    private DbRepo _repo;
     #region LoadAsync
-    public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
-    {
-        return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
-        //using (var context = new Database3MyFinancesContext())
-        //{
-        //    return await context.PaymentMethods.Include(x => x.Currency).ToListAsync();
-        //}
-    }
-    public async Task<List<Provider>> LoadProvidersAsync()
-    {
-        return await _db.Providers.ToListAsync();
-        //using (var context = new Database3MyFinancesContext())
-        //{
-        //    return await context.Providers.ToListAsync();
-        //}
-    }
-    public async Task<List<GivingLoan>> LoadGivingLoanAsync()
-    {
-        return await _db.GivingLoans.ToListAsync();
-        //using (var context = new Database3MyFinancesContext())
-        //{
-        //    //return await context.GivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.ReceivingLoans).Include(x => x.PaymentMethod.Currency).ToListAsync();
-        //    return await context.GivingLoans.ToListAsync();
-        //}
-    }
-    public async Task<List<ReceivingLoan>> LoadReceivingLoanAsync()
-    {
-        return await _db.ReceivingLoans.ToListAsync();
-        //using (var context = new Database3MyFinancesContext())
-        //{
-        //    //return await context.ReceivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.GivingLoans).Include(x => x.PaymentMethod.Currency).ToListAsync();
-        //    return await context.ReceivingLoans.ToListAsync();
-        //}
-    }
+    //public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
+    //{
+    //    return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
+    //    //using (var context = new Database3MyFinancesContext())
+    //    //{
+    //    //    return await context.PaymentMethods.Include(x => x.Currency).ToListAsync();
+    //    //}
+    //}
+    //public async Task<List<Provider>> LoadProvidersAsync()
+    //{
+    //    return await _db.Providers.ToListAsync();
+    //    //using (var context = new Database3MyFinancesContext())
+    //    //{
+    //    //    return await context.Providers.ToListAsync();
+    //    //}
+    //}
+    //public async Task<List<GivingLoan>> LoadGivingLoanAsync()
+    //{
+    //    return await _db.GivingLoans.ToListAsync();
+    //    //using (var context = new Database3MyFinancesContext())
+    //    //{
+    //    //    //return await context.GivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.ReceivingLoans).Include(x => x.PaymentMethod.Currency).ToListAsync();
+    //    //    return await context.GivingLoans.ToListAsync();
+    //    //}
+    //}
+    //public async Task<List<ReceivingLoan>> LoadReceivingLoanAsync()
+    //{
+    //    return await _db.ReceivingLoans.ToListAsync();
+    //    //using (var context = new Database3MyFinancesContext())
+    //    //{
+    //    //    //return await context.ReceivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.GivingLoans).Include(x => x.PaymentMethod.Currency).ToListAsync();
+    //    //    return await context.ReceivingLoans.ToListAsync();
+    //    //}
+    //}
     #endregion
 
     #region ViewModelData
@@ -191,17 +199,21 @@ public class AddLoanViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(GivingLoans));
         }
     }
-    private List<PaymentMethod> _allPaymentMethods;
+    //private List<PaymentMethod> _allPaymentMethods;
+    private List<PaymentMethodViewModel> _pmModels;
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
     {
         get
         {
-            var collection = new ObservableCollection<PaymentMethodViewModel>();
-            foreach (var pay in _allPaymentMethods)
-            {
-                collection.Add(new PaymentMethodViewModel(pay));
-            }
+            var collection = new ObservableCollection<PaymentMethodViewModel>(_pmModels);
+
             return collection;
+            //var collection = new ObservableCollection<PaymentMethodViewModel>();
+            //foreach (var pay in _allPaymentMethods)
+            //{
+            //    collection.Add(new PaymentMethodViewModel(pay));
+            //}
+            //return collection;
         }
         set
         {
@@ -220,17 +232,19 @@ public class AddLoanViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IsSaveButtonEnabled));
         }
     }
-    private List<Provider> _allProviders;
+    //private List<Provider> _allProviders;
+    private List<ProviderViewModel> _providerModels;
     public ObservableCollection<ProviderViewModel> Providers
     {
         get
         {
-            var collection = new ObservableCollection<ProviderViewModel>();
-            foreach (var provider in _allProviders)
-            {
-                collection.Add(new ProviderViewModel(provider));
-            }
-            return collection;
+            return new ObservableCollection<ProviderViewModel>(_providerModels);
+            //var collection = new ObservableCollection<ProviderViewModel>();
+            //foreach (var provider in _allProviders)
+            //{
+            //    collection.Add(new ProviderViewModel(provider));
+            //}
+            //return collection;
         }
         set
         {
@@ -365,8 +379,9 @@ public class AddLoanViewModel : NotifyPropertyChangedBase
 
         try
         {
-            _db.Add(GivingLoanModel.Model);
-            _db.SaveChanges();
+            _repo.Add(GivingLoanModel.Model);
+            //_db.Add(GivingLoanModel.Model);
+            //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception e)
@@ -396,8 +411,9 @@ public class AddLoanViewModel : NotifyPropertyChangedBase
 
         try
         {
-            _db.Add(ReceivingLoanModel.Model);
-            _db.SaveChanges();
+            _repo.Add(ReceivingLoanModel.Model);
+            //_db.Add(ReceivingLoanModel.Model);
+            //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception e)

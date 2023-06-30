@@ -400,6 +400,14 @@ public sealed class DbRepo
             });
         });
     }
+    public void UpdateLoans()
+    {
+        Task.Run(async () =>
+        {
+            ReceivingLoans = await LoadReceivingLoansAsync();
+            GivingLoans = await LoadGivingLoansAsync();
+        });
+    }
 
 
     public void Add(CategoriesExp category)
@@ -431,6 +439,26 @@ public sealed class DbRepo
         _db.Providers.Add(provider);
         _db.SaveChanges();
         UpdateProviders();
+    }
+    public void Add(GivingLoan loan)
+    {
+        if(loan == null)
+        {
+            return;
+        }
+        _db.GivingLoans.Add(loan);
+        _db.SaveChanges();
+        UpdateLoans();
+    }
+    public void Add(ReceivingLoan loan)
+    {
+        if (loan == null)
+        {
+            return;
+        }
+        _db.ReceivingLoans.Add(loan);
+        _db.SaveChanges();
+        UpdateLoans();
     }
 
 
