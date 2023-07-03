@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -504,6 +505,16 @@ public sealed class DbRepo
         _db.SaveChanges();
         //update
     }
+    public void Add(PaymentMethod pm)
+    {
+        if(pm == null)
+        {
+            return;
+        }
+        _db.PaymentMethods.Add(pm);
+        _db.SaveChanges();
+        // update
+    }
 
 
     public void Remove(RecurringCharge rc)
@@ -523,5 +534,61 @@ public sealed class DbRepo
         UpdatePM();
         return _allPaymentMethods;
     }
-   
+    public List<ExpenseViewModel> getPMExpensesById(int id)
+    {
+        var models = _db.Expenses.AsNoTracking().Where(x => x.PaymentMethodId == id).Include(y => y.PaymentMethod).Include(s => s.PaymentMethod.Currency).ToList();
+        var result = new List<ExpenseViewModel>();
+        models.ForEach(e => result.Add(new ExpenseViewModel { Model = e }));
+        return result;
+    }
+    public List<IncomeViewModel> getPMIncomesById(int id)
+    {
+        var models = _db.Incomes.AsNoTracking().Where(x => x.PaymentMethodId == id).Include(y => y.PaymentMethod).Include(s => s.PaymentMethod.Currency).ToList();
+        var result = new List<IncomeViewModel>();
+        models.ForEach(i => result.Add(new IncomeViewModel { Model = i }));
+        return result;
+    }
+    public List<TransferViewModel> getPMTransfersOutById(int id)
+    {
+        var models = _db.Transfers.AsNoTracking().Where(x => x.FromId == id).Include(y => y.From).Include(s => s.From.Currency).ToList();
+        var result = new List<TransferViewModel>();
+        models.ForEach(t => result.Add(new TransferViewModel { Model = t }));
+        return result;
+    }
+    public List<TransferViewModel> getPMTransfersInById(int id)
+    {
+        var models = _db.Transfers.AsNoTracking().Where(x => x.ToId == id).Include(y => y.To).Include(s => s.To.Currency).ToList();
+        var result = new List<TransferViewModel>();
+        models.ForEach(t => result.Add(new TransferViewModel { Model = t }));
+        return result;
+    }
+    public List<ExchangeViewModel> getPMExchangesOutById(int id)
+    {
+        var models = _db.Exchanges.AsNoTracking().Where(x => x.FromId == id).Include(y => y.From).Include(s => s.From.Currency).ToList();
+        var result = new List<ExchangeViewModel>();
+        models.ForEach(ex => result.Add(new ExchangeViewModel { Model = ex }));
+        return result;
+    }
+    public List<ExchangeViewModel> getPMExchangesInById(int id)
+    {
+        var models = _db.Exchanges.AsNoTracking().Where(x => x.ToId == id).Include(y => y.To).Include(s => s.To.Currency).ToList();
+        var result = new List<ExchangeViewModel>();
+        models.ForEach(ex => result.Add(new ExchangeViewModel { Model = ex }));
+        return result;
+    }
+    public List<GivingLoanViewModel> getPMGivingLoansById(int id)
+    {
+        var models = _db.GivingLoans.AsNoTracking().Where(x => x.PaymentMethodId == id).Include(y => y.PaymentMethod).Include(p => p.PaymentMethod.Currency).Include(s => s.ReceivingLoans).Include(v => v.Provider).ToList();
+        var result = new List<GivingLoanViewModel>();
+        models.ForEach(l => result.Add(new GivingLoanViewModel { Model = l }));
+        return result;
+    }
+    public List<ReceivingLoanViewModel> getPMReceivingLoansById(int id)
+    {
+        var models = _db.ReceivingLoans.AsNoTracking().Where(x => x.PaymentMethodId == id).Include(y => y.PaymentMethod).Include(p => p.PaymentMethod.Currency).Include(s => s.GivingLoans).Include(v => v.Provider).ToList();
+        var result = new List<ReceivingLoanViewModel>();
+        models.ForEach(l => result.Add(new ReceivingLoanViewModel { Model = l }));
+        return result;
+    }
+
 }

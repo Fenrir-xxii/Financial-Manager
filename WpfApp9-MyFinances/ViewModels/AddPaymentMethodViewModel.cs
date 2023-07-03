@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows;
 using WpfApp9_MyFinances.Models;
 using WpfApp9_MyFinances.ModelsForWpfOnly;
+using WpfApp9_MyFinances.Repo;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
@@ -16,24 +17,34 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
 {
     public PaymentMethodViewModel()
     {
-        Model = new PaymentMethod();
-        _allTransactions = new List<FinancialTransaction>();
-        _allCurrencies = new List<Currency>();
-        _db = new Database3MyFinancesContext();
-        _isAddButtonEnabled = false;
+        //Model = new PaymentMethod();
+        //_allTransactions = new List<FinancialTransaction>();
+        //_allCurrencies = new List<Currency>();
+        //_db = new Database3MyFinancesContext();
+        //_isAddButtonEnabled = false;
 
-        _allCurrencies = _db.Currencies.ToList();
-        OnPropertyChanged(nameof(Currencies));
+        //_allCurrencies = _db.Currencies.ToList();
+        //OnPropertyChanged(nameof(Currencies));
+
+
+
+        Model = new PaymentMethod();
+        _isAddButtonEnabled = false;
+        _repo = DbRepo.Instance;
+        _currencyModels = _repo.Currencies;
+
     }
     #region ViewModelData
-    private List<Currency> _allCurrencies;
+    //private List<Currency> _allCurrencies;
+    private List<CurrencyViewModel> _currencyModels;
     public ObservableCollection<CurrencyViewModel> Currencies
     {
         get
         {
-            var collection = new ObservableCollection<CurrencyViewModel>();
-            _allCurrencies.ForEach(c => collection.Add(new CurrencyViewModel(c)));
-            return collection;
+            return new ObservableCollection<CurrencyViewModel>(_currencyModels);
+            //var collection = new ObservableCollection<CurrencyViewModel>();
+            //_allCurrencies.ForEach(c => collection.Add(new CurrencyViewModel(c)));
+            //return collection;
         }
         set
         {
@@ -89,8 +100,9 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         Model.Currency = _selectedCurrency.Model;
         try
         {
-            _db.Add(Model);
-            _db.SaveChanges();
+            //_db.Add(Model);
+            //_db.SaveChanges();
+            _repo.Add(Model);
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception e)

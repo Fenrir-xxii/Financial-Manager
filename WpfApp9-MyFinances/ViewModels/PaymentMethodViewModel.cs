@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Input;
 using WpfApp9_MyFinances.Models;
 using WpfApp9_MyFinances.ModelsForWpfOnly;
+using WpfApp9_MyFinances.Repo;
 using WpfApp9_MyFinances.Windows;
 
 namespace WpfApp9_MyFinances.ViewModels;
@@ -19,12 +20,48 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
 {
     public PaymentMethodViewModel(PaymentMethod payment)
     {
-        Model = payment;
-        _db  = new Database3MyFinancesContext();
+        //Model = payment;
+        //_db = new Database3MyFinancesContext();
         _allTransactions = new List<FinancialTransaction>();
+        Model = payment;
+        //_repo = DbRepo.Instance;
+    }
+    public PaymentMethodViewModel(PaymentMethod payment, bool allTransactions)
+    {
+        //Model = payment;
+        _db  = new Database3MyFinancesContext();
+        //_allTransactions = new List<FinancialTransaction>();
+
+        //CombineAllTransactions();
+
+
+        Model = payment;
+        _repo = DbRepo.Instance;
+
+        _allTransactions = new List<FinancialTransaction>();
+        _expenseModels = new List<ExpenseViewModel>();
+        _incomeModels = new List<IncomeViewModel>();
+        _transferOutModels = new List<TransferViewModel>();
+        _transferInModels = new List<TransferViewModel>();
+        _exchangeInModels = new List<ExchangeViewModel>();
+        _exchangeOutModels = new List<ExchangeViewModel>();
+        _givingLoanModels = new List<GivingLoanViewModel>();
+        _receivingLoanModels = new List<ReceivingLoanViewModel>();
+
+        _expenseModels = _repo.getPMExpensesById(payment.Id);
+        _incomeModels = _repo.getPMIncomesById(payment.Id);
+        _transferOutModels = _repo.getPMTransfersOutById(payment.Id);
+        _transferInModels = _repo.getPMTransfersInById(payment.Id);
+        _exchangeOutModels = _repo.getPMExchangesOutById(payment.Id);
+        _exchangeInModels = _repo.getPMExchangesInById(payment.Id);
+        _givingLoanModels = _repo.getPMGivingLoansById(payment.Id);
+        _receivingLoanModels = _repo.getPMReceivingLoansById(payment.Id);
+
         CombineAllTransactions();
+
     }
     private Database3MyFinancesContext _db;
+    private DbRepo _repo;
     public PaymentMethod Model { get; set; }
     #region ViewModelData
     public int Id { get => Model.Id; }
@@ -87,90 +124,138 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         }
     }
     #region AllTransactionsWindow
+    private List<ExpenseViewModel> _expenseModels;
     public ObservableCollection<ExpenseViewModel> Expenses
     {
         get
         {
-            var collection = new ObservableCollection<ExpenseViewModel>();
+            if(Model==null)
+            {
+                return new ObservableCollection<ExpenseViewModel>();
+            }
+            return new ObservableCollection<ExpenseViewModel>(_expenseModels);
+            //var collection = new ObservableCollection<ExpenseViewModel>();
             
-            var exp = _db.Expenses.AsNoTracking().Where(x => x.PaymentMethodId== Id).Include(y => y.PaymentMethod).Include(s => s.PaymentMethod.Currency).ToList();
-            exp.ForEach(e => collection.Add(new ExpenseViewModel { Model = e }));
-            return collection;
+            //var exp = _db.Expenses.AsNoTracking().Where(x => x.PaymentMethodId== Id).Include(y => y.PaymentMethod).Include(s => s.PaymentMethod.Currency).ToList();
+            //exp.ForEach(e => collection.Add(new ExpenseViewModel { Model = e }));
+            //return collection;
         }
     }
+    private List<IncomeViewModel> _incomeModels;
     public ObservableCollection<IncomeViewModel> Incomes
     {
         get
         {
-            var collection = new ObservableCollection<IncomeViewModel>();
+            if (Model == null)
+            {
+                return new ObservableCollection<IncomeViewModel>();
+            }
+            return new ObservableCollection<IncomeViewModel>(_incomeModels);
+            //var collection = new ObservableCollection<IncomeViewModel>();
 
-            var inc = _db.Incomes.AsNoTracking().Where(x => x.PaymentMethodId == Id).Include(y => y.PaymentMethod).Include(s => s.PaymentMethod.Currency).ToList();
-            inc.ForEach(e => collection.Add(new IncomeViewModel { Model = e }));
-            return collection;
+            //var inc = _db.Incomes.AsNoTracking().Where(x => x.PaymentMethodId == Id).Include(y => y.PaymentMethod).Include(s => s.PaymentMethod.Currency).ToList();
+            //inc.ForEach(e => collection.Add(new IncomeViewModel { Model = e }));
+            //return collection;
         }
     }
+    private List<TransferViewModel> _transferOutModels;
     public ObservableCollection<TransferViewModel> TransfersOut
     {
         get
         {
-            var collection = new ObservableCollection<TransferViewModel>();
+            if (Model == null)
+            {
+                return new ObservableCollection<TransferViewModel>();
+            }
+            return new ObservableCollection<TransferViewModel>(_transferOutModels);
+            //var collection = new ObservableCollection<TransferViewModel>();
 
-            var tfr = _db.Transfers.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).Include(s => s.From.Currency).ToList();
-            tfr.ForEach(e => collection.Add(new TransferViewModel { Model = e }));
-            return collection;
+            //var tfr = _db.Transfers.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).Include(s => s.From.Currency).ToList();
+            //tfr.ForEach(e => collection.Add(new TransferViewModel { Model = e }));
+            //return collection;
         }
     }
+    private List<TransferViewModel> _transferInModels;
     public ObservableCollection<TransferViewModel> TransfersIn
     {
         get
         {
-            var collection = new ObservableCollection<TransferViewModel>();
+            if (Model == null)
+            {
+                return new ObservableCollection<TransferViewModel>();
+            }
+            return new ObservableCollection<TransferViewModel>(_transferInModels);  
+            //var collection = new ObservableCollection<TransferViewModel>();
 
-            var tfr = _db.Transfers.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).Include(s => s.To.Currency).ToList();
-            tfr.ForEach(e => collection.Add(new TransferViewModel { Model = e }));
-            return collection;
+            //var tfr = _db.Transfers.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).Include(s => s.To.Currency).ToList();
+            //tfr.ForEach(e => collection.Add(new TransferViewModel { Model = e }));
+            //return collection;
         }
     }
+    private List<ExchangeViewModel> _exchangeOutModels;
     public ObservableCollection<ExchangeViewModel> ExchangesOut
     {
         get
         {
-            var collection = new ObservableCollection<ExchangeViewModel>();
+            if (Model == null)
+            {
+                return new ObservableCollection<ExchangeViewModel>();
+            }
+            return new ObservableCollection<ExchangeViewModel>(_exchangeOutModels);
+            //var collection = new ObservableCollection<ExchangeViewModel>();
 
-            var exc = _db.Exchanges.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).Include(s => s.From.Currency).ToList();
-            exc.ForEach(e => collection.Add(new ExchangeViewModel { Model = e }));
-            return collection;
+            //var exc = _db.Exchanges.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).Include(s => s.From.Currency).ToList();
+            //exc.ForEach(e => collection.Add(new ExchangeViewModel { Model = e }));
+            //return collection;
         }
     }
+    private List<ExchangeViewModel> _exchangeInModels;
     public ObservableCollection<ExchangeViewModel> ExchangesIn
     {
         get
         {
-            var collection = new ObservableCollection<ExchangeViewModel>();
+            if (Model == null)
+            {
+                return new ObservableCollection<ExchangeViewModel>();
+            }
+            return new ObservableCollection<ExchangeViewModel>(_exchangeInModels);
+            //var collection = new ObservableCollection<ExchangeViewModel>();
 
-            var exc = _db.Exchanges.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).Include(s => s.To.Currency).ToList();
-            exc.ForEach(e => collection.Add(new ExchangeViewModel { Model = e }));
-            return collection;
+            //var exc = _db.Exchanges.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).Include(s => s.To.Currency).ToList();
+            //exc.ForEach(e => collection.Add(new ExchangeViewModel { Model = e }));
+            //return collection;
         }
     }
+    private List<GivingLoanViewModel> _givingLoanModels;
     public ObservableCollection<GivingLoanViewModel> GivingLoans
     {
         get
         {
-            var collection = new ObservableCollection<GivingLoanViewModel>();
-            var ln = _db.GivingLoans.AsNoTracking().Where(x=> x.PaymentMethodId==Id).Include(y => y.PaymentMethod).Include(p => p.PaymentMethod.Currency).Include(s => s.ReceivingLoans).Include(v => v.Provider).ToList();
-            ln.ForEach(l => collection.Add(new GivingLoanViewModel { Model = l }));
-            return collection;
+            if (Model == null)
+            {
+                return new ObservableCollection<GivingLoanViewModel>();
+            }
+            return new ObservableCollection<GivingLoanViewModel>(_givingLoanModels);
+            //var collection = new ObservableCollection<GivingLoanViewModel>();
+            //var ln = _db.GivingLoans.AsNoTracking().Where(x=> x.PaymentMethodId==Id).Include(y => y.PaymentMethod).Include(p => p.PaymentMethod.Currency).Include(s => s.ReceivingLoans).Include(v => v.Provider).ToList();
+            //ln.ForEach(l => collection.Add(new GivingLoanViewModel { Model = l }));
+            //return collection;
         }
     }
+    private List<ReceivingLoanViewModel> _receivingLoanModels;
     public ObservableCollection<ReceivingLoanViewModel> ReceivingLoans
     {
         get
         {
-            var collection = new ObservableCollection<ReceivingLoanViewModel>();
-            var ln = _db.ReceivingLoans.AsNoTracking().Where(x => x.PaymentMethodId == Id).Include(y => y.PaymentMethod).Include(p => p.PaymentMethod.Currency).Include(s => s.GivingLoans).Include(v => v.Provider).ToList();
-            ln.ForEach(l => collection.Add(new ReceivingLoanViewModel { Model = l }));
-            return collection;
+            if (Model == null)
+            {
+                return new ObservableCollection<ReceivingLoanViewModel>();
+            }
+            return new ObservableCollection<ReceivingLoanViewModel>(_receivingLoanModels);
+            //var collection = new ObservableCollection<ReceivingLoanViewModel>();
+            //var ln = _db.ReceivingLoans.AsNoTracking().Where(x => x.PaymentMethodId == Id).Include(y => y.PaymentMethod).Include(p => p.PaymentMethod.Currency).Include(s => s.GivingLoans).Include(v => v.Provider).ToList();
+            //ln.ForEach(l => collection.Add(new ReceivingLoanViewModel { Model = l }));
+            //return collection;
         }
     }
     private List<FinancialTransaction> _allTransactions;

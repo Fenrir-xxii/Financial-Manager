@@ -24,7 +24,7 @@ namespace WpfApp9_MyFinances.Windows
         public AllTransactions(PaymentMethodViewModel paymentMethod)
         {
             InitializeComponent();
-            DataContext = paymentMethod;
+            DataContext = new PaymentMethodViewModel(paymentMethod.Model, true);
         }
     }
 }
