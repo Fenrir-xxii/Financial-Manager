@@ -46,6 +46,7 @@ public sealed class DbRepo
         _allRecurringCharges = new List<RecurringCharge>();
         GivingLoans = new List<GivingLoan>();
         ReceivingLoans = new List<ReceivingLoan>();
+        _allPeriodicities = new List<Periodicity>();
 
         Task.Run(async () =>
         {
@@ -92,6 +93,11 @@ public sealed class DbRepo
             });
             ReceivingLoans = await LoadReceivingLoansAsync();
             GivingLoans = await LoadGivingLoansAsync();
+            _allPeriodicities = await LoadPeriodicitiesAsync();
+            Parallel.ForEach(_allPeriodicities, p =>
+            {
+                Periodicities.Add(new PeriodicityViewModel(p));
+            });
             #endregion
         }).Wait();
 
@@ -144,6 +150,10 @@ public sealed class DbRepo
     public async Task<List<ReceivingLoan>> LoadReceivingLoansAsync()
     {
         return await _db.ReceivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.GivingLoans).ToListAsync();
+    }
+    public async Task<List<Periodicity>> LoadPeriodicitiesAsync()
+    {
+        return await _db.Periodicities.ToListAsync();
     }
     #endregion
     private List<PaymentMethod> _allPaymentMethods;
@@ -288,6 +298,21 @@ public sealed class DbRepo
         set
         {
             RecurringCharges = value;
+        }
+    }
+    private List<Periodicity> _allPeriodicities;
+    public List<PeriodicityViewModel> Periodicities
+    {
+        get
+        {
+            var list = new List<PeriodicityViewModel>();
+
+            _allPeriodicities.ForEach(p => list.Add(new PeriodicityViewModel(p)));
+            return list;
+        }
+        set
+        {
+            Periodicities = value;
         }
     }
     public PaymentMethod? GetPMById(int id)

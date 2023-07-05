@@ -292,7 +292,8 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
     #region UpdateData
     public void UpdateModel()
     {
-        var modelFromDb = _db.PaymentMethods.AsNoTracking().Include(x => x.Currency).FirstOrDefault(x => x.Id == Id);
+        //var modelFromDb = _db.PaymentMethods.AsNoTracking().Include(x => x.Currency).FirstOrDefault(x => x.Id == Id);
+        var modelFromDb = _repo.GetPMById(Id);
         if (modelFromDb != null)
         {
             Model = modelFromDb;

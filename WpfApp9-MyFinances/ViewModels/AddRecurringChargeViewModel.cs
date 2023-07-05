@@ -10,12 +10,129 @@ using System.Windows.Input;
 using System.Windows;
 using WpfApp9_MyFinances.Models;
 using System.Threading;
+using WpfApp9_MyFinances.Repo;
 
 namespace WpfApp9_MyFinances.ViewModels;
 
 public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
 {
-    public AddRecurringChargeViewModel() 
+    //public AddRecurringChargeViewModel() 
+    //{
+    //    Model = new RecurringChargeViewModel();
+    //    _db = new Database3MyFinancesContext();
+    //    _allPaymentMethods = new List<PaymentMethod>();
+    //    _allCategoriesExp = new List<CategoriesExp>();
+    //    _allProviders = new List<Provider>();
+    //    _allCurrencies = new List<Currency>();
+    //    _allPeriodicities = new List<Periodicity>();
+    //    _isSaveButtonEnabled = false;
+
+    //    Task.Run(async () =>
+    //    {
+    //        //_allPaymentMethods = await LoadPaymentMethodsAsync();
+    //        //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
+    //        //_allCategoriesExp = await LoadCategoriesExpAsync();
+    //        //_allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
+    //        //_allProviders = await LoadProvidersAsync();
+    //        //_allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
+    //        //_allCurrencies = await LoadCurrenciesAsync();
+    //        //_allCurrencies.ForEach(c => Currencies.Add(new CurrencyViewModel(c)));
+    //        //_allPeriodicities = await LoadPeriodicitiesAsync();
+    //        //_allPeriodicities.ForEach(p => Periodicities.Add(new PeriodicityViewModel(p)));
+
+    //        //OnPropertyChanged(nameof(PaymentMethods));
+    //        //OnPropertyChanged(nameof(CategoriesExp));
+    //        //OnPropertyChanged(nameof(Providers));
+    //        //OnPropertyChanged(nameof(Currencies));
+    //        //OnPropertyChanged(nameof(Periodicities));
+
+    //        //Thread t0 = new Thread(async () =>
+    //        //{
+    //        //    _allPaymentMethods = await LoadPaymentMethodsAsync();
+    //        //    Parallel.ForEach(_allPaymentMethods, p =>
+    //        //    {
+    //        //        PaymentMethods.Add(new PaymentMethodViewModel(p));
+    //        //    });
+    //        //    OnPropertyChanged(nameof(PaymentMethods));
+    //        //});
+    //        //t0.Start();
+    //        //Thread t1 = new Thread(async () =>
+    //        //{
+    //        //    _allCategoriesExp = await LoadCategoriesExpAsync();
+    //        //    Parallel.ForEach(_allCategoriesExp, c =>
+    //        //    {
+    //        //        CategoriesExp.Add(new CategoryExpViewModel(c));
+    //        //    });
+
+    //        //    _allProviders = await LoadProvidersAsync();
+    //        //    Parallel.ForEach(_allProviders, p =>
+    //        //    {
+    //        //        Providers.Add(new ProviderViewModel(p));
+    //        //    });
+    //        //    OnPropertyChanged(nameof(CategoriesExp));
+    //        //    OnPropertyChanged(nameof(Providers));
+    //        //});
+    //        //t1.Start();
+    //        //Thread t2 = new Thread(async () =>
+    //        //{
+    //        //    _allCurrencies = await LoadCurrenciesAsync();
+    //        //    Parallel.ForEach(_allCurrencies, c =>
+    //        //    {
+    //        //        Currencies.Add(new CurrencyViewModel(c));
+    //        //    });
+
+    //        //    _allPeriodicities = await LoadPeriodicitiesAsync();
+    //        //    Parallel.ForEach(_allPeriodicities, p =>
+    //        //    {
+    //        //        Periodicities.Add(new PeriodicityViewModel(p));
+    //        //    });
+    //        //    OnPropertyChanged(nameof(Currencies));
+    //        //    OnPropertyChanged(nameof(Periodicities));
+    //        //});
+    //        //t2.Start();
+
+    //        //t0.Join();
+    //        //t1.Join();
+    //        //t2.Join();
+
+    //            _allPaymentMethods = await LoadPaymentMethodsAsync();
+    //            Parallel.ForEach(_allPaymentMethods, p =>
+    //            {
+    //                PaymentMethods.Add(new PaymentMethodViewModel(p));
+    //            });
+    //            OnPropertyChanged(nameof(PaymentMethods));
+
+    //            _allCategoriesExp = await LoadCategoriesExpAsync();
+    //            Parallel.ForEach(_allCategoriesExp, c =>
+    //            {
+    //                CategoriesExp.Add(new CategoryExpViewModel(c));
+    //            });
+
+    //            _allProviders = await LoadProvidersAsync();
+    //            Parallel.ForEach(_allProviders, p =>
+    //            {
+    //                Providers.Add(new ProviderViewModel(p));
+    //            });
+    //            OnPropertyChanged(nameof(CategoriesExp));
+    //            OnPropertyChanged(nameof(Providers));
+
+    //            _allCurrencies = await LoadCurrenciesAsync();
+    //            Parallel.ForEach(_allCurrencies, c =>
+    //            {
+    //                Currencies.Add(new CurrencyViewModel(c));
+    //            });
+
+    //            _allPeriodicities = await LoadPeriodicitiesAsync();
+    //            Parallel.ForEach(_allPeriodicities, p =>
+    //            {
+    //                Periodicities.Add(new PeriodicityViewModel(p));
+    //            });
+    //            OnPropertyChanged(nameof(Currencies));
+    //            OnPropertyChanged(nameof(Periodicities));
+
+    //    });
+    //}
+    public AddRecurringChargeViewModel()
     {
         Model = new RecurringChargeViewModel();
         _db = new Database3MyFinancesContext();
@@ -26,112 +143,20 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
         _allPeriodicities = new List<Periodicity>();
         _isSaveButtonEnabled = false;
 
-        Task.Run(async () =>
-        {
-            //_allPaymentMethods = await LoadPaymentMethodsAsync();
-            //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
-            //_allCategoriesExp = await LoadCategoriesExpAsync();
-            //_allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
-            //_allProviders = await LoadProvidersAsync();
-            //_allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
-            //_allCurrencies = await LoadCurrenciesAsync();
-            //_allCurrencies.ForEach(c => Currencies.Add(new CurrencyViewModel(c)));
-            //_allPeriodicities = await LoadPeriodicitiesAsync();
-            //_allPeriodicities.ForEach(p => Periodicities.Add(new PeriodicityViewModel(p)));
+        _repo = DbRepo.Instance;
+        _pmModels = _repo.PaymentMethods;
+        _categoryExpModels = _repo.CategoriesExp;
+        _providerModels = _repo.Providers;
+        _currencyModels = _repo.Currencies;
+        _periodicityModels = _repo.Periodicities;
 
-            //OnPropertyChanged(nameof(PaymentMethods));
-            //OnPropertyChanged(nameof(CategoriesExp));
-            //OnPropertyChanged(nameof(Providers));
-            //OnPropertyChanged(nameof(Currencies));
-            //OnPropertyChanged(nameof(Periodicities));
 
-            //Thread t0 = new Thread(async () =>
-            //{
-            //    _allPaymentMethods = await LoadPaymentMethodsAsync();
-            //    Parallel.ForEach(_allPaymentMethods, p =>
-            //    {
-            //        PaymentMethods.Add(new PaymentMethodViewModel(p));
-            //    });
-            //    OnPropertyChanged(nameof(PaymentMethods));
-            //});
-            //t0.Start();
-            //Thread t1 = new Thread(async () =>
-            //{
-            //    _allCategoriesExp = await LoadCategoriesExpAsync();
-            //    Parallel.ForEach(_allCategoriesExp, c =>
-            //    {
-            //        CategoriesExp.Add(new CategoryExpViewModel(c));
-            //    });
 
-            //    _allProviders = await LoadProvidersAsync();
-            //    Parallel.ForEach(_allProviders, p =>
-            //    {
-            //        Providers.Add(new ProviderViewModel(p));
-            //    });
-            //    OnPropertyChanged(nameof(CategoriesExp));
-            //    OnPropertyChanged(nameof(Providers));
-            //});
-            //t1.Start();
-            //Thread t2 = new Thread(async () =>
-            //{
-            //    _allCurrencies = await LoadCurrenciesAsync();
-            //    Parallel.ForEach(_allCurrencies, c =>
-            //    {
-            //        Currencies.Add(new CurrencyViewModel(c));
-            //    });
 
-            //    _allPeriodicities = await LoadPeriodicitiesAsync();
-            //    Parallel.ForEach(_allPeriodicities, p =>
-            //    {
-            //        Periodicities.Add(new PeriodicityViewModel(p));
-            //    });
-            //    OnPropertyChanged(nameof(Currencies));
-            //    OnPropertyChanged(nameof(Periodicities));
-            //});
-            //t2.Start();
 
-            //t0.Join();
-            //t1.Join();
-            //t2.Join();
-
-                _allPaymentMethods = await LoadPaymentMethodsAsync();
-                Parallel.ForEach(_allPaymentMethods, p =>
-                {
-                    PaymentMethods.Add(new PaymentMethodViewModel(p));
-                });
-                OnPropertyChanged(nameof(PaymentMethods));
-
-                _allCategoriesExp = await LoadCategoriesExpAsync();
-                Parallel.ForEach(_allCategoriesExp, c =>
-                {
-                    CategoriesExp.Add(new CategoryExpViewModel(c));
-                });
-
-                _allProviders = await LoadProvidersAsync();
-                Parallel.ForEach(_allProviders, p =>
-                {
-                    Providers.Add(new ProviderViewModel(p));
-                });
-                OnPropertyChanged(nameof(CategoriesExp));
-                OnPropertyChanged(nameof(Providers));
-
-                _allCurrencies = await LoadCurrenciesAsync();
-                Parallel.ForEach(_allCurrencies, c =>
-                {
-                    Currencies.Add(new CurrencyViewModel(c));
-                });
-
-                _allPeriodicities = await LoadPeriodicitiesAsync();
-                Parallel.ForEach(_allPeriodicities, p =>
-                {
-                    Periodicities.Add(new PeriodicityViewModel(p));
-                });
-                OnPropertyChanged(nameof(Currencies));
-                OnPropertyChanged(nameof(Periodicities));
-
-        });
     }
     private Database3MyFinancesContext _db;
+    private DbRepo _repo;
     public RecurringChargeViewModel Model { get; set; }
     #region LoadAsync
     public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
@@ -178,16 +203,18 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
 
     #region ViewModelData
     private List<PaymentMethod> _allPaymentMethods;
+    private List<PaymentMethodViewModel> _pmModels;
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
     {
         get
         {
-            var collection = new ObservableCollection<PaymentMethodViewModel>();
-            foreach (var pay in _allPaymentMethods)
-            {
-                collection.Add(new PaymentMethodViewModel(pay));
-            }
-            return collection;
+            return  new ObservableCollection<PaymentMethodViewModel>(_pmModels);
+            //var collection = new ObservableCollection<PaymentMethodViewModel>();
+            //foreach (var pay in _allPaymentMethods)
+            //{
+            //    collection.Add(new PaymentMethodViewModel(pay));
+            //}
+            //return collection;
         }
         set
         {
@@ -207,16 +234,18 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
         }
     }
     private List<CategoriesExp> _allCategoriesExp;
+    private List<CategoryExpViewModel> _categoryExpModels;
     public ObservableCollection<CategoryExpViewModel> CategoriesExp
     {
         get
         {
-            var collection = new ObservableCollection<CategoryExpViewModel>();
-            foreach (var category in _allCategoriesExp)
-            {
-                collection.Add(new CategoryExpViewModel(category));
-            }
-            return collection;
+            return new ObservableCollection<CategoryExpViewModel>(_categoryExpModels);
+            //var collection = new ObservableCollection<CategoryExpViewModel>();
+            //foreach (var category in _allCategoriesExp)
+            //{
+            //    collection.Add(new CategoryExpViewModel(category));
+            //}
+            //return collection;
         }
         set
         {
@@ -261,16 +290,18 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
         }
     }
     private List<Provider> _allProviders;
+    private List<ProviderViewModel> _providerModels;
     public ObservableCollection<ProviderViewModel> Providers
     {
         get
         {
-            var collection = new ObservableCollection<ProviderViewModel>();
-            foreach (var provider in _allProviders)
-            {
-                collection.Add(new ProviderViewModel(provider));
-            }
-            return collection;
+            return new ObservableCollection<ProviderViewModel>(_providerModels);
+            //var collection = new ObservableCollection<ProviderViewModel>();
+            //foreach (var provider in _allProviders)
+            //{
+            //    collection.Add(new ProviderViewModel(provider));
+            //}
+            //return collection;
         }
         set
         {
@@ -290,13 +321,15 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
         }
     }
     private List<Currency> _allCurrencies;
+    private List<CurrencyViewModel> _currencyModels;
     public ObservableCollection<CurrencyViewModel> Currencies
     {
         get
         {
-            var collection = new ObservableCollection<CurrencyViewModel>();
-            _allCurrencies.ForEach(c => collection.Add(new CurrencyViewModel(c)));
-            return collection;
+            return new ObservableCollection<CurrencyViewModel>(_currencyModels);
+            //var collection = new ObservableCollection<CurrencyViewModel>();
+            //_allCurrencies.ForEach(c => collection.Add(new CurrencyViewModel(c)));
+            //return collection;
         }
         set
         {
@@ -316,13 +349,15 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
         }
     }
     private List<Periodicity> _allPeriodicities;
+    private List<PeriodicityViewModel> _periodicityModels;
     public ObservableCollection<PeriodicityViewModel> Periodicities
     {
         get
         {
-            var collection = new ObservableCollection<PeriodicityViewModel>();
-            _allPeriodicities.ForEach(p => collection.Add(new PeriodicityViewModel(p)));
-            return collection;
+            return new ObservableCollection<PeriodicityViewModel>(_periodicityModels);
+            //var collection = new ObservableCollection<PeriodicityViewModel>();
+            //_allPeriodicities.ForEach(p => collection.Add(new PeriodicityViewModel(p)));
+            //return collection;
         }
         set
         {
