@@ -540,7 +540,16 @@ public sealed class DbRepo
         _db.SaveChanges();
         // update
     }
-
+    public void Add(RecurringCharge rc)
+    {
+        if(rc == null)
+        {
+            return;
+        }
+        _db.RecurringCharges.Add(rc);
+        _db.SaveChanges();
+        //update
+    }
 
     public void Remove(RecurringCharge rc)
     {

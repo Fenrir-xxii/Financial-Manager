@@ -135,12 +135,12 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
     public AddRecurringChargeViewModel()
     {
         Model = new RecurringChargeViewModel();
-        _db = new Database3MyFinancesContext();
-        _allPaymentMethods = new List<PaymentMethod>();
-        _allCategoriesExp = new List<CategoriesExp>();
-        _allProviders = new List<Provider>();
-        _allCurrencies = new List<Currency>();
-        _allPeriodicities = new List<Periodicity>();
+        //_db = new Database3MyFinancesContext();
+        //_allPaymentMethods = new List<PaymentMethod>();
+        //_allCategoriesExp = new List<CategoriesExp>();
+        //_allProviders = new List<Provider>();
+        //_allCurrencies = new List<Currency>();
+        //_allPeriodicities = new List<Periodicity>();
         _isSaveButtonEnabled = false;
 
         _repo = DbRepo.Instance;
@@ -150,59 +150,55 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
         _currencyModels = _repo.Currencies;
         _periodicityModels = _repo.Periodicities;
 
-
-
-
-
     }
-    private Database3MyFinancesContext _db;
+    //private Database3MyFinancesContext _db;
     private DbRepo _repo;
     public RecurringChargeViewModel Model { get; set; }
     #region LoadAsync
-    public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
-    {
-        return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
-        //using (var context = new Database3MyFinancesContext())
-        //{
-        //    return await context.PaymentMethods.Include(x => x.Currency).ToListAsync();
-        //}
-    }
-    public async Task<List<CategoriesExp>> LoadCategoriesExpAsync()
-    {
-        return await _db.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
-        //using (var context = new Database3MyFinancesContext())
-        //{
-        //    return await context.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
-        //}
-    }
-    public async Task<List<Provider>> LoadProvidersAsync()
-    {
-        return await _db.Providers.ToListAsync();
-        //using (var context = new Database3MyFinancesContext())
-        //{
-        //    return await context.Providers.ToListAsync();
-        //}
-    }
-    public async Task<List<Currency>> LoadCurrenciesAsync()
-    {
-        return await _db.Currencies.ToListAsync();
-        //using (var context = new Database3MyFinancesContext())
-        //{
-        //    return await context.Currencies.ToListAsync();
-        //}
-    }
-    public async Task<List<Periodicity>> LoadPeriodicitiesAsync()
-    {
-        return await _db.Periodicities.ToListAsync();
-        //using (var context = new Database3MyFinancesContext())
-        //{
-        //    return await context.Periodicities.ToListAsync();
-        //}
-    }
+    //public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
+    //{
+    //    return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
+    //    //using (var context = new Database3MyFinancesContext())
+    //    //{
+    //    //    return await context.PaymentMethods.Include(x => x.Currency).ToListAsync();
+    //    //}
+    //}
+    //public async Task<List<CategoriesExp>> LoadCategoriesExpAsync()
+    //{
+    //    return await _db.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
+    //    //using (var context = new Database3MyFinancesContext())
+    //    //{
+    //    //    return await context.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
+    //    //}
+    //}
+    //public async Task<List<Provider>> LoadProvidersAsync()
+    //{
+    //    return await _db.Providers.ToListAsync();
+    //    //using (var context = new Database3MyFinancesContext())
+    //    //{
+    //    //    return await context.Providers.ToListAsync();
+    //    //}
+    //}
+    //public async Task<List<Currency>> LoadCurrenciesAsync()
+    //{
+    //    return await _db.Currencies.ToListAsync();
+    //    //using (var context = new Database3MyFinancesContext())
+    //    //{
+    //    //    return await context.Currencies.ToListAsync();
+    //    //}
+    //}
+    //public async Task<List<Periodicity>> LoadPeriodicitiesAsync()
+    //{
+    //    return await _db.Periodicities.ToListAsync();
+    //    //using (var context = new Database3MyFinancesContext())
+    //    //{
+    //    //    return await context.Periodicities.ToListAsync();
+    //    //}
+    //}
     #endregion
 
     #region ViewModelData
-    private List<PaymentMethod> _allPaymentMethods;
+    //private List<PaymentMethod> _allPaymentMethods;
     private List<PaymentMethodViewModel> _pmModels;
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
     {
@@ -233,7 +229,7 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IsSaveButtonEnabled));
         }
     }
-    private List<CategoriesExp> _allCategoriesExp;
+    //private List<CategoriesExp> _allCategoriesExp;
     private List<CategoryExpViewModel> _categoryExpModels;
     public ObservableCollection<CategoryExpViewModel> CategoriesExp
     {
@@ -289,7 +285,7 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IsSaveButtonEnabled));
         }
     }
-    private List<Provider> _allProviders;
+    //private List<Provider> _allProviders;
     private List<ProviderViewModel> _providerModels;
     public ObservableCollection<ProviderViewModel> Providers
     {
@@ -320,7 +316,7 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IsSaveButtonEnabled));
         }
     }
-    private List<Currency> _allCurrencies;
+    //private List<Currency> _allCurrencies;
     private List<CurrencyViewModel> _currencyModels;
     public ObservableCollection<CurrencyViewModel> Currencies
     {
@@ -348,7 +344,7 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IsSaveButtonEnabled));
         }
     }
-    private List<Periodicity> _allPeriodicities;
+    //private List<Periodicity> _allPeriodicities;
     private List<PeriodicityViewModel> _periodicityModels;
     public ObservableCollection<PeriodicityViewModel> Periodicities
     {
@@ -428,8 +424,9 @@ public class AddRecurringChargeViewModel : NotifyPropertyChangedBase
         }
         try
         {
-            _db.Add(Model.Model);
-            _db.SaveChanges();
+            _repo.Add(Model.Model);
+            //_db.Add(Model.Model);
+            //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception e)
