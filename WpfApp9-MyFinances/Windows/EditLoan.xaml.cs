@@ -22,11 +22,26 @@ namespace WpfApp9_MyFinances.Windows
     /// </summary>
     public partial class EditLoan : Window
     {
-        public EditLoan(Loan loan, Database3MyFinancesContext db)
+        //public EditLoan(Loan loan, Database3MyFinancesContext db)
+        //{
+        //    InitializeComponent();
+        //    DataContext = new EditLoanViewModel(loan, db);
+        //    if(loan.LoanGiver.Equals("Me"))
+        //    {
+        //        GivingTab.IsSelected = true;
+        //        ReceivingTab.IsEnabled = false;
+        //    }
+        //    else
+        //    {
+        //        GivingTab.IsEnabled = false;
+        //        ReceivingTab.IsSelected = true;
+        //    }
+        //}
+        public EditLoan(Loan loan)
         {
             InitializeComponent();
-            DataContext = new EditLoanViewModel(loan, db);
-            if(loan.LoanGiver.Equals("Me"))
+            DataContext = new EditLoanViewModel(loan);
+            if (loan.LoanGiver.Equals("Me"))
             {
                 GivingTab.IsSelected = true;
                 ReceivingTab.IsEnabled = false;
@@ -37,10 +52,25 @@ namespace WpfApp9_MyFinances.Windows
                 ReceivingTab.IsSelected = true;
             }
         }
-        public EditLoan(LoanPayback payback, Loan loan, Database3MyFinancesContext db)
+        //public EditLoan(LoanPayback payback, Loan loan, Database3MyFinancesContext db)
+        //{
+        //    InitializeComponent();
+        //    DataContext = new EditLoanViewModel(payback, loan, db);
+        //    if (loan.LoanGiver.Equals("Me"))
+        //    {
+        //        ReceivingTab.IsSelected = true;
+        //        GivingTab.IsEnabled = false;
+        //    }
+        //    else
+        //    {
+        //        ReceivingTab.IsEnabled = false;
+        //        GivingTab.IsSelected = true;
+        //    }
+        //}
+        public EditLoan(LoanPayback payback, Loan loan)
         {
             InitializeComponent();
-            DataContext = new EditLoanViewModel(payback, loan, db);
+            DataContext = new EditLoanViewModel(payback, loan);
             if (loan.LoanGiver.Equals("Me"))
             {
                 ReceivingTab.IsSelected = true;

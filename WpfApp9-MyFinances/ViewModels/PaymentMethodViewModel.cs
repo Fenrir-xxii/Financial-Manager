@@ -29,7 +29,7 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
     public PaymentMethodViewModel(PaymentMethod payment, bool allTransactions)
     {
         //Model = payment;
-        _db  = new Database3MyFinancesContext();
+        //_db  = new Database3MyFinancesContext();
         //_allTransactions = new List<FinancialTransaction>();
 
         //CombineAllTransactions();
@@ -60,7 +60,7 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         CombineAllTransactions();
 
     }
-    private Database3MyFinancesContext _db;
+    //private Database3MyFinancesContext _db;
     private DbRepo _repo;
     public PaymentMethod Model { get; set; }
     #region ViewModelData
@@ -302,55 +302,74 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
     public void UpdateExpenses()
     {
         UpdateModel();
-        Expenses.Clear();
-        var exp = _db.Expenses.AsNoTracking().Where(x => x.PaymentMethodId == Id).Include(y => y.PaymentMethod).Include(s => s.PaymentMethod.Currency).ToList();
-        exp.ForEach(e => Expenses.Add(new ExpenseViewModel { Model = e }));
-        
-        CombineAllTransactions();
+        //Expenses.Clear();
+        //var exp = _db.Expenses.AsNoTracking().Where(x => x.PaymentMethodId == Id).Include(y => y.PaymentMethod).Include(s => s.PaymentMethod.Currency).ToList();
+        //exp.ForEach(e => Expenses.Add(new ExpenseViewModel { Model = e }));
+
+        _expenseModels = _repo.getPMExpensesById(Model.Id);
         OnPropertyChanged(nameof(Expenses));
+
+        CombineAllTransactions();
         OnPropertyChanged(nameof(CurrentBalance));
     }
     public void UpdateIncomes()
     {
         UpdateModel();
-        Incomes.Clear();
-        var inc = _db.Incomes.AsNoTracking().Where(x => x.PaymentMethodId == Id).Include(y => y.PaymentMethod).Include(s => s.PaymentMethod.Currency).ToList();
-        inc.ForEach(e => Incomes.Add(new IncomeViewModel { Model = e }));
-        
-        CombineAllTransactions();
+        //Incomes.Clear();
+        //var inc = _db.Incomes.AsNoTracking().Where(x => x.PaymentMethodId == Id).Include(y => y.PaymentMethod).Include(s => s.PaymentMethod.Currency).ToList();
+        //inc.ForEach(e => Incomes.Add(new IncomeViewModel { Model = e }));
+
+        _incomeModels = _repo.getPMIncomesById(Model.Id);
         OnPropertyChanged(nameof(Incomes));
+
+        CombineAllTransactions();
         OnPropertyChanged(nameof(CurrentBalance));
     }
     public void UpdateTransfers()
     {
         UpdateModel();
-        TransfersIn.Clear();
-        var tfrIn = _db.Transfers.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).Include(s => s.To.Currency).ToList();
-        tfrIn.ForEach(e => TransfersIn.Add(new TransferViewModel { Model = e }));
+        //TransfersIn.Clear();
+        //var tfrIn = _db.Transfers.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).Include(s => s.To.Currency).ToList();
+        //tfrIn.ForEach(e => TransfersIn.Add(new TransferViewModel { Model = e }));
 
-        TransfersOut.Clear();
-        var tfrOut = _db.Transfers.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).Include(s => s.From.Currency).ToList();
-        tfrIn.ForEach(e => TransfersOut.Add(new TransferViewModel { Model = e }));
+        //TransfersOut.Clear();
+        //var tfrOut = _db.Transfers.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).Include(s => s.From.Currency).ToList();
+        //tfrIn.ForEach(e => TransfersOut.Add(new TransferViewModel { Model = e }));
+
         
-        CombineAllTransactions();
+        _transferInModels = _repo.getPMTransfersInById(Model.Id);
         OnPropertyChanged(nameof(TransfersIn));
+        _transferOutModels = _repo.getPMTransfersOutById(Model.Id);
         OnPropertyChanged(nameof(TransfersOut));
+
+
+
+        CombineAllTransactions();
+        //OnPropertyChanged(nameof(TransfersIn));
+        //OnPropertyChanged(nameof(TransfersOut));
         OnPropertyChanged(nameof(CurrentBalance));
     }
     public void UpdateExchanges()
     {
         UpdateModel();
-        ExchangesIn.Clear();
-        var excIn = _db.Exchanges.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).Include(s => s.To.Currency).ToList();
-        excIn.ForEach(e => ExchangesIn.Add(new ExchangeViewModel { Model = e }));
+        //ExchangesIn.Clear();
+        //var excIn = _db.Exchanges.AsNoTracking().Where(x => x.ToId == Id).Include(y => y.To).Include(s => s.To.Currency).ToList();
+        //excIn.ForEach(e => ExchangesIn.Add(new ExchangeViewModel { Model = e }));
 
-        ExchangesOut.Clear();
-        var excOut = _db.Exchanges.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).Include(s => s.From.Currency).ToList();
-        excIn.ForEach(e => ExchangesOut.Add(new ExchangeViewModel { Model = e }));
+        //ExchangesOut.Clear();
+        //var excOut = _db.Exchanges.AsNoTracking().Where(x => x.FromId == Id).Include(y => y.From).Include(s => s.From.Currency).ToList();
+        //excIn.ForEach(e => ExchangesOut.Add(new ExchangeViewModel { Model = e }));
+
+        
+        _exchangeInModels = _repo.getPMExchangesInById(Model.Id);
+        OnPropertyChanged(nameof(ExchangesIn));
+        _exchangeOutModels = _repo.getPMExchangesOutById(Model.Id);
+        OnPropertyChanged(nameof(ExchangesOut));
+
 
         CombineAllTransactions();
-        OnPropertyChanged(nameof(ExchangesIn));
-        OnPropertyChanged(nameof(ExchangesOut));
+        //OnPropertyChanged(nameof(ExchangesIn));
+        //OnPropertyChanged(nameof(ExchangesOut));
         OnPropertyChanged(nameof(CurrentBalance));
     }
     #endregion
@@ -413,39 +432,82 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         {
             case TransactionType.EXPENSE:
                 {
-                    var transaction = _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
-                    var subWindow = new EditTransaction(transaction, _db); // pass model of transaction (expense, income or transfer)
-                    subWindow.ShowDialog();
-                    UpdateExpenses();
+                    //var transaction = _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                    //var subWindow = new EditTransaction(transaction, _db); // pass model of transaction (expense, income or transfer)
+                    var transaction = _repo.getExpenseById(SelectedTransaction.TransactionId);
+                    if(transaction != null)
+                    {
+                        var subWindow = new EditTransaction(transaction); // pass model of transaction (expense, income or transfer)
+                        subWindow.ShowDialog();
+                        UpdateExpenses();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Can't get transactrion from DataBase", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    //var subWindow = new EditTransaction(transaction); // pass model of transaction (expense, income or transfer)
+                    //subWindow.ShowDialog();
+                    //UpdateExpenses();
                     break;
                 }
             case TransactionType.INCOME:
                 {
-                    var transaction = _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
-                    var subWindow = new EditTransaction(transaction, _db);
-                    subWindow.ShowDialog();
-                    UpdateIncomes();
+                    //var transaction = _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                    //var subWindow = new EditTransaction(transaction, _db);
+                    var transaction = _repo.getIncomeById(SelectedTransaction.TransactionId);
+                   
+                    if (transaction != null)
+                    {
+                        var subWindow = new EditTransaction(transaction);
+                        subWindow.ShowDialog();
+                        UpdateIncomes();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Can't get transactrion from DataBase", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                     break;
                 }
             case TransactionType.TRANSFER:
                 {
-                    var transaction = _db.Transfers.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId); //include
-                    var subWindow = new EditTransaction(transaction, _db);
-                    subWindow.ShowDialog();
-                    UpdateTransfers();
+                    /*var transaction = _db.Transfers.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);*/ //include
+                    //var subWindow = new EditTransaction(transaction, _db);
+                    var transaction = _repo.getTransferById(SelectedTransaction.TransactionId);
+                  
+                    if (transaction != null)
+                    {
+                        var subWindow = new EditTransaction(transaction);
+                        subWindow.ShowDialog();
+                        UpdateTransfers();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Can't get transactrion from DataBase", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                     break;
                 }
             case TransactionType.EXCHANGE:
                 {
-                    var transaction = _db.Exchanges.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
-                    var subWindow = new EditTransaction(transaction, _db);
-                    subWindow.ShowDialog();
-                    UpdateExchanges();
+                    //var transaction = _db.Exchanges.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                    //var subWindow = new EditTransaction(transaction, _db);
+                    var transaction = _repo.getExchangeById(SelectedTransaction.TransactionId);
+                    
+                    if (transaction != null)
+                    {
+                        var subWindow = new EditTransaction(transaction);
+                        subWindow.ShowDialog();
+                        UpdateExchanges();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Can't get transactrion from DataBase", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                     break;
                 }
             default:
                 {
                     //messageBox no selected item
+                    MessageBox.Show("Not supported yet", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                     break;
                 }
         }
@@ -460,11 +522,22 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
                    
                     try
                     {
-                         var transaction = _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
-                        _db.Expenses.Remove(transaction);
-                        _db.SaveChanges();
-                        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }catch(Exception ex)
+                        //var transaction = _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                        var transaction = _repo.getExpenseById(SelectedTransaction.TransactionId);
+                        //_db.Expenses.Remove(transaction);
+                        //_db.SaveChanges();
+                        if (transaction != null)
+                        {
+                            _repo.Remove(transaction);
+                            MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Can't get transactrion from DataBase", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+
+                    }
+                    catch(Exception ex)
                     {
                         MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
@@ -475,10 +548,20 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
                 {
                     try
                     {
-                        var transaction = _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
-                        _db.Incomes.Remove(transaction);
-                        _db.SaveChanges();
-                        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        //var transaction = _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                        var transaction = _repo.getIncomeById(SelectedTransaction.TransactionId);
+                        //_db.Incomes.Remove(transaction);
+                        //_db.SaveChanges();
+                        if (transaction != null)
+                        {
+                            _repo.Remove(transaction);
+                            MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Can't get transactrion from DataBase", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                       
                     }catch (Exception ex)
                     {
                         MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -489,10 +572,20 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
                 {
                     try
                     {
-                        var transaction = _db.Transfers.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
-                        _db.Transfers.Remove(transaction);
-                        _db.SaveChanges();
-                        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        //var transaction = _db.Transfers.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                        var transaction = _repo.getTransferById(SelectedTransaction.TransactionId);
+                        //_db.Transfers.Remove(transaction);
+                        //_db.SaveChanges();
+                        if (transaction != null)
+                        {
+                            _repo.Remove(transaction);
+                            MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Can't get transactrion from DataBase", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                       
                     }catch (Exception ex)
                     {
                         MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -503,10 +596,20 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
                 {
                     try
                     {
-                        var transaction = _db.Exchanges.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
-                        _db.Exchanges.Remove(transaction);
-                        _db.SaveChanges();
-                        MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        //var transaction = _db.Exchanges.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == SelectedTransaction.TransactionId);
+                        var transaction = _repo.getExchangeById(SelectedTransaction.TransactionId);
+                        //_db.Exchanges.Remove(transaction);
+                        //_db.SaveChanges();
+                        if (transaction != null)
+                        {
+                            _repo.Remove(transaction);
+                            MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Can't get transactrion from DataBase", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                       
                     }
                     catch (Exception ex)
                     {

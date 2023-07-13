@@ -100,6 +100,19 @@ public sealed class DbRepo
             });
             #endregion
         }).Wait();
+        Task.Run(async () =>
+        {
+            _allTransfers = await LoadTransfersAsync();
+            Parallel.ForEach(_allTransfers, t =>
+            {
+                Transfers.Add(new TransferViewModel(t));
+            });
+            _allExchanges = await LoadExchangesAsync();
+            Parallel.ForEach(_allExchanges, e =>
+            {
+                Exchanges.Add(new ExchangeViewModel(e));
+            });
+        });
 
     }
     #region LoadAsync
@@ -135,6 +148,14 @@ public sealed class DbRepo
     {
         return await _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).Where(x => x.Id > id).ToListAsync();
     }
+    private async Task<List<Transfer>> LoadTransfersAsync()
+    {
+        return await _db.Transfers.Include(i => i.To).Include(i => i.From).ToListAsync();
+    }
+    private async Task<List<Exchange>> LoadExchangesAsync()
+    {
+        return await _db.Exchanges.Include(i => i.To).Include(i => i.From).Include(i => i.CurrencyIdToNavigation).Include(i => i.CurrencyIdFromNavigation).ToListAsync();
+    }
     private async Task<List<Currency>> LoadCurrenciesAsync()
     {
         return await _db.Currencies.ToListAsync();
@@ -156,6 +177,8 @@ public sealed class DbRepo
         return await _db.Periodicities.ToListAsync();
     }
     #endregion
+
+    #region Properties
     private List<PaymentMethod> _allPaymentMethods;
     public List<PaymentMethodViewModel> PaymentMethods
     {
@@ -261,6 +284,34 @@ public sealed class DbRepo
             Incomes = value;
         }
     }
+    private List<Transfer> _allTransfers;
+    public List<TransferViewModel> Transfers
+    {
+        get
+        {
+            var collection = new List<TransferViewModel>();
+            _allTransfers.ForEach(t => collection.Add(new TransferViewModel(t)));
+            return collection;
+        }
+        set
+        {
+            Transfers = value;
+        }
+    }
+    private List<Exchange> _allExchanges;
+    public List<ExchangeViewModel> Exchanges
+    {
+        get
+        {
+            var collection = new List<ExchangeViewModel>();
+            _allExchanges.ForEach(e => collection.Add(new ExchangeViewModel(e)));
+            return collection;
+        }
+        set
+        {
+            Exchanges = value;
+        }
+    }
     private List<Currency> _allCurrencies;
     public List<CurrencyViewModel> Currencies
     {
@@ -315,10 +366,9 @@ public sealed class DbRepo
             Periodicities = value;
         }
     }
-    public PaymentMethod? GetPMById(int id)
-    {
-        return _db.PaymentMethods.Include(x => x.Currency).FirstOrDefault(x => x.Id == id);
-    }
+    #endregion
+
+    #region UpdateProperties
     public void UpdateProviders()
     {
         _allProviders.Clear();
@@ -330,11 +380,6 @@ public sealed class DbRepo
                 Providers.Add(new ProviderViewModel(p));
             });
         }).Wait();
-
-        //Parallel.ForEach(_allProviders, p =>
-        //{
-        //    Providers.Add(new ProviderViewModel(p));
-        //});
     }
     public void UpdateCategories()
     {
@@ -415,10 +460,6 @@ public sealed class DbRepo
             });
         });
     }
-    //public void UpdateTransfers()
-    //{
-
-    //}
     public void UpdatePM()
     {
         Task.Run(async () =>
@@ -438,8 +479,31 @@ public sealed class DbRepo
             GivingLoans = await LoadGivingLoansAsync();
         });
     }
-   
+    public void UpdateTransfers()
+    {
+        Task.Run(async () =>
+        {
+            _allTransfers = await LoadTransfersAsync();
+            Parallel.ForEach(_allTransfers, t =>
+            {
+                Transfers.Add(new TransferViewModel(t));
+            });
+        });
+    }
+    public void UpdateExchanges()
+    {
+        Task.Run(async () =>
+        {
+            _allExchanges = await LoadExchangesAsync();
+            Parallel.ForEach(_allExchanges, e =>
+            {
+                Exchanges.Add(new ExchangeViewModel(e));
+            });
+        });
+    }
+    #endregion
 
+    #region Add
     public void Add(CategoriesExp category)
     {
         if(category == null)
@@ -518,7 +582,7 @@ public sealed class DbRepo
         }
         _db.Transfers.Add(transaction);
         _db.SaveChanges();
-        //update
+        UpdateTransfers();
     }
     public void Add(Exchange transaction)
     {
@@ -528,7 +592,7 @@ public sealed class DbRepo
         }
         _db.Exchanges.Add(transaction);
         _db.SaveChanges();
-        //update
+        UpdateExchanges();
     }
     public void Add(PaymentMethod pm)
     {
@@ -538,7 +602,7 @@ public sealed class DbRepo
         }
         _db.PaymentMethods.Add(pm);
         _db.SaveChanges();
-        // update
+        UpdatePM();
     }
     public void Add(RecurringCharge rc)
     {
@@ -548,8 +612,84 @@ public sealed class DbRepo
         }
         _db.RecurringCharges.Add(rc);
         _db.SaveChanges();
-        //update
+        UpdateRecurringCharges();
     }
+    #endregion
+
+    #region Update
+    public void Update(GivingLoan loan)
+    {
+        if(loan == null)
+        {
+            return;
+        }
+        _db.GivingLoans.Update(loan);
+        _db.SaveChanges();
+        UpdateLoans();
+    }
+    public void Update(ReceivingLoan loan)
+    {
+        if (loan == null)
+        {
+            return;
+        }
+        _db.ReceivingLoans.Update(loan);
+        _db.SaveChanges();
+        UpdateLoans();
+    }
+    public void Update(RecurringCharge rc)
+    {
+        if (rc == null)
+        {
+            return;
+        }
+        _db.RecurringCharges.Update(rc);
+        _db.SaveChanges();
+        UpdateRecurringCharges();
+    }
+    public void Update(Expense expense)
+    {
+        if (expense == null)
+        {
+            return;
+        }
+        _db.Expenses.Update(expense);
+        _db.SaveChanges();
+        UpdateExpenses();
+    }
+    public void Update(Income income)
+    {
+        if (income == null)
+        {
+            return;
+        }
+        _db.Incomes.Update(income);
+        _db.SaveChanges();
+        UpdateIncomes();
+    }
+    public void Update(Transfer transfer)
+    {
+        if (transfer == null)
+        {
+            return;
+        }
+        _db.Transfers.Update(transfer);
+        _db.SaveChanges();
+        UpdateTransfers();
+    }
+    public void Update(Exchange exchange)
+    {
+        if (exchange == null)
+        {
+            return;
+        }
+        _db.Exchanges.Update(exchange);
+        _db.SaveChanges();
+        UpdateExchanges();
+    }
+    #endregion
+
+    #region Remove
 
     public void Remove(RecurringCharge rc)
     {
@@ -561,8 +701,53 @@ public sealed class DbRepo
         _db.SaveChanges();
         UpdateRecurringCharges();
     }
+    public void Remove(Expense expense)
+    {
+        if (expense == null)
+        {
+            return;
+        }
+        _db.Expenses.Remove(expense);
+        _db.SaveChanges();
+        UpdateExpenses();
+    }
+    public void Remove(Income income)
+    {
+        if(income == null)
+        {
+            return;
+        }
+        _db.Incomes.Remove(income);
+        _db.SaveChanges();
+        UpdateIncomes();
+    }
+    public void Remove(Transfer transfer)
+    {
+        if (transfer == null)
+        {
+            return;
+        }
+        _db.Transfers.Remove(transfer);
+        _db.SaveChanges();
+        UpdateTransfers();
+    }
+    public void Remove(Exchange exchange)
+    {
+        if (exchange == null)
+        {
+            return;
+        }
+        _db.Exchanges.Remove(exchange);
+        _db.SaveChanges();
+        UpdateExchanges();
+    }
+    #endregion
 
-
+    #region Get
+    public PaymentMethod? GetPMById(int id)
+    {
+        return _db.PaymentMethods.Include(x => x.Currency).FirstOrDefault(x => x.Id == id);
+    }
     public List<PaymentMethod> GetPM()
     {
         UpdatePM();
@@ -624,5 +809,22 @@ public sealed class DbRepo
         models.ForEach(l => result.Add(new ReceivingLoanViewModel { Model = l }));
         return result;
     }
+    public Expense? getExpenseById(int id)
+    {
+        return _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).FirstOrDefault(x => x.Id == id);
+    }
+    public Income? getIncomeById(int id)
+    {
+        return _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).FirstOrDefault(x => x.Id == id);
+    }
+    public Transfer? getTransferById(int id)
+    {
+        return _db.Transfers.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == id);
+    }
+    public Exchange? getExchangeById(int id)
+    {
+        return _db.Exchanges.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == id);
+    }
+    #endregion
 
 }

@@ -971,13 +971,15 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }, x => _selectedRecurringCharge != null);
     public ICommand EditRecurringCharge => new RelayCommand(x =>
     {
-        var window = new EditRecurringCharge(SelectedRecurringCharge.Model, _db);
+        //var window = new EditRecurringCharge(SelectedRecurringCharge.Model, _db);
+        var window = new EditRecurringCharge(SelectedRecurringCharge.Model);
         window.ShowDialog();
         // update rc
     }, x => _selectedRecurringCharge != null);
     public ICommand EditLoan => new RelayCommand(x =>
     {
-        var window = new EditLoan(SelectedLoan.Model, _db);
+        //var window = new EditLoan(SelectedLoan.Model, _db);
+        var window = new EditLoan(SelectedLoan.Model);
         window.ShowDialog();
         // update loans
     }, x => _selectedLoan != null);
@@ -990,11 +992,11 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         //    var paybackLoan = paybackList.FirstOrDefault( x=> x.Id == _selectedLoan.Model.Id);
         //}
 
-
-        var window = new EditLoan(SelectedLoanPayback, SelectedLoan.Model, _db);
+        var window = new EditLoan(SelectedLoanPayback, SelectedLoan.Model);
+        //var window = new EditLoan(SelectedLoanPayback, SelectedLoan.Model, _db);
         window.ShowDialog();
         // update loans
-    }, x => _selectedRecurringCharge != null);
+    }, x => !_selectedLoanPayback.Equals(default(LoanPayback)));   //LoanPayback is struct
     public ICommand UpdatePM => new RelayCommand(x =>
     {
         bool force = true;

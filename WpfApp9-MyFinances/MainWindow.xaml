@@ -833,6 +833,7 @@
                     <DataGrid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Edit" Command="{Binding Path=EditLoanPayback}"></MenuItem>
+                            <!--<MenuItem Header="TEST"></MenuItem>-->
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>

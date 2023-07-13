@@ -21,41 +21,81 @@ namespace WpfApp9_MyFinances.Windows
     /// </summary>
     public partial class EditTransaction : Window
     {
-        public EditTransaction(Expense expense, Database3MyFinancesContext db)
+        //public EditTransaction(Expense expense, Database3MyFinancesContext db)
+        //{
+        //    InitializeComponent();
+        //    //DataContext= new ExpenseViewModel(expense);
+        //    DataContext = new EditTransactionViewModel(expense, db);
+        //    ExpensesTab.IsSelected = true;
+        //    IncomesTab.IsEnabled = false;
+        //    TransfersTab.IsEnabled = false;
+        //    ExchangeTab.IsEnabled = false;
+        //}
+        public EditTransaction(Expense expense)
         {
             InitializeComponent();
             //DataContext= new ExpenseViewModel(expense);
-            DataContext = new EditTransactionViewModel(expense, db);
+            DataContext = new EditTransactionViewModel(expense);
             ExpensesTab.IsSelected = true;
             IncomesTab.IsEnabled = false;
             TransfersTab.IsEnabled = false;
             ExchangeTab.IsEnabled = false;
         }
-        public EditTransaction(Income income, Database3MyFinancesContext db)
+        //public EditTransaction(Income income, Database3MyFinancesContext db)
+        //{
+        //    InitializeComponent();
+        //    //DataContext= new IncomeViewModel(income);
+        //    DataContext = new EditTransactionViewModel(income, db);
+        //    IncomesTab.IsSelected = true;
+        //    ExpensesTab.IsEnabled = false;
+        //    TransfersTab.IsEnabled = false;
+        //    ExchangeTab.IsEnabled = false;
+        //}
+        public EditTransaction(Income income)
         {
             InitializeComponent();
             //DataContext= new IncomeViewModel(income);
-            DataContext = new EditTransactionViewModel(income, db);
+            DataContext = new EditTransactionViewModel(income);
             IncomesTab.IsSelected = true;
             ExpensesTab.IsEnabled = false;
             TransfersTab.IsEnabled = false;
             ExchangeTab.IsEnabled = false;
         }
-        public EditTransaction(Transfer transfer, Database3MyFinancesContext db)
+        //public EditTransaction(Transfer transfer, Database3MyFinancesContext db)
+        //{
+        //    InitializeComponent();
+        //    //DataContext= new TransferViewModel(transfer); 
+        //    DataContext = new EditTransactionViewModel(transfer, db);
+        //    TransfersTab.IsSelected = true;
+        //    ExpensesTab.IsEnabled = false;
+        //    IncomesTab.IsEnabled = false;
+        //    ExchangeTab.IsEnabled = false;
+        //}
+        public EditTransaction(Transfer transfer)
         {
             InitializeComponent();
             //DataContext= new TransferViewModel(transfer); 
-            DataContext = new EditTransactionViewModel(transfer, db);
+            DataContext = new EditTransactionViewModel(transfer);
             TransfersTab.IsSelected = true;
             ExpensesTab.IsEnabled = false;
             IncomesTab.IsEnabled = false;
             ExchangeTab.IsEnabled = false;
         }
-        public EditTransaction(Exchange exchange, Database3MyFinancesContext db)
+        //public EditTransaction(Exchange exchange, Database3MyFinancesContext db)
+        //{
+        //    InitializeComponent();
+        //    //DataContext= new TransferViewModel(transfer); 
+        //    DataContext = new EditTransactionViewModel(exchange, db);
+        //    ExchangeTab.IsSelected = true;
+        //    TransfersTab.IsEnabled = false;
+        //    ExpensesTab.IsEnabled = false;
+        //    IncomesTab.IsEnabled = false;
+        //}
+        public EditTransaction(Exchange exchange)
         {
             InitializeComponent();
             //DataContext= new TransferViewModel(transfer); 
-            DataContext = new EditTransactionViewModel(exchange, db);
+            DataContext = new EditTransactionViewModel(exchange);
             ExchangeTab.IsSelected = true;
             TransfersTab.IsEnabled = false;
             ExpensesTab.IsEnabled = false;
