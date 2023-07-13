@@ -997,9 +997,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }, x => _selectedRecurringCharge != null);
     public ICommand UpdatePM => new RelayCommand(x =>
     {
-        UpdatePaymentMethods();
-        UpdateExpenses();
-        UpdateIncomes();
+        bool force = true;
+        UpdatePaymentMethods(force);
+        UpdateExpenses(force);
+        UpdateIncomes(force);
 
     }, x => true);
 
@@ -1065,13 +1066,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
 
 
     }
-    public void UpdatePaymentMethods()
+    public void UpdatePaymentMethods(bool force = false)
     {
         //_allPaymentMethods.Clear();
         //PaymentMethods.Clear();
         //Thread.Sleep(1000); 
         //var newDb = new Database3MyFinancesContext();
-        if (_autoUpdate)
+        if (_autoUpdate || force)
         {
             Task.Run(() =>
             {
@@ -1153,7 +1154,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             });
         }
     }
-    public void UpdateExpenses()
+    public void UpdateExpenses(bool force = false)
     {
         //_allExpenses.Clear();
         //Expenses.Clear();
@@ -1165,18 +1166,18 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
 
         //_allExpenses.Clear();
         //Expenses.Clear();
-        if (_autoUpdate)
+        if (_autoUpdate || force)
         {
-            Task.Run(async () =>
-            {
-                //var newExpenses = await LoadExpensesAsync(_lastExpenseId);
-                //_allExpenses.AddRange(newExpenses);
-                //newExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
-                //_allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
-            }).Wait();
+            //Task.Run(async () =>
+            //{
+            //    //var newExpenses = await LoadExpensesAsync(_lastExpenseId);
+            //    //_allExpenses.AddRange(newExpenses);
+            //    //newExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
+            //    //_allExpenses.ForEach(e => Expenses.Add(new ExpenseViewModel(e)));
+            //}).Wait();
         }
     }
-    public void UpdateIncomes()
+    public void UpdateIncomes(bool force = false)
     {
         //_allIncomes.Clear();
         //Incomes.Clear();
@@ -1185,14 +1186,14 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         //    _allIncomes = await LoadIncomesAsync();
         //    _allIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
         //}).Wait();
-        if (_autoUpdate)
+        if (_autoUpdate || force)
         {
-            Task.Run(async () =>
-            {
-                //var newIncomes = await LoadIncomesAsync(_lastIncomeId);
-                //_allIncomes.AddRange(newIncomes);
-                //newIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
-            }).Wait();
+            //Task.Run(async () =>
+            //{
+            //    //var newIncomes = await LoadIncomesAsync(_lastIncomeId);
+            //    //_allIncomes.AddRange(newIncomes);
+            //    //newIncomes.ForEach(i => Incomes.Add(new IncomeViewModel(i)));
+            //}).Wait();
         }
     }
     public void UpdateRecuringCharges()
