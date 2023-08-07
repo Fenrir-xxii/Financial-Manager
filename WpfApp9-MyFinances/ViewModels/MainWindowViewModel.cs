@@ -198,7 +198,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         (App.Current.MainWindow as MainWindow).CurrencyComboBoxInc.SelectedIndex = 0;
         //_lastExpenseId = Expenses.Max(x => x.Id);
     }
-    private Database3MyFinancesContext _db;
+    //private Database3MyFinancesContext _db;
     private DbRepo _repo;
     #region LoadAsync
     //public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
@@ -1070,46 +1070,13 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }
     public void UpdatePaymentMethods(bool force = false)
     {
-        //_allPaymentMethods.Clear();
-        //PaymentMethods.Clear();
-        //Thread.Sleep(1000); 
-        //var newDb = new Database3MyFinancesContext();
         if (_autoUpdate || force)
         {
             Task.Run(() =>
             {
-                //var updatedPaymentMethods = new List<PaymentMethod>();
-
-                //using (var newDb = new Database3MyFinancesContext())
-                //{
-                //    updatedPaymentMethods = newDb.PaymentMethods.Include(x => x.Currency).ToList();
-                //}
                 var updatedPaymentMethods = _repo.GetPM();
                 bool hasChanges = false;
-                //updatedPaymentMethods.ForEach(x =>
-                //{
-                //    var localPm = _allPaymentMethods.FirstOrDefault(p => p.Id == x.Id);
-                //    if (localPm != null)
-                //    {
-                //        if (x.CurrentBalance != localPm.CurrentBalance)
-                //        {
-                //            // update
-                //            _allPaymentMethods.Remove(localPm);
-                //            PaymentMethods.Remove(PaymentMethods.FirstOrDefault(p => p.Id == x.Id));
-                //            _allPaymentMethods.Add(x);
-                //            PaymentMethods.Add(new PaymentMethodViewModel(x));
-                //            _allPaymentMethods.OrderBy(x => x.Id);
-                //            PaymentMethods.OrderBy(x => x.Id);
-                //            hasChanges = true;
-                //        }
-                //    }
-                //    else
-                //    {
-                //        _allPaymentMethods.Add(x);
-                //        PaymentMethods.Add(new PaymentMethodViewModel(x));
-                //        hasChanges = true;
-                //    }
-                //});
+               
                 updatedPaymentMethods.ForEach(x =>
                 {
                     //var localPm = _allPaymentMethods.FirstOrDefault(p => p.Id == x.Id);
@@ -1121,18 +1088,20 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
                         {
                             // update
                             //_allPaymentMethods.Remove(localPm);
-                            PaymentMethods.Remove(PaymentMethods.FirstOrDefault(p => p.Id == x.Id));
+                            //PaymentMethods.Remove(PaymentMethods.ToList().FirstOrDefault(p => p.Id == x.Id));
+                            _pmModels.Remove(_pmModels.FirstOrDefault(p => p.Id == x.Id));
                             //_allPaymentMethods.Add(x);
-                            PaymentMethods.Add(new PaymentMethodViewModel(x));
+                            _pmModels.Add(new PaymentMethodViewModel(x));
                             //_allPaymentMethods.OrderBy(x => x.Id);
-                            PaymentMethods.OrderBy(x => x.Id);
+                            _pmModels = _pmModels.OrderBy(x => x.Id).ToList();
                             hasChanges = true;
+
                         }
                     }
                     else
                     {
                         //_allPaymentMethods.Add(x);
-                        PaymentMethods.Add(new PaymentMethodViewModel(x));
+                        _pmModels.Add(new PaymentMethodViewModel(x));
                         hasChanges = true;
                     }
                 });

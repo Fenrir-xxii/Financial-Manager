@@ -15,7 +15,7 @@ namespace WpfApp9_MyFinances.Repo;
 
 public sealed class DbRepo
 {
-    private static DbRepo instance = null;
+    private static DbRepo _instance = null;
     private Database3MyFinancesContext _db;
     private DbRepo()
     {
@@ -26,11 +26,11 @@ public sealed class DbRepo
     {
         get
         {
-            if(instance == null)
+            if(_instance == null)
             {
-                instance = new DbRepo();
+                _instance = new DbRepo();
             }
-            return instance;
+            return _instance;
         }
     }
     private void LoadFromDb()
@@ -469,7 +469,7 @@ public sealed class DbRepo
             {
                 PaymentMethods.Add(new PaymentMethodViewModel(p));
             });
-        });
+        }).Wait();
     }
     public void UpdateLoans()
     {
@@ -543,6 +543,7 @@ public sealed class DbRepo
         _db.GivingLoans.Add(loan);
         _db.SaveChanges();
         UpdateLoans();
+        UpdatePM();
     }
     public void Add(ReceivingLoan loan)
     {
@@ -553,6 +554,7 @@ public sealed class DbRepo
         _db.ReceivingLoans.Add(loan);
         _db.SaveChanges();
         UpdateLoans();
+        UpdatePM();
     }
     public void Add(Income transaction)
     {
@@ -562,6 +564,7 @@ public sealed class DbRepo
         }
         _db.Incomes.Add(transaction);
         _db.SaveChanges();
+        UpdatePM();
         UpdateIncomes();
     }
     public void Add(Expense transaction)
@@ -572,6 +575,11 @@ public sealed class DbRepo
         }
         _db.Expenses.Add(transaction);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();
+        //var newDb = new Database3MyFinancesContext();
+        //var pm = newDb.PaymentMethods.Include(x => x.Currency).ToList();
+        //_db.SaveChangesAsync();
+        UpdatePM();
         UpdateExpenses();
     }
     public void Add(Transfer transaction)
@@ -582,6 +590,8 @@ public sealed class DbRepo
         }
         _db.Transfers.Add(transaction);
         _db.SaveChanges();
+        //var updDB = _db.PaymentMethods.Include(x => x.Currency);
+        UpdatePM();
         UpdateTransfers();
     }
     public void Add(Exchange transaction)
@@ -592,6 +602,7 @@ public sealed class DbRepo
         }
         _db.Exchanges.Add(transaction);
         _db.SaveChanges();
+        UpdatePM();
         UpdateExchanges();
     }
     public void Add(PaymentMethod pm)
