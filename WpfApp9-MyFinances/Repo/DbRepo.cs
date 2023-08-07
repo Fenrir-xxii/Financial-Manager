@@ -542,6 +542,7 @@ public sealed class DbRepo
         }
         _db.GivingLoans.Add(loan);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
         UpdateLoans();
         UpdatePM();
     }
@@ -553,6 +554,7 @@ public sealed class DbRepo
         }
         _db.ReceivingLoans.Add(loan);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
         UpdateLoans();
         UpdatePM();
     }
@@ -564,6 +566,7 @@ public sealed class DbRepo
         }
         _db.Incomes.Add(transaction);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
         UpdatePM();
         UpdateIncomes();
     }
@@ -575,10 +578,7 @@ public sealed class DbRepo
         }
         _db.Expenses.Add(transaction);
         _db.SaveChanges();
-        _db = new Database3MyFinancesContext();
-        //var newDb = new Database3MyFinancesContext();
-        //var pm = newDb.PaymentMethods.Include(x => x.Currency).ToList();
-        //_db.SaveChangesAsync();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
         UpdatePM();
         UpdateExpenses();
     }
@@ -590,7 +590,7 @@ public sealed class DbRepo
         }
         _db.Transfers.Add(transaction);
         _db.SaveChanges();
-        //var updDB = _db.PaymentMethods.Include(x => x.Currency);
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
         UpdatePM();
         UpdateTransfers();
     }
@@ -602,6 +602,7 @@ public sealed class DbRepo
         }
         _db.Exchanges.Add(transaction);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
         UpdatePM();
         UpdateExchanges();
     }
@@ -636,6 +637,8 @@ public sealed class DbRepo
         }
         _db.GivingLoans.Update(loan);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
+        UpdatePM();
         UpdateLoans();
     }
     public void Update(ReceivingLoan loan)
@@ -646,6 +649,8 @@ public sealed class DbRepo
         }
         _db.ReceivingLoans.Update(loan);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
+        UpdatePM();
         UpdateLoans();
     }
     public void Update(RecurringCharge rc)
@@ -666,6 +671,8 @@ public sealed class DbRepo
         }
         _db.Expenses.Update(expense);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
+        UpdatePM();
         UpdateExpenses();
     }
     public void Update(Income income)
@@ -676,6 +683,8 @@ public sealed class DbRepo
         }
         _db.Incomes.Update(income);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
+        UpdatePM();
         UpdateIncomes();
     }
     public void Update(Transfer transfer)
@@ -686,6 +695,8 @@ public sealed class DbRepo
         }
         _db.Transfers.Update(transfer);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
+        UpdatePM();
         UpdateTransfers();
     }
     public void Update(Exchange exchange)
@@ -696,6 +707,8 @@ public sealed class DbRepo
         }
         _db.Exchanges.Update(exchange);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
+        UpdatePM();
         UpdateExchanges();
     }
     #endregion
@@ -720,6 +733,8 @@ public sealed class DbRepo
         }
         _db.Expenses.Remove(expense);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
+        UpdatePM();
         UpdateExpenses();
     }
     public void Remove(Income income)
@@ -730,6 +745,8 @@ public sealed class DbRepo
         }
         _db.Incomes.Remove(income);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
+        UpdatePM();
         UpdateIncomes();
     }
     public void Remove(Transfer transfer)
@@ -740,6 +757,8 @@ public sealed class DbRepo
         }
         _db.Transfers.Remove(transfer);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
+        UpdatePM();
         UpdateTransfers();
     }
     public void Remove(Exchange exchange)
@@ -750,6 +769,8 @@ public sealed class DbRepo
         }
         _db.Exchanges.Remove(exchange);
         _db.SaveChanges();
+        _db = new Database3MyFinancesContext();   // for updating PM (scripts)
+        UpdatePM();
         UpdateExchanges();
     }
     #endregion
