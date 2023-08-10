@@ -646,7 +646,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             //var test = _allPaymentMethods.Where(x => x.IsCash == true).GroupBy(x => x.Currency.Id);
             //var groups = _allPaymentMethods.Where(x => x.IsCash == true).GroupBy(x => x.Currency);
             var groups = _pmModels.Where(x => x.Model.IsCash == true).GroupBy(x => x.Model.Currency);
-            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            //List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("N2") + " " + g.Key.CodeLetter).ToList();
             totals.ForEach(x => collection.Add(x));
             return collection;
         }
@@ -658,7 +659,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             var collection = new ObservableCollection<string>();
             //var groups = _allPaymentMethods.Where(x => x.IsCash == false).GroupBy(x => x.Currency);
             var groups = _pmModels.Where(x => x.Model.IsCash == false).GroupBy(x => x.Model.Currency);
-            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            //List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("N2") + " " + g.Key.CodeLetter).ToList();
             totals.ForEach(x => collection.Add(x));
             return collection;
         }
@@ -670,7 +672,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             var collection = new ObservableCollection<string>();
             //var groups = _allPaymentMethods.GroupBy(x => x.Currency);
             var groups = _pmModels.GroupBy(x => x.Model.Currency);
-            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            //List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("N2") + " " + g.Key.CodeLetter).ToList();
             totals.ForEach(x => collection.Add(x));
             return collection;
         }
@@ -774,6 +777,44 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
                 return "ON";
             }
             return "OFF";
+        }
+    }
+    public string LoanDebitBalance
+    {
+        get
+        {
+            return Loans.Where(x => x.LoanGiver == "Me").Sum(x => x.LoanBalance).ToString();
+        }
+    }
+    public string LoanCreditBalance
+    {
+        get
+        {
+            return (Loans.Where(x => x.LoanReceiver == "Me").Sum(x => x.LoanBalance)*-1).ToString();
+        }
+    }
+    public ObservableCollection<string> LoanDebitBalanceAllCurrencies
+    {
+        get
+        {
+            var collection = new ObservableCollection<string>();
+            var groups = Loans.Where(x => x.LoanGiver == "Me").GroupBy(x => x.Model.LoanPaymentMethod.Currency);
+            //List<string> totals = groups.Select(g => g.Sum(x => x.LoanBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
+            List<string> totals = groups.Select(g => g.Sum(x => x.LoanBalance).ToString("N2") + " " + g.Key.CodeLetter).ToList();
+            totals.ForEach(x => collection.Add(x));
+            return collection;
+        }
+    }
+    public ObservableCollection<string> LoanCreditBalanceAllCurrencies
+    {
+        get
+        {
+            var collection = new ObservableCollection<string>();
+            var groups = Loans.Where(x => x.LoanReceiver == "Me").GroupBy(x => x.Model.LoanPaymentMethod.Currency);
+            //List<string> totals = groups.Select(g => g.Sum(x => x.LoanBalance).ToString("-0.00") + " " + g.Key.CodeLetter).ToList();
+            List<string> totals = groups.Select(g => (g.Sum(x => x.LoanBalance)*-1).ToString("N2") + " " + g.Key.CodeLetter).ToList();
+            totals.ForEach(x => collection.Add(x));
+            return collection;
         }
     }
     #endregion
@@ -886,6 +927,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     public ICommand ShowAllTransactions => new RelayCommand(x =>
     {
         var window = new AllTransactions(SelectedPaymentMethod);
+        window.Left = Application.Current.MainWindow.Left;
+        window.Top = Application.Current.MainWindow.Top + 450 - 5;
         window.ShowDialog();
         // update all transactions from selectedPaymentMethod
         // check for changes
@@ -910,6 +953,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     public ICommand AddNewPaymentMethod => new RelayCommand(x =>
     {
         var window = new AddPaymentMethod();
+        window.Left = Application.Current.MainWindow.Left - 400 + 10;
+        window.Top = Application.Current.MainWindow.Top;
         window.ShowDialog();
         UpdatePaymentMethods();
 
@@ -917,6 +962,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     public ICommand AddTransaction => new RelayCommand(x =>
     {
         var window = new AddTransaction();
+        window.Left = Application.Current.MainWindow.Left + 800 - 10;
+        window.Top = Application.Current.MainWindow.Top;
         window.ShowDialog();
         UpdatePaymentMethods();
         UpdateExpenses();
@@ -934,6 +981,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     public ICommand AddRecuringCharge => new RelayCommand(x =>
     {
         var window = new AddRecurringCharge();
+        window.Left = Application.Current.MainWindow.Left + 800 - 10;
+        window.Top = Application.Current.MainWindow.Top;
         window.ShowDialog();
         UpdateRecuringCharges();
 
@@ -941,6 +990,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     public ICommand AddNewLoan => new RelayCommand(x =>
     {
         var window = new AddLoan();
+        window.Left = Application.Current.MainWindow.Left + 800 - 10;
+        window.Top = Application.Current.MainWindow.Top;
         window.ShowDialog();
         UpdateLoans();
 
@@ -948,6 +999,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     public ICommand ShowFullInfoOfRecurringCharge => new RelayCommand(x =>
     {
         var window = new RecurringChargeFullInfo(_selectedRecurringCharge.Model);
+        window.Left = Application.Current.MainWindow.Left - 400 + 10;
+        window.Top = Application.Current.MainWindow.Top;
         window.ShowDialog();
         // update recurring charges
     }, x => _selectedRecurringCharge != null);
@@ -973,6 +1026,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         //var window = new EditRecurringCharge(SelectedRecurringCharge.Model, _db);
         var window = new EditRecurringCharge(SelectedRecurringCharge.Model);
+        window.Left = Application.Current.MainWindow.Left + 800 - 10;
+        window.Top = Application.Current.MainWindow.Top;
         window.ShowDialog();
         // update rc
     }, x => _selectedRecurringCharge != null);
@@ -980,6 +1035,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         //var window = new EditLoan(SelectedLoan.Model, _db);
         var window = new EditLoan(SelectedLoan.Model);
+        window.Left = Application.Current.MainWindow.Left + 800 - 10;
+        window.Top = Application.Current.MainWindow.Top;
         window.ShowDialog();
         // update loans
     }, x => _selectedLoan != null);
@@ -993,6 +1050,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         //}
 
         var window = new EditLoan(SelectedLoanPayback, SelectedLoan.Model);
+        window.Left = Application.Current.MainWindow.Left;
+        window.Top = Application.Current.MainWindow.Top + 450 - 5;
         //var window = new EditLoan(SelectedLoanPayback, SelectedLoan.Model, _db);
         window.ShowDialog();
         // update loans

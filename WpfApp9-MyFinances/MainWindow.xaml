@@ -9,7 +9,8 @@
         xmlns:local1="clr-namespace:WpfApp9_MyFinances.Converters"
         mc:Ignorable="d"
         xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" 
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        WindowStartupLocation="Manual" Left="400" Top="120">
     <Window.Resources>
         <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
             <Setter Property="Visibility" Value="Visible" />
@@ -599,6 +600,18 @@
                             <ListView ItemsSource="{Binding Path=TotalInCashAllCurrencies}" Background="#263F3F" Foreground="NavajoWhite" HorizontalContentAlignment="Right"></ListView>
                             <TextBlock Text ="Total in general: " Foreground="NavajoWhite" HorizontalAlignment="Right" FontWeight="Bold"></TextBlock>
                             <ListView ItemsSource="{Binding Path=TotalMoneyAllCurrencies, StringFormat={}{0:C}}" Background="#263F3F" Foreground="NavajoWhite" HorizontalContentAlignment="Right"></ListView>
+                            <TextBlock Foreground="NavajoWhite" HorizontalAlignment="Right" FontWeight="Bold">Debit Loans balance:</TextBlock>
+                            <!--<TextBlock Foreground="NavajoWhite" HorizontalAlignment="Right" FontWeight="Bold">
+                                <TextBlock Text="Debit:"></TextBlock>
+                                <TextBlock Text="{Binding Path=LoanDebitBalance, StringFormat={}{0:C}}"></TextBlock>
+                            </TextBlock>
+                            <TextBlock Foreground="NavajoWhite" HorizontalAlignment="Right" FontWeight="Bold">
+                                <TextBlock Text="Credit:"></TextBlock>
+                                <TextBlock Text="{Binding Path=LoanCreditBalance, StringFormat={}{0:C}}"></TextBlock>
+                            </TextBlock>-->
+                            <ListView ItemsSource="{Binding Path=LoanDebitBalanceAllCurrencies}" Background="#263F3F" Foreground="NavajoWhite" HorizontalContentAlignment="Right"></ListView>
+                            <TextBlock Foreground="NavajoWhite" HorizontalAlignment="Right" FontWeight="Bold">Credit Loans balance:</TextBlock>
+                            <ListView ItemsSource="{Binding Path=LoanCreditBalanceAllCurrencies}" Background="#263F3F" Foreground="NavajoWhite" HorizontalContentAlignment="Right"></ListView>
                         </StackPanel>
                     </ScrollViewer>
                     <Button Grid.Column="0" Grid.Row="2" Margin="50,5,50,5" Command="{Binding Path=AddTransaction}" Content="New Transaction">
