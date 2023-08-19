@@ -23,7 +23,7 @@ public partial class ReceivingLoan
 
     public virtual GivingLoan? GivingLoan { get; set; }
 
-    public virtual ICollection<GivingLoan> GivingLoans { get; } = new List<GivingLoan>();
+    public virtual ICollection<GivingLoan> GivingLoans { get; set; } = new List<GivingLoan>();
 
     public virtual PaymentMethod PaymentMethod { get; set; } = null!;
 

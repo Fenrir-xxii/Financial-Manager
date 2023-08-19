@@ -757,7 +757,13 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         }
         try
         {
-            _repo.Add(ExpenseTransaction.Model);
+            //_repo.Add(ExpenseTransaction.Model);
+            //_repo.UpdatePMCurrentBalance(ExpenseTransaction.PaymentMethodId);
+            _repo.Add(ExpenseTransaction.Model, ExpenseTransaction.PaymentMethodId);
+            //if(newBalance != null)
+            //{
+            //    ExpenseTransaction.PaymentMethod.CurrentBalance = newBalance.Value;
+            //}
             //_db.Add(ExpenseTransaction.Model);
             //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -786,7 +792,8 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
 
         try
         {
-            _repo.Add(IncomeTransaction.Model);
+            //_repo.Add(IncomeTransaction.Model);
+            _repo.Add(IncomeTransaction.Model, IncomeTransaction.PaymentMethodId);
             //_db.Add(IncomeTransaction.Model);
             //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -812,7 +819,8 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
 
         try
         {
-            _repo.Add(TransferTransaction.Model);
+            //_repo.Add(TransferTransaction.Model);
+            _repo.Add(TransferTransaction.Model, TransferTransaction.FromId, TransferTransaction.ToId);
             //_db.Add(TransferTransaction.Model);
             //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -840,7 +848,8 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
 
         try
         {
-            _repo.Add(ExchangeTransaction.Model);
+            //_repo.Add(ExchangeTransaction.Model);
+            _repo.Add(ExchangeTransaction.Model, ExchangeTransaction.FromId, ExchangeTransaction.ToId);
             //_db.Add(ExchangeTransaction.Model);
             //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);

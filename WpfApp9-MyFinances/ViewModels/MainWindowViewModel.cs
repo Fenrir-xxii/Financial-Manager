@@ -1131,57 +1131,58 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         if (_autoUpdate || force)
         {
-            Task.Run(() =>
-            {
-                var updatedPaymentMethods = _repo.GetPM();
-                bool hasChanges = false;
+            OnPropertyChanged(nameof(PaymentMethods));
+            //Task.Run(() =>
+            //{
+            //    var updatedPaymentMethods = _repo.GetPM();
+            //    bool hasChanges = false;
                
-                updatedPaymentMethods.ForEach(x =>
-                {
-                    //var localPm = _allPaymentMethods.FirstOrDefault(p => p.Id == x.Id);
-                    var localPm = _pmModels.FirstOrDefault(p => p.Id == x.Id);
+            //    updatedPaymentMethods.ForEach(x =>
+            //    {
+            //        //var localPm = _allPaymentMethods.FirstOrDefault(p => p.Id == x.Id);
+            //        var localPm = _pmModels.FirstOrDefault(p => p.Id == x.Id);
 
-                    if (localPm != null)
-                    {
-                        if (x.CurrentBalance != localPm.CurrentBalance)
-                        {
-                            // update
-                            //_allPaymentMethods.Remove(localPm);
-                            //PaymentMethods.Remove(PaymentMethods.ToList().FirstOrDefault(p => p.Id == x.Id));
-                            _pmModels.Remove(_pmModels.FirstOrDefault(p => p.Id == x.Id));
-                            //_allPaymentMethods.Add(x);
-                            _pmModels.Add(new PaymentMethodViewModel(x));
-                            //_allPaymentMethods.OrderBy(x => x.Id);
-                            _pmModels = _pmModels.OrderBy(x => x.Id).ToList();
-                            hasChanges = true;
+            //        if (localPm != null)
+            //        {
+            //            if (x.CurrentBalance != localPm.CurrentBalance)
+            //            {
+            //                // update
+            //                //_allPaymentMethods.Remove(localPm);
+            //                //PaymentMethods.Remove(PaymentMethods.ToList().FirstOrDefault(p => p.Id == x.Id));
+            //                _pmModels.Remove(_pmModels.FirstOrDefault(p => p.Id == x.Id));
+            //                //_allPaymentMethods.Add(x);
+            //                _pmModels.Add(new PaymentMethodViewModel(x));
+            //                //_allPaymentMethods.OrderBy(x => x.Id);
+            //                _pmModels = _pmModels.OrderBy(x => x.Id).ToList();
+            //                hasChanges = true;
 
-                        }
-                    }
-                    else
-                    {
-                        //_allPaymentMethods.Add(x);
-                        _pmModels.Add(new PaymentMethodViewModel(x));
-                        hasChanges = true;
-                    }
-                });
+            //            }
+            //        }
+            //        else
+            //        {
+            //            //_allPaymentMethods.Add(x);
+            //            _pmModels.Add(new PaymentMethodViewModel(x));
+            //            hasChanges = true;
+            //        }
+            //    });
 
-                if (!hasChanges)
-                {
-                    return;
-                }
-                //_allPaymentMethods = updatedPaymentMethods;
-                //PaymentMethods.Clear();
-                //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
-                OnPropertyChanged(nameof(TotalInCashAllCurrencies));
-                OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
-                OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
-                OnPropertyChanged(nameof(PaymentMethods));
-                OnPropertyChanged(nameof(CategoriesExpChartValue));
-                OnPropertyChanged(nameof(LabelsExp));
-                OnPropertyChanged(nameof(ChartCategoriesExp));
-                OnPropertyChanged(nameof(ChartCategoriesExpPie));
-                OnPropertyChanged(nameof(FilteredExpenses));
-            });
+            //    if (!hasChanges)
+            //    {
+            //        return;
+            //    }
+            //    //_allPaymentMethods = updatedPaymentMethods;
+            //    //PaymentMethods.Clear();
+            //    //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
+            //    OnPropertyChanged(nameof(TotalInCashAllCurrencies));
+            //    OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
+            //    OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
+            //    OnPropertyChanged(nameof(PaymentMethods));
+            //    OnPropertyChanged(nameof(CategoriesExpChartValue));
+            //    OnPropertyChanged(nameof(LabelsExp));
+            //    OnPropertyChanged(nameof(ChartCategoriesExp));
+            //    OnPropertyChanged(nameof(ChartCategoriesExpPie));
+            //    OnPropertyChanged(nameof(FilteredExpenses));
+            //});
         }
     }
     public void UpdateExpenses(bool force = false)

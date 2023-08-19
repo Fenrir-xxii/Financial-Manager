@@ -546,7 +546,8 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         ExpenseModel.Subcategory = _selectedSubCategoryExp;
         try
         {
-            _repo.Update(ExpenseModel.Model);
+            //_repo.Update(ExpenseModel.Model);
+            _repo.Update(ExpenseModel.Model, ExpenseModel.PaymentMethodId);
             //_db.Update(ExpenseModel.Model);
             //_db.SaveChanges();
             _runUpdate = false;
@@ -572,7 +573,8 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
         
         try
         {
-            _repo.Update(IncomeModel.Model);
+            //_repo.Update(IncomeModel.Model);
+            _repo.Update(IncomeModel.Model, IncomeModel.PaymentMethodId);
             //_db.Update(IncomeModel.Model);
             //_db.SaveChanges();
             _runUpdate = false;
@@ -593,7 +595,8 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
     {
         try
         {
-            _repo.Update(TransferModel.Model);
+            //_repo.Update(TransferModel.Model);
+            _repo.Update(TransferModel.Model, TransferModel.FromId, TransferModel.ToId);
             //_db.Update(TransferModel.Model);
             //_db.SaveChanges();
             _runUpdate = false;
@@ -617,7 +620,8 @@ public class EditTransactionViewModel : NotifyPropertyChangedBase
     {
         try
         {
-            _repo.Update(ExchangeModel.Model);
+            //_repo.Update(ExchangeModel.Model);
+            _repo.Update(ExchangeModel.Model, ExchangeModel.FromId, ExchangeModel.ToId);
             //_db.Update(ExchangeModel.Model);
             //_db.SaveChanges();
             _runUpdate = false;

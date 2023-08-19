@@ -13,7 +13,7 @@ public partial class SubcategoriesExp
 
     public virtual CategoriesExp Category { get; set; } = null!;
 
-    public virtual ICollection<Expense> Expenses { get; } = new List<Expense>();
+    public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 
-    public virtual ICollection<RecurringCharge> RecurringCharges { get; } = new List<RecurringCharge>();
+    public virtual ICollection<RecurringCharge> RecurringCharges { get; set; } = new List<RecurringCharge>();
 }

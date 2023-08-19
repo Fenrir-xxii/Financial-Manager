@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace WpfApp9_MyFinances.Models;
 
@@ -48,8 +49,6 @@ public partial class Database3MyFinancesContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=FENRIR-PC\\SQLEXPRESS;Initial Catalog=Database3-MyFinances;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False");
-        //=> optionsBuilder.UseSqlServer("Data Source=WINSRVR2019;Initial Catalog=MyFinancesCopyTest;Integrated Security=True;Persist Security Info=False;Pooling=False;Multiple Active Result Sets=False;Connect Timeout=60;Encrypt=False;Trust Server Certificate=False;Command Timeout=0");
-        //=> optionsBuilder.UseSqlServer("Data Source=FENRIR-PC\\SQLEXPRESS;Initial Catalog=Database3-MyFinances-Test;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -57,7 +56,7 @@ public partial class Database3MyFinancesContext : DbContext
 
         modelBuilder.Entity<AllTransaction>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__AllTrans__3214EC074E5A4611");
+            entity.HasKey(e => e.Id).HasName("PK__AllTrans__3214EC073A723160");
 
             entity.Property(e => e.Amount).HasColumnType("money");
             entity.Property(e => e.BalanceAfter).HasColumnType("money");
@@ -75,29 +74,29 @@ public partial class Database3MyFinancesContext : DbContext
 
         modelBuilder.Entity<CategoriesExp>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC072A2273EF");
+            entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC07B4B31EE8");
 
             entity.ToTable("CategoriesExp");
 
-            entity.HasIndex(e => e.Title, "UQ__Categori__2CB664DCB5C5BC9E").IsUnique();
+            entity.HasIndex(e => e.Title, "UQ__Categori__2CB664DC9B61B78D").IsUnique();
 
             entity.Property(e => e.Title).HasMaxLength(50);
         });
 
         modelBuilder.Entity<CategoriesInc>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC072FD23CC7");
+            entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC075B8D0572");
 
             entity.ToTable("CategoriesInc");
 
-            entity.HasIndex(e => e.Title, "UQ__Categori__2CB664DCC884F542").IsUnique();
+            entity.HasIndex(e => e.Title, "UQ__Categori__2CB664DCD4917252").IsUnique();
 
             entity.Property(e => e.Title).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Currency>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Currenci__3214EC07B0C4B8C3");
+            entity.HasKey(e => e.Id).HasName("PK__Currenci__3214EC0738E0E407");
 
             entity.Property(e => e.CodeLetter).HasMaxLength(3);
             entity.Property(e => e.Title).HasMaxLength(50);
@@ -105,7 +104,7 @@ public partial class Database3MyFinancesContext : DbContext
 
         modelBuilder.Entity<Exchange>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Exchange__3214EC07A3D72109");
+            entity.HasKey(e => e.Id).HasName("PK__Exchange__3214EC075604D0C6");
 
             entity.ToTable("Exchange", tb =>
                 {
@@ -147,7 +146,7 @@ public partial class Database3MyFinancesContext : DbContext
 
         modelBuilder.Entity<Expense>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Expenses__3214EC07604BCE21");
+            entity.HasKey(e => e.Id).HasName("PK__Expenses__3214EC07AD7F8140");
 
             entity.ToTable(tb =>
                 {
@@ -182,11 +181,12 @@ public partial class Database3MyFinancesContext : DbContext
             entity.HasOne(d => d.SubcategoriesExp).WithMany(p => p.Expenses)
                 .HasForeignKey(d => new { d.CategoryId, d.SubCategoryTitle })
                 .HasConstraintName("FK__Expenses__6477ECF3");
+            
         });
 
         modelBuilder.Entity<GivingLoan>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__GivingLo__3214EC076F19C5FA");
+            entity.HasKey(e => e.Id).HasName("PK__GivingLo__3214EC07867BB725");
 
             entity.ToTable(tb =>
                 {
@@ -218,7 +218,7 @@ public partial class Database3MyFinancesContext : DbContext
 
         modelBuilder.Entity<Income>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Incomes__3214EC07ECB3C18D");
+            entity.HasKey(e => e.Id).HasName("PK__Incomes__3214EC07043FB469");
 
             entity.ToTable(tb =>
                 {
@@ -246,12 +246,13 @@ public partial class Database3MyFinancesContext : DbContext
 
             entity.HasOne(d => d.Provider).WithMany(p => p.Incomes)
                 .HasForeignKey(d => d.ProviderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Incomes__Provide__693CA210");
         });
 
         modelBuilder.Entity<PaymentMethod>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PaymentM__3214EC07B90FE645");
+            entity.HasKey(e => e.Id).HasName("PK__PaymentM__3214EC07F2C3D301");
 
             entity.Property(e => e.CurrentBalance).HasColumnType("money");
             entity.Property(e => e.Description).HasMaxLength(100);
@@ -261,15 +262,19 @@ public partial class Database3MyFinancesContext : DbContext
                 .HasForeignKey(d => d.CurrencyId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__PaymentMe__Curre__6B24EA82");
+
+            //entity.Property(pm => pm.CurrentBalance)
+            //    .ValueGeneratedOnAddOrUpdate()
+            //    .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
         });
 
         modelBuilder.Entity<Periodicity>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Periodic__3214EC077BAD5BC6");
+            entity.HasKey(e => e.Id).HasName("PK__Periodic__3214EC07F18A5100");
 
             entity.ToTable("Periodicity");
 
-            entity.HasIndex(e => e.Title, "UQ__Periodic__2CB664DCC02CDDEB").IsUnique();
+            entity.HasIndex(e => e.Title, "UQ__Periodic__2CB664DCE7BC4B2D").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Title).HasMaxLength(20);
@@ -277,7 +282,7 @@ public partial class Database3MyFinancesContext : DbContext
 
         modelBuilder.Entity<Provider>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Provider__3214EC07AFA9FA5E");
+            entity.HasKey(e => e.Id).HasName("PK__Provider__3214EC07B4C44D23");
 
             entity.Property(e => e.Description).HasMaxLength(100);
             entity.Property(e => e.Title).HasMaxLength(50);
@@ -285,7 +290,7 @@ public partial class Database3MyFinancesContext : DbContext
 
         modelBuilder.Entity<ReceivingLoan>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Receivin__3214EC071E265869");
+            entity.HasKey(e => e.Id).HasName("PK__Receivin__3214EC075B314CCC");
 
             entity.ToTable(tb =>
                 {
@@ -317,7 +322,7 @@ public partial class Database3MyFinancesContext : DbContext
 
         modelBuilder.Entity<RecurringCharge>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Recurrin__3214EC07215A400F");
+            entity.HasKey(e => e.Id).HasName("PK__Recurrin__3214EC076951E09B");
 
             entity.Property(e => e.Amount).HasColumnType("money");
             entity.Property(e => e.DateOfStart)
@@ -359,7 +364,7 @@ public partial class Database3MyFinancesContext : DbContext
 
         modelBuilder.Entity<SubcategoriesExp>(entity =>
         {
-            entity.HasKey(e => new { e.CategoryId, e.Title }).HasName("PK__Subcateg__DBC25C4683922406");
+            entity.HasKey(e => new { e.CategoryId, e.Title }).HasName("PK__Subcateg__DBC25C467FA7F4C8");
 
             entity.ToTable("SubcategoriesExp");
 
@@ -374,7 +379,7 @@ public partial class Database3MyFinancesContext : DbContext
 
         modelBuilder.Entity<Transfer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Transfer__3214EC0772E33649");
+            entity.HasKey(e => e.Id).HasName("PK__Transfer__3214EC07CE56DD3F");
 
             entity.ToTable(tb =>
                 {

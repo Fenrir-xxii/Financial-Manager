@@ -379,7 +379,8 @@ public class AddLoanViewModel : NotifyPropertyChangedBase
 
         try
         {
-            _repo.Add(GivingLoanModel.Model);
+            //_repo.Add(GivingLoanModel.Model);
+            _repo.Add(GivingLoanModel.Model, GivingLoanModel.PaymentMethodId);
             //_db.Add(GivingLoanModel.Model);
             //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -411,7 +412,8 @@ public class AddLoanViewModel : NotifyPropertyChangedBase
 
         try
         {
-            _repo.Add(ReceivingLoanModel.Model);
+            //_repo.Add(ReceivingLoanModel.Model);
+            _repo.Add(ReceivingLoanModel.Model, ReceivingLoanModel.PaymentMethodId);
             //_db.Add(ReceivingLoanModel.Model);
             //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);

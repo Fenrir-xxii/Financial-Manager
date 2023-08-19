@@ -9,9 +9,9 @@ public partial class CategoriesExp
 
     public string Title { get; set; } = null!;
 
-    public virtual ICollection<Expense> Expenses { get; } = new List<Expense>();
+    public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 
-    public virtual ICollection<RecurringCharge> RecurringCharges { get; } = new List<RecurringCharge>();
+    public virtual ICollection<RecurringCharge> RecurringCharges { get; set; } = new List<RecurringCharge>();
 
-    public virtual ICollection<SubcategoriesExp> SubcategoriesExps { get; } = new List<SubcategoriesExp>();
+    public virtual ICollection<SubcategoriesExp> SubcategoriesExps { get; set; } = new List<SubcategoriesExp>();
 }

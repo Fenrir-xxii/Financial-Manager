@@ -462,14 +462,21 @@ public sealed class DbRepo
     }
     public void UpdatePM()
     {
-        Task.Run(async () =>
-        {
-            _allPaymentMethods = await LoadPaymentMethodsAsync();
-            Parallel.ForEach(_allPaymentMethods, p =>
-            {
-                PaymentMethods.Add(new PaymentMethodViewModel(p));
-            });
-        }).Wait();
+        //var pm2 = _db.PaymentMethods.Include(x => x.Currency).AsTracking().ToList();
+        //var pm = _db.PaymentMethods.Include(x => x.Currency).ToList();
+        //using (var context = new Database3MyFinancesContext())
+        //{
+        //    var allPm = context.PaymentMethods.Include(x => x.Currency).ToList();
+        //}
+
+        //Task.Run(async () =>
+        //{
+        //    _allPaymentMethods = await LoadPaymentMethodsAsync();
+        //    Parallel.ForEach(_allPaymentMethods, p =>
+        //    {
+        //        PaymentMethods.Add(new PaymentMethodViewModel(p));
+        //    });
+        //}).Wait();
 
         //var allPm = new List<PaymentMethod>();
         //using (var context = new Database3MyFinancesContext())
@@ -492,6 +499,32 @@ public sealed class DbRepo
         //    PaymentMethods.Add(new PaymentMethodViewModel(pm));
         //});
 
+    }
+    //public decimal? UpdatePMCurrentBalance(int pmId)
+    //{
+    //    var newBalance = 0.0m;
+    //    using (var context = new Database3MyFinancesContext())
+    //    {
+    //        var updatedPm = context.PaymentMethods.FirstOrDefault(x => x.Id == pmId);
+    //        if(updatedPm != null)
+    //        {
+    //            newBalance = updatedPm.CurrentBalance;
+    //        }
+    //    }
+    //    return newBalance;
+    //}
+    public void UpdatePMCurrentBalance(int pmId)
+    {
+        using (var context = new Database3MyFinancesContext())
+        {
+            var updatedPm = context.PaymentMethods.FirstOrDefault(x => x.Id == pmId);
+            if (updatedPm != null)
+            {
+                var newBalance = updatedPm.CurrentBalance;
+                //PaymentMethods.FirstOrDefault(x => x.Id == pmId).CurrentBalance = newBalance;
+                _allPaymentMethods.FirstOrDefault(x => x.Id == pmId).CurrentBalance = newBalance;
+            }
+        }
     }
     public void UpdateLoans()
     {
@@ -556,19 +589,41 @@ public sealed class DbRepo
         _db.SaveChanges();
         UpdateProviders();
     }
-    public void Add(GivingLoan loan)
+    //public void Add(GivingLoan loan)
+    //{
+    //    if(loan == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.GivingLoans.Add(loan);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdateLoans();
+    //    UpdatePM();
+    //}
+    public void Add(GivingLoan loan, int pmId)
     {
-        if(loan == null)
+        if (loan == null)
         {
             return;
         }
         _db.GivingLoans.Add(loan);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdateLoans();
-        UpdatePM();
+        UpdatePMCurrentBalance(pmId);
     }
-    public void Add(ReceivingLoan loan)
+    //public void Add(ReceivingLoan loan)
+    //{
+    //    if (loan == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.ReceivingLoans.Add(loan);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdateLoans();
+    //    UpdatePM();
+    //}
+    public void Add(ReceivingLoan loan, int pmId)
     {
         if (loan == null)
         {
@@ -576,11 +631,21 @@ public sealed class DbRepo
         }
         _db.ReceivingLoans.Add(loan);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdateLoans();
-        UpdatePM();
+        UpdatePMCurrentBalance(pmId);
     }
-    public void Add(Income transaction)
+    //public void Add(Income transaction)
+    //{
+    //    if (transaction == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.Incomes.Add(transaction);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateIncomes();
+    //}
+    public void Add(Income transaction, int pmId)
     {
         if (transaction == null)
         {
@@ -588,11 +653,29 @@ public sealed class DbRepo
         }
         _db.Incomes.Add(transaction);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateIncomes();
+        UpdatePMCurrentBalance(pmId);
     }
-    public void Add(Expense transaction)
+    //public void Add(Expense transaction)
+    //{
+    //    if (transaction == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.Expenses.Add(transaction);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    //var pm = _db.PaymentMethods.Include(x => x.Currency).ToList();
+    //    //using (var context = new Database3MyFinancesContext())
+    //    //{
+    //    //    context.Expenses.Add(transaction);
+    //    //    context.SaveChanges();
+    //    //}
+
+
+    //    UpdatePM();
+    //    UpdateExpenses();
+    //}
+    public void Add(Expense transaction, int pmId)
     {
         if (transaction == null)
         {
@@ -600,19 +683,21 @@ public sealed class DbRepo
         }
         _db.Expenses.Add(transaction);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        //var pm = _db.PaymentMethods.Include(x => x.Currency).ToList();
-        //using (var context = new Database3MyFinancesContext())
-        //{
-        //    context.Expenses.Add(transaction);
-        //    context.SaveChanges();
-        //}
-
-
-        UpdatePM();
-        UpdateExpenses();
+        UpdatePMCurrentBalance(pmId);
     }
-    public void Add(Transfer transaction)
+    //public void Add(Transfer transaction)
+    //{
+    //    if (transaction == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.Transfers.Add(transaction);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateTransfers();
+    //}
+    public void Add(Transfer transaction, int pmIdFrom, int pmIdTo)
     {
         if (transaction == null)
         {
@@ -620,11 +705,22 @@ public sealed class DbRepo
         }
         _db.Transfers.Add(transaction);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateTransfers();
+        UpdatePMCurrentBalance(pmIdFrom);
+        UpdatePMCurrentBalance(pmIdTo);
     }
-    public void Add(Exchange transaction)
+    //public void Add(Exchange transaction)
+    //{
+    //    if (transaction == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.Exchanges.Add(transaction);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateExchanges();
+    //}
+    public void Add(Exchange transaction, int pmIdFrom, int pmIdTo)
     {
         if (transaction == null)
         {
@@ -632,9 +728,8 @@ public sealed class DbRepo
         }
         _db.Exchanges.Add(transaction);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateExchanges();
+        UpdatePMCurrentBalance(pmIdFrom);
+        UpdatePMCurrentBalance(pmIdTo);
     }
     public void Add(PaymentMethod pm)
     {
@@ -644,7 +739,7 @@ public sealed class DbRepo
         }
         _db.PaymentMethods.Add(pm);
         _db.SaveChanges();
-        UpdatePM();
+        //UpdatePM();
     }
     public void Add(RecurringCharge rc)
     {
@@ -654,24 +749,46 @@ public sealed class DbRepo
         }
         _db.RecurringCharges.Add(rc);
         _db.SaveChanges();
-        UpdateRecurringCharges();
+        //UpdateRecurringCharges();
     }
     #endregion
 
     #region Update
-    public void Update(GivingLoan loan)
+    //public void Update(GivingLoan loan)
+    //{
+    //    if(loan == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.GivingLoans.Update(loan);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateLoans();
+    //}
+    public void Update(GivingLoan loan, int pmId)
     {
-        if(loan == null)
+        if (loan == null)
         {
             return;
         }
         _db.GivingLoans.Update(loan);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateLoans();
+        UpdatePMCurrentBalance(pmId);
     }
-    public void Update(ReceivingLoan loan)
+    //public void Update(ReceivingLoan loan)
+    //{
+    //    if (loan == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.ReceivingLoans.Update(loan);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateLoans();
+    //}
+    public void Update(ReceivingLoan loan, int pmId)
     {
         if (loan == null)
         {
@@ -679,9 +796,7 @@ public sealed class DbRepo
         }
         _db.ReceivingLoans.Update(loan);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateLoans();
+        UpdatePMCurrentBalance(pmId);
     }
     public void Update(RecurringCharge rc)
     {
@@ -691,9 +806,21 @@ public sealed class DbRepo
         }
         _db.RecurringCharges.Update(rc);
         _db.SaveChanges();
-        UpdateRecurringCharges();
+        //UpdateRecurringCharges();
     }
-    public void Update(Expense expense)
+    //public void Update(Expense expense)
+    //{
+    //    if (expense == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.Expenses.Update(expense);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateExpenses();
+    //}
+    public void Update(Expense expense, int pmId)
     {
         if (expense == null)
         {
@@ -701,11 +828,21 @@ public sealed class DbRepo
         }
         _db.Expenses.Update(expense);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateExpenses();
+        UpdatePMCurrentBalance(pmId);
     }
-    public void Update(Income income)
+    //public void Update(Income income)
+    //{
+    //    if (income == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.Incomes.Update(income);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateIncomes();
+    //}
+    public void Update(Income income, int pmId)
     {
         if (income == null)
         {
@@ -713,11 +850,21 @@ public sealed class DbRepo
         }
         _db.Incomes.Update(income);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateIncomes();
+        UpdatePMCurrentBalance(pmId);
     }
-    public void Update(Transfer transfer)
+    //public void Update(Transfer transfer)
+    //{
+    //    if (transfer == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.Transfers.Update(transfer);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateTransfers();
+    //}
+    public void Update(Transfer transfer, int pmIdFrom, int pmIdTo)
     {
         if (transfer == null)
         {
@@ -725,11 +872,22 @@ public sealed class DbRepo
         }
         _db.Transfers.Update(transfer);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateTransfers();
+        UpdatePMCurrentBalance(pmIdFrom);
+        UpdatePMCurrentBalance(pmIdTo);
     }
-    public void Update(Exchange exchange)
+    //public void Update(Exchange exchange)
+    //{
+    //    if (exchange == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.Exchanges.Update(exchange);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateExchanges();
+    //}
+    public void Update(Exchange exchange, int pmIdFrom, int pmIdTo)
     {
         if (exchange == null)
         {
@@ -737,9 +895,8 @@ public sealed class DbRepo
         }
         _db.Exchanges.Update(exchange);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateExchanges();
+        UpdatePMCurrentBalance(pmIdFrom);
+        UpdatePMCurrentBalance(pmIdTo);
     }
     #endregion
 
@@ -755,7 +912,19 @@ public sealed class DbRepo
         _db.SaveChanges();
         UpdateRecurringCharges();
     }
-    public void Remove(Expense expense)
+    //public void Remove(Expense expense)
+    //{
+    //    if (expense == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.Expenses.Remove(expense);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateExpenses();
+    //}
+    public void Remove(Expense expense, int pmId)
     {
         if (expense == null)
         {
@@ -763,23 +932,43 @@ public sealed class DbRepo
         }
         _db.Expenses.Remove(expense);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateExpenses();
+        UpdatePMCurrentBalance(pmId);
     }
-    public void Remove(Income income)
+    //public void Remove(Income income)
+    //{
+    //    if(income == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.Incomes.Remove(income);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateIncomes();
+    //}
+    public void Remove(Income income, int pmId)
     {
-        if(income == null)
+        if (income == null)
         {
             return;
         }
         _db.Incomes.Remove(income);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateIncomes();
+        UpdatePMCurrentBalance(pmId);
     }
-    public void Remove(Transfer transfer)
+    //public void Remove(Transfer transfer)
+    //{
+    //    if (transfer == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.Transfers.Remove(transfer);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateTransfers();
+    //}
+    public void Remove(Transfer transfer, int pmIdFrom, int pmIdTo)
     {
         if (transfer == null)
         {
@@ -787,11 +976,22 @@ public sealed class DbRepo
         }
         _db.Transfers.Remove(transfer);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateTransfers();
+        UpdatePMCurrentBalance(pmIdFrom);
+        UpdatePMCurrentBalance(pmIdTo);
     }
-    public void Remove(Exchange exchange)
+    //public void Remove(Exchange exchange)
+    //{
+    //    if (exchange == null)
+    //    {
+    //        return;
+    //    }
+    //    _db.Exchanges.Remove(exchange);
+    //    _db.SaveChanges();
+    //    //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
+    //    UpdatePM();
+    //    UpdateExchanges();
+    //}
+    public void Remove(Exchange exchange, int pmIdFrom, int pmIdTo)
     {
         if (exchange == null)
         {
@@ -799,9 +999,8 @@ public sealed class DbRepo
         }
         _db.Exchanges.Remove(exchange);
         _db.SaveChanges();
-        //_db = new Database3MyFinancesContext();   // for updating PM (scripts)
-        UpdatePM();
-        UpdateExchanges();
+        UpdatePMCurrentBalance(pmIdFrom);
+        UpdatePMCurrentBalance(pmIdTo);
     }
     #endregion
 
@@ -891,15 +1090,15 @@ public sealed class DbRepo
 
 }
 
-public class TestDb
-{
-    public List<PaymentMethod> getUpdatedPaymentMethods()
-    {
-        var allPm = new List<PaymentMethod>();
-        using (var context = new Database3MyFinancesContext())
-        {
-            allPm = context.PaymentMethods.AsNoTracking().Include(x => x.Currency).AsNoTracking().ToList();
-        }
-        return allPm;
-    }
-}
+//public class TestDb
+//{
+//    public List<PaymentMethod> getUpdatedPaymentMethods()
+//    {
+//        var allPm = new List<PaymentMethod>();
+//        using (var context = new Database3MyFinancesContext())
+//        {
+//            allPm = context.PaymentMethods.AsNoTracking().Include(x => x.Currency).AsNoTracking().ToList();
+//        }
+//        return allPm;
+//    }
+//}

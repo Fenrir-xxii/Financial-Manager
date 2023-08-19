@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WpfApp9_MyFinances.Models;
 
@@ -11,31 +12,32 @@ public partial class PaymentMethod
 
     public string? Description { get; set; }
 
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public decimal CurrentBalance { get; set; }
 
     public bool IsCash { get; set; }
 
     public int CurrencyId { get; set; }
 
-    public virtual ICollection<AllTransaction> AllTransactions { get; } = new List<AllTransaction>();
+    public virtual ICollection<AllTransaction> AllTransactions { get; set; } = new List<AllTransaction>();
 
     public virtual Currency Currency { get; set; } = null!;
 
-    public virtual ICollection<Exchange> ExchangeFroms { get; } = new List<Exchange>();
+    public virtual ICollection<Exchange> ExchangeFroms { get; set; } = new List<Exchange>();
 
-    public virtual ICollection<Exchange> ExchangeTos { get; } = new List<Exchange>();
+    public virtual ICollection<Exchange> ExchangeTos { get; set; } = new List<Exchange>();
 
-    public virtual ICollection<Expense> Expenses { get; } = new List<Expense>();
+    public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 
-    public virtual ICollection<GivingLoan> GivingLoans { get; } = new List<GivingLoan>();
+    public virtual ICollection<GivingLoan> GivingLoans { get; set; } = new List<GivingLoan>();
 
-    public virtual ICollection<Income> Incomes { get; } = new List<Income>();
+    public virtual ICollection<Income> Incomes { get; set; } = new List<Income>();
 
-    public virtual ICollection<ReceivingLoan> ReceivingLoans { get; } = new List<ReceivingLoan>();
+    public virtual ICollection<ReceivingLoan> ReceivingLoans { get; set; } = new List<ReceivingLoan>();
 
-    public virtual ICollection<RecurringCharge> RecurringCharges { get; } = new List<RecurringCharge>();
+    public virtual ICollection<RecurringCharge> RecurringCharges { get; set; } = new List<RecurringCharge>();
 
-    public virtual ICollection<Transfer> TransferFroms { get; } = new List<Transfer>();
+    public virtual ICollection<Transfer> TransferFroms { get; set; } = new List<Transfer>();
 
-    public virtual ICollection<Transfer> TransferTos { get; } = new List<Transfer>();
+    public virtual ICollection<Transfer> TransferTos { get; set; } = new List<Transfer>();
 }

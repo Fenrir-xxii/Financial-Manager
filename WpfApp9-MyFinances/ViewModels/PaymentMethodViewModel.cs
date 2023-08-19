@@ -528,7 +528,8 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
                         //_db.SaveChanges();
                         if (transaction != null)
                         {
-                            _repo.Remove(transaction);
+                            //_repo.Remove(transaction);
+                            _repo.Remove(transaction, transaction.PaymentMethodId);
                             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                         else
@@ -554,7 +555,8 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
                         //_db.SaveChanges();
                         if (transaction != null)
                         {
-                            _repo.Remove(transaction);
+                            //_repo.Remove(transaction);
+                            _repo.Remove(transaction, transaction.PaymentMethodId);
                             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                         else
@@ -578,7 +580,8 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
                         //_db.SaveChanges();
                         if (transaction != null)
                         {
-                            _repo.Remove(transaction);
+                            //_repo.Remove(transaction);
+                            _repo.Remove(transaction, transaction.FromId, transaction.ToId);
                             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                         else
@@ -602,7 +605,8 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
                         //_db.SaveChanges();
                         if (transaction != null)
                         {
-                            _repo.Remove(transaction);
+                            //_repo.Remove(transaction);
+                            _repo.Remove(transaction, transaction.FromId, transaction.ToId);
                             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                         else

@@ -11,13 +11,13 @@ public partial class Provider
 
     public string? Description { get; set; }
 
-    public virtual ICollection<Expense> Expenses { get; } = new List<Expense>();
+    public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 
-    public virtual ICollection<GivingLoan> GivingLoans { get; } = new List<GivingLoan>();
+    public virtual ICollection<GivingLoan> GivingLoans { get; set; } = new List<GivingLoan>();
 
-    public virtual ICollection<Income> Incomes { get; } = new List<Income>();
+    public virtual ICollection<Income> Incomes { get; set; } = new List<Income>();
 
-    public virtual ICollection<ReceivingLoan> ReceivingLoans { get; } = new List<ReceivingLoan>();
+    public virtual ICollection<ReceivingLoan> ReceivingLoans { get; set; } = new List<ReceivingLoan>();
 
-    public virtual ICollection<RecurringCharge> RecurringCharges { get; } = new List<RecurringCharge>();
+    public virtual ICollection<RecurringCharge> RecurringCharges { get; set; } = new List<RecurringCharge>();
 }

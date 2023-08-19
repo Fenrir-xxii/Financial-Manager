@@ -9,5 +9,5 @@ public partial class CategoriesInc
 
     public string Title { get; set; } = null!;
 
-    public virtual ICollection<Income> Incomes { get; } = new List<Income>();
+    public virtual ICollection<Income> Incomes { get; set; } = new List<Income>();
 }

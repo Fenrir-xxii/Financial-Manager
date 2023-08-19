@@ -25,5 +25,5 @@ public partial class Income
 
     public virtual PaymentMethod PaymentMethod { get; set; } = null!;
 
-    public virtual Provider Provider { get; set; }
+    public virtual Provider Provider { get; set; } = null!;
 }

@@ -9,5 +9,5 @@ public partial class Periodicity
 
     public string Title { get; set; } = null!;
 
-    public virtual ICollection<RecurringCharge> RecurringCharges { get; } = new List<RecurringCharge>();
+    public virtual ICollection<RecurringCharge> RecurringCharges { get; set; } = new List<RecurringCharge>();
 }
