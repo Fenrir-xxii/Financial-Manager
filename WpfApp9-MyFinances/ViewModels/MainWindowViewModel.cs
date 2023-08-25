@@ -191,6 +191,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _allGivingLoans = _repo.GivingLoans;
         _allReceivingLoans = _repo.ReceivingLoans;
         _recurringChargeModels = _repo.RecurringCharges;
+        _providerTypes = _repo.ProviderTypes;
         CombineLoans();
 
         //MessageBox.Show("end");
@@ -638,6 +639,26 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedRecurringCharge));
         }
     }
+    private List<ProviderTypeViewModel> _providerTypes;
+    public ObservableCollection<ProviderTypeViewModel> ProviderTypes
+    {
+        get => new ObservableCollection<ProviderTypeViewModel>(_providerTypes);
+        set
+        {
+            ProviderTypes = value;
+            OnPropertyChanged(nameof(ProviderTypes));
+        }
+    }
+    private ProviderTypeViewModel _selectedProviderType;
+    public ProviderTypeViewModel SelectedProviderType
+    {
+        get => _selectedProviderType;
+        set
+        {
+            _selectedProviderType = value;
+            OnPropertyChanged(nameof(SelectedProviderType));
+        }
+    }
     public ObservableCollection<string> TotalInCashAllCurrencies
     {
         get
@@ -755,6 +776,17 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(ValidNameOfNewProvider));
         }
     }
+    private string _descriptionOfNewProvider;
+    public string DescriptionOfNewProvider
+    {
+        get => _descriptionOfNewProvider;
+        set
+        {
+            _descriptionOfNewProvider = value;
+            OnPropertyChanged(nameof(DescriptionOfNewProvider));
+        }
+    }
+    
     private int _lastExpenseId;
     private int _lastIncomeId;
     private bool _autoUpdate;
@@ -916,7 +948,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }, x => _titleOfNewProvider.Length > 0);
     public ICommand AddNewProvider => new RelayCommand(x =>
     {
-        var newProvider = new Provider { Title = _titleOfNewProvider };
+        var newProvider = new Provider { Title = _titleOfNewProvider, Description = _descriptionOfNewProvider};
+        newProvider.ProviderTypes = _selectedProviderType.Model;
         //_db.Providers.Add(newProvider);
         //_db.SaveChanges();
         _repo.Add(newProvider);

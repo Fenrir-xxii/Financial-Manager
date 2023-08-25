@@ -11,11 +11,15 @@ public partial class Provider
 
     public string? Description { get; set; }
 
+    public int ProviderTypesId { get; set; }
+
     public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 
     public virtual ICollection<GivingLoan> GivingLoans { get; set; } = new List<GivingLoan>();
 
     public virtual ICollection<Income> Incomes { get; set; } = new List<Income>();
+
+    public virtual ProviderType ProviderTypes { get; set; } = null!;
 
     public virtual ICollection<ReceivingLoan> ReceivingLoans { get; set; } = new List<ReceivingLoan>();
 

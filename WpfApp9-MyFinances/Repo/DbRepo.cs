@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media;
 using WpfApp9_MyFinances.Models;
 using WpfApp9_MyFinances.ModelsForWpfOnly;
 using WpfApp9_MyFinances.ViewModels;
@@ -47,6 +48,7 @@ public sealed class DbRepo
         GivingLoans = new List<GivingLoan>();
         ReceivingLoans = new List<ReceivingLoan>();
         _allPeriodicities = new List<Periodicity>();
+        _allProviderTypes = new List<ProviderType>();
 
         Task.Run(async () =>
         {
@@ -98,6 +100,12 @@ public sealed class DbRepo
             {
                 Periodicities.Add(new PeriodicityViewModel(p));
             });
+            _allProviderTypes = await LoadProviderTypesAsync();
+            Parallel.ForEach(_allProviderTypes, pt =>
+            {
+                ProviderTypes.Add(new ProviderTypeViewModel(pt));
+                //ProviderTypes.Add(new ProviderTypeViewModel(pt, getColorForProviderType(pt.Title)));
+            });
             #endregion
         }).Wait();
         Task.Run(async () =>
@@ -130,7 +138,7 @@ public sealed class DbRepo
     }
     private async Task<List<Provider>> LoadProvidersAsync()
     {
-        return await _db.Providers.ToListAsync();
+        return await _db.Providers.Include(p => p.ProviderTypes).ToListAsync();
     }
     private async Task<List<Expense>> LoadExpensesAsync()
     {
@@ -175,6 +183,10 @@ public sealed class DbRepo
     public async Task<List<Periodicity>> LoadPeriodicitiesAsync()
     {
         return await _db.Periodicities.ToListAsync();
+    }
+    public async Task<List<ProviderType>> LoadProviderTypesAsync()
+    {
+        return await _db.ProviderTypes.ToListAsync();
     }
     #endregion
 
@@ -364,6 +376,20 @@ public sealed class DbRepo
         set
         {
             Periodicities = value;
+        }
+    }
+    private List<ProviderType> _allProviderTypes;
+    public List<ProviderTypeViewModel> ProviderTypes
+    {
+        get
+        {
+            var list = new List<ProviderTypeViewModel>();
+            _allProviderTypes.ForEach(pt => list.Add(new ProviderTypeViewModel(pt)));
+            return list;
+        }
+        set
+        {
+            ProviderTypes = value;
         }
     }
     #endregion
@@ -1087,6 +1113,25 @@ public sealed class DbRepo
         return _db.Exchanges.Include(t => t.From).Include(t => t.To).FirstOrDefault(x => x.Id == id);
     }
     #endregion
+    //public Brush getColorForProviderType(string providerType)
+    //{
+    //    var type = providerType.ToLower();
+    //    switch(type)
+    //    {
+    //        case "internet - shop":
+    //            return Brushes.Blue;
+    //        case "gas station":
+    //            return Brushes.Green;
+    //        case "post":
+    //            return Brushes.Red;
+    //        case "web services":
+    //            return Brushes.BlueViolet;
+    //        case "shop":
+    //            return Brushes.DarkBlue;
+    //        default:
+    //            return Brushes.Black;
+    //    }
+    //}
 
 }
 

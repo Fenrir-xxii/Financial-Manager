@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WpfApp9_MyFinances.Models;
 
@@ -12,7 +11,6 @@ public partial class PaymentMethod
 
     public string? Description { get; set; }
 
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public decimal CurrentBalance { get; set; }
 
     public bool IsCash { get; set; }

@@ -568,7 +568,15 @@
                         </ComboBox.SelectedItem>
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                <!--<TextBlock Text="{Binding Path=Title}"></TextBlock>-->
+                                <TextBlock>
+                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                    <TextBlock Foreground="{Binding Path=ProviderTypes.Color}">
+                                        <TextBlock Text=" {"></TextBlock>
+                                        <TextBlock Text="{Binding Path=ProviderTypes.Title}"></TextBlock>
+                                        <TextBlock Text="}"></TextBlock>
+                                    </TextBlock>
+                                </TextBlock>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace WpfApp9_MyFinances.Models;
 
@@ -37,6 +36,8 @@ public partial class Database3MyFinancesContext : DbContext
     public virtual DbSet<Periodicity> Periodicities { get; set; }
 
     public virtual DbSet<Provider> Providers { get; set; }
+
+    public virtual DbSet<ProviderType> ProviderTypes { get; set; }
 
     public virtual DbSet<ReceivingLoan> ReceivingLoans { get; set; }
 
@@ -181,7 +182,6 @@ public partial class Database3MyFinancesContext : DbContext
             entity.HasOne(d => d.SubcategoriesExp).WithMany(p => p.Expenses)
                 .HasForeignKey(d => new { d.CategoryId, d.SubCategoryTitle })
                 .HasConstraintName("FK__Expenses__6477ECF3");
-            
         });
 
         modelBuilder.Entity<GivingLoan>(entity =>
@@ -262,10 +262,6 @@ public partial class Database3MyFinancesContext : DbContext
                 .HasForeignKey(d => d.CurrencyId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__PaymentMe__Curre__6B24EA82");
-
-            //entity.Property(pm => pm.CurrentBalance)
-            //    .ValueGeneratedOnAddOrUpdate()
-            //    .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
         });
 
         modelBuilder.Entity<Periodicity>(entity =>
@@ -286,6 +282,17 @@ public partial class Database3MyFinancesContext : DbContext
 
             entity.Property(e => e.Description).HasMaxLength(100);
             entity.Property(e => e.Title).HasMaxLength(50);
+
+            entity.HasOne(d => d.ProviderTypes).WithMany(p => p.Providers)
+                .HasForeignKey(d => d.ProviderTypesId)
+                .HasConstraintName("FK_Providers_ProviderTypes");
+        });
+
+        modelBuilder.Entity<ProviderType>(entity =>
+        {
+            entity.Property(e => e.Title)
+                .HasMaxLength(30)
+                .IsFixedLength();
         });
 
         modelBuilder.Entity<ReceivingLoan>(entity =>

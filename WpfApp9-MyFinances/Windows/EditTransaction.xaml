@@ -544,7 +544,15 @@
                                         <ComboBox ItemsSource="{Binding Path=CategoriesExp}" SelectedItem="{Binding Path=SelectedCategoryExp}">
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                                    <!--<TextBlock Text="{Binding Path=Title}"></TextBlock>-->
+                                                    <TextBlock>
+                                                        <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                                        <TextBlock Foreground="{Binding Path=ProviderTypes.Color}">
+                                                            <TextBlock Text=" {"></TextBlock>
+                                                            <TextBlock Text="{Binding Path=ProviderTypes.Title}"></TextBlock>
+                                                            <TextBlock Text="}"></TextBlock>
+                                                        </TextBlock>
+                                                    </TextBlock>
                                                 </DataTemplate>
                                             </ComboBox.ItemTemplate>
                                         </ComboBox>
@@ -636,7 +644,15 @@
                                         <ComboBox ItemsSource="{Binding Path=CategoriesInc}" SelectedItem="{Binding Path=IncomeModel.Category}">
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                                    <!--<TextBlock Text="{Binding Path=Title}"></TextBlock>-->
+                                                    <TextBlock>
+                                                        <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                                        <TextBlock Foreground="{Binding Path=ProviderTypes.Color}">
+                                                            <TextBlock Text=" {"></TextBlock>
+                                                            <TextBlock Text="{Binding Path=ProviderTypes.Title}"></TextBlock>
+                                                            <TextBlock Text="}"></TextBlock>
+                                                        </TextBlock>
+                                                    </TextBlock>
                                                 </DataTemplate>
                                             </ComboBox.ItemTemplate>
                                         </ComboBox>

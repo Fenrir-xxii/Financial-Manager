@@ -35,6 +35,26 @@ public class ProviderViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Description));
         }
     }
+    public int ProviderTypesId
+    {
+        get => Model.ProviderTypesId;
+        set
+        {
+            Model.ProviderTypesId = value;
+            OnPropertyChanged(nameof(ProviderTypesId));
+        }
+    }
+    public ProviderTypeViewModel ProviderTypes
+    {
+        get => new ProviderTypeViewModel { Model = Model.ProviderTypes };
+        set
+        {
+            Model.ProviderTypes = value.Model;
+            Model.ProviderTypesId = value.Model.Id;
+            OnPropertyChanged(nameof(ProviderTypes));
+            OnPropertyChanged(nameof(ProviderTypesId));
+        }
+    }
     public override bool Equals(object? obj)
     {
         if (obj == null)

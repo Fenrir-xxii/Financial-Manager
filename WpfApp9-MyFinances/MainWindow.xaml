@@ -1326,17 +1326,66 @@
                         <RowDefinition Height="90*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Text="P R O V I D E R S" Foreground="NavajoWhite" FontSize="30" FontWeight="Bold" FontStyle="Oblique" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                    <ListView Grid.Row="1"
+                    <!--<ListView Grid.Row="1"
                               ItemsSource="{Binding Path=Providers}"
                               SelectedItem="{}"
                               Background="#C4C9C9"
                               SelectedIndex="0">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Path=Providers}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Type" Width="*" Binding="{Binding Path=ProviderTypes.Title}"/>
+                                        <DataGridTextColumn Header="Column2" Width="*" Binding="{Binding Path=Provider.Title}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
-                    </ListView>
+                    </ListView>-->
+                    <DataGrid Grid.Row="1"
+                        AutoGenerateColumns="False" 
+                        IsReadOnly="True" 
+                        ItemsSource="{Binding Path=Providers}"
+                        SelectedItem="{}"
+                        Background="#C4C9C9"
+                        AlternatingRowBackground="#D0D4D4"
+                        ColumnWidth="*">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <!--<Setter Property="FontWeight" Value="Bold"/>-->
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="FontFamily" Value="Times New Roman"/>
+                                <Setter Property="Background" Value="#1E3232"></Setter>
+                                <Setter Property="Foreground" Value="White"></Setter>
+                                <Setter Property="Height" Value="16"></Setter>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Edit Provider"></MenuItem>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Type" Width="30*" SortMemberPath="ProviderTypes.Title" CanUserSort="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=ProviderTypes.Title}" Foreground="{Binding Path=ProviderTypes.Color}"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <!--<DataGridTextColumn Header="Type" Binding="{Binding Path=ProviderTypes.Title}" Width="30*" Foreground="{Binding Path=ProviderTypes.Color}"></DataGridTextColumn>-->
+                            <DataGridTemplateColumn Header="Title" Width="70*" SortMemberPath="Title" CanUserSort="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=Title}" Foreground="{Binding Path=ProviderTypes.Color}"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <!--<DataGridTextColumn Header="Title" Binding="{Binding Path=Title}" Width="70*"></DataGridTextColumn>-->
+                        </DataGrid.Columns>
+                        
+                    </DataGrid>
                     <Grid Grid.Row="2" Grid.Column="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="10*"></RowDefinition>
@@ -1352,6 +1401,17 @@
                         <StackPanel Grid.Row="1" Grid.Column="1">
                             <TextBlock>Title of provider:</TextBlock>
                             <TextBox Text="{Binding TitleOfNewProvider, UpdateSourceTrigger=PropertyChanged}" Background="#C4C9C9"></TextBox>
+                            <!--<TextBlock></TextBlock>-->
+                            <TextBlock>Type:</TextBlock>
+                            <ComboBox ItemsSource="{Binding Path=ProviderTypes}" SelectedItem="{Binding Path=SelectedProviderType}" Background="#C4C9C9">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <TextBlock>Description:</TextBlock>
+                            <TextBox Text="{Binding DescriptionOfNewProvider, UpdateSourceTrigger=PropertyChanged}" Background="#C4C9C9"></TextBox>
                             <TextBlock></TextBlock>
                             <Button Command="{Binding Path=CheckTitleOfNewProvider}" Content="Check Title">
                                 <Button.Resources>
@@ -1361,6 +1421,7 @@
                                 </Button.Resources>
                             </Button>
                             <TextBlock></TextBlock>
+                           
                             <Button Command="{Binding Path=AddNewProvider}" Content="Add">
                                 <Button.Resources>
                                     <Style TargetType="{x:Type Border}">
