@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using WpfApp9_MyFinances.Models;
@@ -541,9 +542,37 @@ public sealed class DbRepo
     //}
     public void UpdatePMCurrentBalance(int pmId)
     {
+        //var r = _db.PaymentMethods.Include(x => x.Currency).ToList();
+        //_db.ChangeTracker.AcceptAllChanges();
+
+        //System.FormattableString query =  new FormattableString("SELECT * FROM ");
+        //_db.Database.SqlQuery<string>(query);
+        //var query = $"SELECT * FROM ";
+        //try
+        //{
+        //    var currentBalance = _db.PaymentMethods.FromSql($"SELECT CurrentBalance FROM [Database3-MyFinances].[dbo].[PaymentMethods] WHERE Id={pmId}").ToList();
+        //    var n = currentBalance.FirstOrDefault();
+        //    using (var context = new Database3MyFinancesContext())
+        //    {
+        //        var currentBalanceFromDb = context.Database.SqlQuery<decimal>($"SELECT CurrentBalance FROM dbo.PaymentMethods WHERE Id={pmId}").ToList();
+        //        var newBalance = currentBalanceFromDb.First();
+        //        //_allPaymentMethods.FirstOrDefault(x => x.Id == pmId).CurrentBalance = newBalance;
+        //        PaymentMethods.FirstOrDefault(x => x.Id == pmId).CurrentBalance = newBalance;
+        //    }
+
+        //}
+        //catch(Exception ex)
+        //{
+        //    MessageBox.Show($"Something went wrong! {ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //}
+
+
+        var r = _db.PaymentMethods.Include(x => x.Currency).ToList();
+
+
         using (var context = new Database3MyFinancesContext())
         {
-            var updatedPm = context.PaymentMethods.FirstOrDefault(x => x.Id == pmId);
+            var updatedPm = context.PaymentMethods.AsNoTracking().FirstOrDefault(x => x.Id == pmId);
             if (updatedPm != null)
             {
                 var newBalance = updatedPm.CurrentBalance;
@@ -707,6 +736,11 @@ public sealed class DbRepo
         {
             return;
         }
+        //using (var context = new Database3MyFinancesContext())
+        //{
+        //    context.Expenses.Add(transaction);
+        //    context.SaveChanges();
+        //}
         _db.Expenses.Add(transaction);
         _db.SaveChanges();
         UpdatePMCurrentBalance(pmId);
@@ -852,6 +886,11 @@ public sealed class DbRepo
         {
             return;
         }
+        //using (var context = new Database3MyFinancesContext())
+        //{
+        //    context.Expenses.Update(expense);
+        //    context.SaveChanges();
+        //}
         _db.Expenses.Update(expense);
         _db.SaveChanges();
         UpdatePMCurrentBalance(pmId);

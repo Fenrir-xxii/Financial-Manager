@@ -26,5 +26,10 @@ namespace WpfApp9_MyFinances.Windows
             InitializeComponent();
             DataContext = new PaymentMethodViewModel(paymentMethod.Model, true);
         }
-    }
+		public AllTransactions(PaymentMethodViewModel paymentMethod, int countOfTransactions)
+		{
+			InitializeComponent();
+			DataContext = new PaymentMethodViewModel(paymentMethod.Model, false, countOfTransactions);
+		}
+	}
 }

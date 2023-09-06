@@ -485,6 +485,21 @@
             </Style.Triggers>
         </Style>
 
+        <Style TargetType="{x:Type DataGridRow}">
+            <Setter Property="BorderBrush" Value="LightGray" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderBrush" Value="DarkGreen" />
+                </Trigger>
+            </Style.Triggers>
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+            </Style.Resources>
+        </Style>
+
+
     </Window.Resources>
     
     
@@ -523,6 +538,7 @@
                             <Setter Property="Height" Value="16"></Setter>
                         </Style>
                     </DataGrid.ColumnHeaderStyle>
+
                     <DataGrid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Edit Transaction" Command="{Binding Path=EditTransaction}"></MenuItem>

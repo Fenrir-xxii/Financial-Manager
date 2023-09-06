@@ -542,7 +542,8 @@
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <!--<MenuItem Header="Test" ></MenuItem>-->
-                                <MenuItem Header="Show Transactions" Command="{Binding Path=ShowAllTransactions}"></MenuItem>
+                                <MenuItem Header="Show Recent Transactions" Command="{Binding Path=ShowRecentTransactions}"></MenuItem>
+                                <MenuItem Header="Show All Transactions" Command="{Binding Path=ShowAllTransactions}"></MenuItem>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>

@@ -60,8 +60,35 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         CombineAllTransactions();
 
     }
-    //private Database3MyFinancesContext _db;
-    private DbRepo _repo;
+	public PaymentMethodViewModel(PaymentMethod payment, bool allTransactions, int countOfTransactions)
+	{
+		Model = payment;
+		_repo = DbRepo.Instance;
+
+		_allTransactions = new List<FinancialTransaction>();
+		_expenseModels = new List<ExpenseViewModel>();
+		_incomeModels = new List<IncomeViewModel>();
+		_transferOutModels = new List<TransferViewModel>();
+		_transferInModels = new List<TransferViewModel>();
+		_exchangeInModels = new List<ExchangeViewModel>();
+		_exchangeOutModels = new List<ExchangeViewModel>();
+		_givingLoanModels = new List<GivingLoanViewModel>();
+		_receivingLoanModels = new List<ReceivingLoanViewModel>();
+
+		_expenseModels = _repo.getPMExpensesById(payment.Id).OrderByDescending(x => x.DateOfExpense).Take(countOfTransactions).ToList();
+		_incomeModels = _repo.getPMIncomesById(payment.Id).OrderByDescending(x => x.DateOfIncome).Take(countOfTransactions).ToList();
+		_transferOutModels = _repo.getPMTransfersOutById(payment.Id).OrderByDescending(x => x.DateOfTransfer).Take(countOfTransactions).ToList();
+		_transferInModels = _repo.getPMTransfersInById(payment.Id).OrderByDescending(x => x.DateOfTransfer).Take(countOfTransactions).ToList();
+		_exchangeOutModels = _repo.getPMExchangesOutById(payment.Id).OrderByDescending(x => x.DateOfExchange).Take(countOfTransactions).ToList();
+		_exchangeInModels = _repo.getPMExchangesInById(payment.Id).OrderByDescending(x => x.DateOfExchange).Take(countOfTransactions).ToList();
+		_givingLoanModels = _repo.getPMGivingLoansById(payment.Id).OrderByDescending(x => x.DateOfLoan).Take(countOfTransactions).ToList();
+		_receivingLoanModels = _repo.getPMReceivingLoansById(payment.Id).OrderByDescending(x => x.DateOfLoan).Take(countOfTransactions).ToList();
+
+		CombineAllTransactions(countOfTransactions);
+
+	}
+	//private Database3MyFinancesContext _db;
+	private DbRepo _repo;
     public PaymentMethod Model { get; set; }
     #region ViewModelData
     public int Id { get => Model.Id; }
@@ -414,7 +441,47 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
         _allTransactions = temp.OrderByDescending(x => x.DateOfTransaction).ToList();
         OnPropertyChanged(nameof(Transactions));
     }
-    public override bool Equals(object? obj)
+	public void CombineAllTransactions(int countOfTransactions)
+	{
+		var temp = new List<FinancialTransaction>();
+		Expenses.ToList().ForEach(transactionExp =>
+		{
+			temp.Add(new FinancialTransaction(transactionExp.Model));
+		});
+		Incomes.ToList().ForEach(transactionInc =>
+		{
+			temp.Add(new FinancialTransaction(transactionInc.Model));
+		});
+		TransfersOut.ToList().ForEach(transactionTfr =>
+		{
+			temp.Add(new FinancialTransaction(transactionTfr.Model, false));
+		});
+		TransfersIn.ToList().ForEach(transactionTfr =>
+		{
+			temp.Add(new FinancialTransaction(transactionTfr.Model, true));
+		});
+		ExchangesOut.ToList().ForEach(transactionExc =>
+		{
+			temp.Add(new FinancialTransaction(transactionExc.Model, false));
+		});
+		ExchangesIn.ToList().ForEach(transactionExc =>
+		{
+			temp.Add(new FinancialTransaction(transactionExc.Model, true));
+		});
+		GivingLoans.ToList().ForEach(transactionLoans =>
+		{
+			temp.Add(new FinancialTransaction(transactionLoans.Model));
+		});
+		ReceivingLoans.ToList().ForEach(transactionLoans =>
+		{
+			temp.Add(new FinancialTransaction(transactionLoans.Model));
+		});
+		_allTransactions.Clear();
+		_allTransactions = temp.OrderByDescending(x => x.DateOfTransaction).Take(countOfTransactions).ToList();
+		OnPropertyChanged(nameof(Transactions));
+	}
+
+	public override bool Equals(object? obj)
     {
         if (obj == null)
             return false;

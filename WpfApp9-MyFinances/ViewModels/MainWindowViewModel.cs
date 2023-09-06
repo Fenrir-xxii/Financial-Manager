@@ -789,6 +789,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     
     private int _lastExpenseId;
     private int _lastIncomeId;
+    private int _countOfRecentTransactions = 50;
     private bool _autoUpdate;
     public bool AutoUpdate
     {
@@ -983,7 +984,30 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         }
 
     }, x => _selectedPaymentMethod != null);
-    public ICommand AddNewPaymentMethod => new RelayCommand(x =>
+	public ICommand ShowRecentTransactions => new RelayCommand(x =>
+	{
+		var window = new AllTransactions(SelectedPaymentMethod, _countOfRecentTransactions);
+		window.Left = Application.Current.MainWindow.Left;
+		window.Top = Application.Current.MainWindow.Top + 450 - 5;
+		window.ShowDialog();
+		
+		var pmFromDb = _repo.GetPMById(_selectedPaymentMethod.Id);
+		if (pmFromDb != null)
+		{
+			//var pmLocal = _allPaymentMethods.FirstOrDefault(y => y.Id == pmFromDb.Id);
+			//var pmViewModel = _pmModels.FirstOrDefault(y => y.Id == pmFromDb.Id);
+			var pmLocal = _pmModels.FirstOrDefault(y => y.Id == pmFromDb.Id);
+			if (pmLocal != null)
+			{
+				pmLocal = new PaymentMethodViewModel(pmFromDb);
+				OnPropertyChanged(nameof(PaymentMethods));
+				//_allPaymentMethods.Remove(_allPaymentMethods.FirstOrDefault(y => y.Id == pm.Id));
+				//_allPaymentMethods.Add(pm);
+			}
+		}
+
+	}, x => _selectedPaymentMethod != null);
+	public ICommand AddNewPaymentMethod => new RelayCommand(x =>
     {
         var window = new AddPaymentMethod();
         window.Left = Application.Current.MainWindow.Left - 400 + 10;
