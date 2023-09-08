@@ -53,6 +53,4 @@ public class CurrencyViewModel : NotifyPropertyChangedBase
 
         return Model.Id.Equals((obj as CurrencyViewModel).Model.Id);
     }
-    //public override int GetHashCode() =>
-    //  new { Id, CodeNumber, CodeLetter, Title }.GetHashCode();
 }

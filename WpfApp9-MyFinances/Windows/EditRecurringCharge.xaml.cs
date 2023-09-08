@@ -21,11 +21,6 @@ namespace WpfApp9_MyFinances.Windows
     /// </summary>
     public partial class EditRecurringCharge : Window
     {
-        //public EditRecurringCharge(RecurringCharge rc, Database3MyFinancesContext db)
-        //{
-        //    InitializeComponent();
-        //    DataContext = new EditRecurringChargeViewModel(rc, db);
-        //}
         public EditRecurringCharge(RecurringCharge rc)
         {
             InitializeComponent();

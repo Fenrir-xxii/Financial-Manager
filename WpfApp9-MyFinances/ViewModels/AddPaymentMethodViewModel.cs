@@ -17,17 +17,6 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
 {
     public PaymentMethodViewModel()
     {
-        //Model = new PaymentMethod();
-        //_allTransactions = new List<FinancialTransaction>();
-        //_allCurrencies = new List<Currency>();
-        //_db = new Database3MyFinancesContext();
-        //_isAddButtonEnabled = false;
-
-        //_allCurrencies = _db.Currencies.ToList();
-        //OnPropertyChanged(nameof(Currencies));
-
-
-
         Model = new PaymentMethod();
         _isAddButtonEnabled = false;
         _repo = DbRepo.Instance;
@@ -35,16 +24,12 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
 
     }
     #region ViewModelData
-    //private List<Currency> _allCurrencies;
     private List<CurrencyViewModel> _currencyModels;
     public ObservableCollection<CurrencyViewModel> Currencies
     {
         get
         {
             return new ObservableCollection<CurrencyViewModel>(_currencyModels);
-            //var collection = new ObservableCollection<CurrencyViewModel>();
-            //_allCurrencies.ForEach(c => collection.Add(new CurrencyViewModel(c)));
-            //return collection;
         }
         set
         {
@@ -96,12 +81,9 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
     #region Commands
     public ICommand AddPaymentMethod => new RelayCommand(x =>
     {
-        //MessageBox.Show("Success");
         Model.Currency = _selectedCurrency.Model;
         try
         {
-            //_db.Add(Model);
-            //_db.SaveChanges();
             _repo.Add(Model);
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -119,7 +101,6 @@ public partial class PaymentMethodViewModel : NotifyPropertyChangedBase
     }, x => IsAddButtonEnabled);
     public ICommand Cancel => new RelayCommand(x =>
     {
-        //Application.Current.Windows[1].Close();
         var window = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive);
         window?.Close();
     }, x => true);

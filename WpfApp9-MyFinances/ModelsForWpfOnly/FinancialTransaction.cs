@@ -63,11 +63,6 @@ public class FinancialTransaction
             TransactionType = TransactionType.TRANSFER;
             CurrencyCode = transfer.From.Currency.CodeNumber;
         }
-        //Amount = -transferFrom.Amount;
-        //DateOfTransaction = transferFrom.DateOfTransfer;
-        //Title = "Transfer";
-        //BalanceBefore = transferFrom.From.GetBalanceForDate(DateOfTransaction);
-        //BalanceAfter = BalanceBefore + Amount;
     }
     public FinancialTransaction(Exchange exchange, bool isIncome)
     {

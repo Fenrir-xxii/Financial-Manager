@@ -55,30 +55,10 @@ public class LocalizeCurrencyMultiConverter : System.Windows.Data.IMultiValueCon
         {
             return string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:N2}", originalAmount); ;
         }
-
-
-        //if (!values.Any() || values[0] == null)
-        //    throw new ArgumentException("Convert requires a minimum a price to display, and optionally a culture.");
-
-        //double originalCurrency;
-        //if (!double.TryParse(values[0].ToString(), out originalCurrency))
-        //    return values[0];
-        //string localization = (values[1] ?? "en-CA").ToString();
-
-        //try
-        //{
-        //    localizedCurrency = string.Format(System.Globalization.CultureInfo.CreateSpecificCulture(localization), "{0:c}", originalCurrency);
-        //}
-        //catch
-        //{
-        //    localizedCurrency = string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("en-CA"), "{0:c}", originalCurrency);
-        //}
-        //return localizedCurrency;
     }
 
     public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
     {
         throw new NotImplementedException();
-        return null;
     }
 }

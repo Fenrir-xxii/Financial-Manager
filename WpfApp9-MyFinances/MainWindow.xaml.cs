@@ -49,23 +49,5 @@ namespace WpfApp9_MyFinances
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
-
-        //private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
-        //{
-        //    MahApps.Metro.Controls.ToggleSwitch toggleSwitch = sender as MahApps.Metro.Controls.ToggleSwitch;
-        //    if (toggleSwitch != null)
-        //    {
-        //        if (toggleSwitch.IsOn == true)
-        //        {
-        //            progress.IsActive = true;
-        //            progress.Visibility = Visibility.Visible;
-        //        }
-        //        else
-        //        {
-        //            progress.IsActive = false;
-        //            progress.Visibility = Visibility.Collapsed;
-        //        }
-        //    }
-        //}
     }
 }

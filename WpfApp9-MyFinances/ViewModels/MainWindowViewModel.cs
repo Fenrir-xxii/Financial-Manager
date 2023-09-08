@@ -24,135 +24,10 @@ namespace WpfApp9_MyFinances.ViewModels;
 
 public class MainWindowViewModel : NotifyPropertyChangedBase
 {
-    //public MainWindowViewModel() 
-    //{
-
-    //    #region CreatingNewInstances
-    //    _db = new Database3MyFinancesContext();
-    //    _allPaymentMethods = new List<PaymentMethod>();
-    //    _allCategoriesExp = new List<CategoriesExp>();
-    //    _categoriesExpItems = new ObservableCollection<TreeViewItem>();
-    //    _allCategoriesInc = new List<CategoriesInc>();
-    //    _categoriesIncItems= new ObservableCollection<TreeViewItem>();
-    //    _allProviders = new List<Provider>();
-    //    _allExpenses = new List<Expense>();
-    //    _allIncomes = new List<Income>();
-    //    _allCurrencies = new List<Currency>();
-    //    _allRecurringCharges = new List<Models.RecurringCharge>();
-    //    _allGivingLoans = new List<GivingLoan>();
-    //    _allReceivingLoans = new List<ReceivingLoan>();
-    //    _allLoans = new List<Loan>();
-    //    _categoryTypes = new List<string> { "Expense", "Income" };
-    //    _selectedOperationType = String.Empty;
-    //    _titleOfNewCategory = String.Empty;
-    //    _validNameOfNewCategory = false;
-    //    _isNewCategoryASubcategory = false;
-    //    _titleOfNewProvider = String.Empty;
-    //    _validNameOfNewProvider = false;
-    //    _datePickerColumnWidthExp = 105;
-    //    _isDatePickerColumnHiddenExp = false;
-    //    _datePickerColumnWidthInc = 105;
-    //    _isDatePickerColumnHiddenInc = false;
-    //    _beginDateExp = DateTime.Now.AddDays(-7);
-    //    _endDateExp = DateTime.Now;
-    //    _beginDateInc = DateTime.Now.AddDays(-7);
-    //    _endDateInc = DateTime.Now;
-    //    _searchBoxExp = String.Empty;
-    //    _searchBoxInc = String.Empty;
-    //    _lastExpenseId = -1;
-    //    _lastIncomeId = -1;
-    //    _autoUpdate = false;
-    //    #endregion
-
-
-    //    Task.Run(async () =>
-    //    {
-    //        #region LoadFromDB
-    //        _allPaymentMethods = await LoadPaymentMethodsAsync();
-    //        Parallel.ForEach(_allPaymentMethods, p =>
-    //        {
-    //            PaymentMethods.Add(new PaymentMethodViewModel(p));
-    //            //OnPropertyChanged(nameof(PaymentMethods));
-    //        });
-    //        _allCategoriesExp = await LoadCategoriesExpAsync();
-    //        Parallel.ForEach(_allCategoriesExp, c =>
-    //        {
-    //            CategoriesExp.Add(new CategoryExpViewModel(c));
-    //        });
-    //        _allCategoriesInc = await LoadCategoriesIncAsync();
-    //        Parallel.ForEach(_allCategoriesInc, c =>
-    //        {
-    //            CategoriesInc.Add(new CategoryIncViewModel(c));
-    //        });
-    //        _allProviders = await LoadProvidersAsync();
-    //        Parallel.ForEach(_allProviders, p =>
-    //        {
-    //            Providers.Add(new ProviderViewModel(p));
-    //        });
-    //        _allExpenses = await LoadExpensesAsync();
-    //        Parallel.ForEach(_allExpenses, e =>
-    //        {
-    //            Expenses.Add(new ExpenseViewModel(e));
-    //        });
-    //        _allIncomes = await LoadIncomesAsync();
-    //        Parallel.ForEach(_allIncomes, i =>
-    //        {
-    //            Incomes.Add(new IncomeViewModel(i));
-    //        });
-    //        _allCurrencies = await LoadCurrenciesAsync();
-    //        Parallel.ForEach(_allCurrencies, c =>
-    //        {
-    //            Currencies.Add(new CurrencyViewModel(c));
-    //        });
-    //        _allRecurringCharges = await LoadRecurringChargesAsync();
-    //        Parallel.ForEach(_allRecurringCharges, rc =>
-    //        {
-    //            RecurringCharges.Add(new RecurringChargeViewModel(rc));
-    //        });
-    //        _allReceivingLoans = await LoadReceivingLoansAsync();
-    //        _allGivingLoans = await LoadGivingLoansAsync();
-    //        CombineLoans();
-    //        //_allCategoriesExp.ForEach(c => CategoriesExpItems.Add(new TreeViewItem { Header = c.Title }));
-
-    //        OnPropertyChanged(nameof(PaymentMethods));
-    //        OnPropertyChanged(nameof(CategoriesExp));
-    //        OnPropertyChanged(nameof(CategoriesExpItems));
-    //        OnPropertyChanged(nameof(CategoriesInc));
-    //        OnPropertyChanged(nameof(CategoriesIncItems));
-    //        OnPropertyChanged(nameof(Providers));
-    //        OnPropertyChanged(nameof(Expenses));
-    //        OnPropertyChanged(nameof(Incomes));
-    //        OnPropertyChanged(nameof(Currencies));
-    //        OnPropertyChanged(nameof(RecurringCharges));
-    //        OnPropertyChanged(nameof(TotalInCashAllCurrencies));
-    //        OnPropertyChanged(nameof(TotalInCashlessAllCurrencies));
-    //        OnPropertyChanged(nameof(TotalMoneyAllCurrencies));
-    //        OnPropertyChanged(nameof(CategoriesExpChartValue));
-    //        OnPropertyChanged(nameof(LabelsExp));
-    //        OnPropertyChanged(nameof(ChartCategoriesExp));
-    //        OnPropertyChanged(nameof(ChartCategoriesExpPie));
-    //        OnPropertyChanged(nameof(FilteredExpenses));
-    //        #endregion
-    //    });
-
-    //    //MessageBox.Show("end");
-    //    (App.Current.MainWindow as MainWindow).CurrencyComboBoxExp.SelectedIndex = 0;
-    //    (App.Current.MainWindow as MainWindow).CurrencyComboBoxInc.SelectedIndex = 0;
-    //    //_lastExpenseId = Expenses.Max(x => x.Id);
-    //}
     public MainWindowViewModel()
     {
-
-        //_allPaymentMethods = new List<PaymentMethod>();
-        //_allCategoriesExp = new List<CategoriesExp>();
         _categoriesExpItems = new ObservableCollection<TreeViewItem>();
-        //_allCategoriesInc = new List<CategoriesInc>();
         _categoriesIncItems = new ObservableCollection<TreeViewItem>();
-        //_allProviders = new List<Provider>();
-        //_allExpenses = new List<Expense>();
-        //_allIncomes = new List<Income>();
-        //_allCurrencies = new List<Currency>();
-        //_allRecurringCharges = new List<RecurringCharge>();
         _allGivingLoans = new List<GivingLoan>();
         _allReceivingLoans = new List<ReceivingLoan>();
         _allLoans = new List<Loan>();
@@ -177,9 +52,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _lastIncomeId = -1;
         _autoUpdate = false;
 
-
-
-        // _repo = new DbRepo();
         _repo = DbRepo.Instance;
         _pmModels = _repo.PaymentMethods;
         _categoryExpModels = _repo.CategoriesExp;
@@ -194,114 +66,12 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         _providerTypes = _repo.ProviderTypes;
         CombineLoans();
 
-        //MessageBox.Show("end");
         (App.Current.MainWindow as MainWindow).CurrencyComboBoxExp.SelectedIndex = 0;
         (App.Current.MainWindow as MainWindow).CurrencyComboBoxInc.SelectedIndex = 0;
-        //_lastExpenseId = Expenses.Max(x => x.Id);
     }
-    //private Database3MyFinancesContext _db;
     private DbRepo _repo;
-    #region LoadAsync
-    //public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
-    //{
-    //    return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.PaymentMethods.Include(x => x.Currency).ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<CategoriesExp>> LoadCategoriesExpAsync()
-    //{
-    //    return await _db.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<CategoriesInc>> LoadCategoriesIncAsync()
-    //{
-    //    return await _db.CategoriesIncs.ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.CategoriesIncs.ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<Provider>> LoadProvidersAsync()
-    //{
-    //    return await _db.Providers.ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.Providers.ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<Expense>> LoadExpensesAsync()
-    //{
-    //    return await _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.PaymentMethod.Currency).Include(e => e.SubcategoriesExp).Include(e => e.Provider).ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<Expense>> LoadExpensesAsync(int id)
-    //{
-    //    return await _db.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.SubcategoriesExp).Include(e => e.Provider).Where(x => x.Id > id).ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.Expenses.Include(e => e.Category).Include(e => e.PaymentMethod).Include(e => e.PaymentMethod.Currency).Include(e => e.SubcategoriesExp).Include(e => e.Provider).Where(x => x.Id > id).ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<Income>> LoadIncomesAsync()
-    //{
-    //    return await _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.PaymentMethod.Currency).Include(i => i.Provider).ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<Income>> LoadIncomesAsync(int id)
-    //{
-    //    return await _db.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.Provider).Where(x => x.Id > id).ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.Incomes.Include(i => i.Category).Include(i => i.PaymentMethod).Include(i => i.PaymentMethod.Currency).Include(i => i.Provider).Where(x => x.Id > id).ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<Currency>> LoadCurrenciesAsync()
-    //{
-    //    return await _db.Currencies.ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.Currencies.ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<Models.RecurringCharge>> LoadRecurringChargesAsync()
-    //{
-    //    return await _db.RecurringCharges.Include(x => x.Periodicity).Include(y => y.Category).Include(v => v.Currency).Include(s => s.PaymentMethod).Include(e => e.Provider).ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.RecurringCharges.Include(x => x.Periodicity).Include(y => y.Category).Include(v => v.Currency).Include(s => s.PaymentMethod).Include(e => e.Provider).ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<GivingLoan>> LoadGivingLoansAsync()
-    //{
-    //    return await _db.GivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.ReceivingLoans).ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.GivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.ReceivingLoans).Include(x=> x.PaymentMethod.Currency).ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<ReceivingLoan>> LoadReceivingLoansAsync()
-    //{
-    //    return await _db.ReceivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.GivingLoans).ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.ReceivingLoans.Include(x => x.PaymentMethod).Include(x => x.Provider).Include(x => x.GivingLoans).Include(x => x.PaymentMethod.Currency).ToListAsync();
-    //    //}
-    //}
-    #endregion
     
     #region ViewModelData
-    //private List<PaymentMethod> _allPaymentMethods;
     private List<PaymentMethodViewModel> _pmModels;
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
     {
@@ -310,13 +80,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             var collection = new ObservableCollection<PaymentMethodViewModel>(_pmModels);
             
             return collection;
-            //var collection = new ObservableCollection<PaymentMethodViewModel>();
-            //var sortedPM = _allPaymentMethods.OrderBy(x => x.Id);
-            //foreach(var pay in sortedPM)
-            //{
-            //    collection.Add(new PaymentMethodViewModel(pay));
-            //}
-            //return collection;
         }
         set 
         {
@@ -334,20 +97,12 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedPaymentMethod));
         }
     }
-    //private List<CategoriesExp> _allCategoriesExp;
     private List<CategoryExpViewModel> _categoryExpModels;
     public ObservableCollection<CategoryExpViewModel> CategoriesExp
     {
         get
         {
             return new ObservableCollection<CategoryExpViewModel>(_categoryExpModels);
-            //var collection = new ObservableCollection<CategoryExpViewModel>();
-            //var sortedCategories = _allCategoriesExp.OrderBy(x => x.Title);
-            //foreach (var category in sortedCategories)
-            //{
-            //    collection.Add(new CategoryExpViewModel(category));
-            //}
-            //return collection;
         }
         set
         {
@@ -361,22 +116,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         get
         {
-            //// FIX no subcategory in category
-            //var collection = new ObservableCollection<TreeViewItem>();
-            //int i = 0;
-            //_allCategoriesExp.ForEach(c =>
-            //{
-            //    collection.Add(new TreeViewItem { Header = c.Title });
-
-            //    if(c.SubcategoriesExps.Count>0)//  c.SubcategoriesExps!=null)
-            //    {
-            //        c.SubcategoriesExps.ToList().ForEach(s => collection[i].Items.Add(new TreeViewItem { Header = s.Title }));
-            //    }
-            //    i++;
-            //});
-            //return collection;
-            ////return _categoriesExpItems;
-            ///// FIX no subcategory in category
             var collection = new ObservableCollection<TreeViewItem>();
             int i = 0;
             _categoryExpModels.ForEach(c =>
@@ -390,29 +129,19 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
                 i++;
             });
             return collection;
-            //return _categoriesExpItems;
         }
         set
         {
             _categoriesExpItems = value;
             OnPropertyChanged(nameof(CategoriesExpItems));
-            //OnPropertyChanged(nameof(CategoriesExp));
         }
     }
-    //private List<CategoriesInc> _allCategoriesInc;
     private List<CategoryIncViewModel> _categoryIncModels;
     public ObservableCollection<CategoryIncViewModel> CategoriesInc
     {
         get
         {
             return new ObservableCollection<CategoryIncViewModel>(_categoryIncModels);
-            //var collection = new ObservableCollection<CategoryIncViewModel>();
-            //var sortedCategories = _allCategoriesInc.OrderBy(x => x.Title);
-            //foreach (var category in sortedCategories)
-            //{
-            //    collection.Add(new CategoryIncViewModel(category));
-            //}
-            //return collection;
         }
         set
         {
@@ -426,36 +155,14 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         get
         {
-            //// FIX no subcategory in category
-            //var collection = new ObservableCollection<TreeViewItem>();
-            //int i = 0;
-            //_allCategoriesInc.ForEach(c =>
-            //{
-            //    collection.Add(new TreeViewItem { Header = c.Title });
-
-            //    //if (c.SubcategoriesExps.Count > 0)//  c.SubcategoriesExps!=null)
-            //    //{
-            //    //    c.SubcategoriesExps.ToList().ForEach(s => collection[i].Items.Add(new TreeViewItem { Header = s.Title }));
-            //    //}
-            //    i++;
-            //});
-            //return collection;
-            ////return _categoriesExpItems;
-            ///// FIX no subcategory in category
             var collection = new ObservableCollection<TreeViewItem>();
             int i = 0;
             _categoryIncModels.ForEach(c =>
             {
                 collection.Add(new TreeViewItem { Header = c.Title });
-
-                //if (c.SubcategoriesExps.Count > 0)//  c.SubcategoriesExps!=null)
-                //{
-                //    c.SubcategoriesExps.ToList().ForEach(s => collection[i].Items.Add(new TreeViewItem { Header = s.Title }));
-                //}
                 i++;
             });
             return collection;
-            //return _categoriesExpItems;
         }
         set
         {
@@ -474,17 +181,12 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
-    //private List<Provider> _allProviders;
     private List<ProviderViewModel> _providerModels;
     public ObservableCollection<ProviderViewModel> Providers
     {
         get
         {
             return new ObservableCollection<ProviderViewModel>(_providerModels);
-            //var collection = new ObservableCollection<ProviderViewModel>();
-            //var sortedProviders = _allProviders.OrderBy(x => x.Title).ToList();
-            //sortedProviders.ForEach(p => collection.Add(new ProviderViewModel(p)));
-            //return collection;
         }
         set
         {
@@ -492,20 +194,12 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Providers));
         }
     }
-    //private List<Expense> _allExpenses;
     private List<ExpenseViewModel> _expenseModels;
     public ObservableCollection<ExpenseViewModel> Expenses
     {
         get
         {
             return new ObservableCollection<ExpenseViewModel>(_expenseModels);
-            //var collection = new ObservableCollection<ExpenseViewModel>();
-            //_allExpenses.ForEach(e => collection.Add(new ExpenseViewModel(e)));
-            //if (_allExpenses.Count > 0)
-            //{
-            //    _lastExpenseId = _allExpenses.Max(x => x.Id);
-            //}
-            //return collection;
         }
         set
         {
@@ -513,20 +207,12 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Expenses));    
         }
     }
-    //private List<Income> _allIncomes;
     private List<IncomeViewModel> _incomeModels;
     public ObservableCollection<IncomeViewModel> Incomes
     {
         get
         {
             return new ObservableCollection<IncomeViewModel>(_incomeModels);
-            //var collection = new ObservableCollection<IncomeViewModel>();
-            //_allIncomes.ForEach(i => collection.Add(new IncomeViewModel(i)));
-            //if(_allIncomes.Count > 0)
-            //{
-            //    _lastIncomeId = _allIncomes.Max(x => x.Id);
-            //}
-            //return collection;
         }
         set
         {
@@ -534,16 +220,12 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(Incomes));
         }
     }
-    //private List<Currency> _allCurrencies;
     private List<CurrencyViewModel> _currencyModels;
     public ObservableCollection<CurrencyViewModel> Currencies
     {
         get
         {
             return new ObservableCollection<CurrencyViewModel>(_currencyModels);
-            //var collection = new ObservableCollection<CurrencyViewModel>();
-            //_allCurrencies.ForEach(c => collection.Add(new CurrencyViewModel(c)));
-            //return collection;
         }
         set
         {
@@ -603,24 +285,11 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedMainCategoryExpForSub));
         }
     }
-    //private List<RecurringCharge> _allRecurringCharges;
     private List<RecurringChargeViewModel> _recurringChargeModels;
     public ObservableCollection<RecurringChargeViewModel> RecurringCharges
     {
         get
         {
-            //var list = new List<RecurringChargeViewModel>();
-            //foreach (var rc in _allRecurringCharges)
-            //{
-            //    list.Add(new RecurringChargeViewModel(rc));
-            //}
-            //var sortedList = list.OrderBy(x => x.DateOfNextPayment).ToList();
-            //var collection = new ObservableCollection<RecurringChargeViewModel>();
-            //foreach (var rc in sortedList)
-            //{
-            //    collection.Add(rc);
-            //}
-            //return collection;
             return new ObservableCollection<RecurringChargeViewModel>(_recurringChargeModels);
         }
         set
@@ -664,10 +333,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         get
         {
             var collection = new ObservableCollection<string>();
-            //var test = _allPaymentMethods.Where(x => x.IsCash == true).GroupBy(x => x.Currency.Id);
-            //var groups = _allPaymentMethods.Where(x => x.IsCash == true).GroupBy(x => x.Currency);
             var groups = _pmModels.Where(x => x.Model.IsCash == true).GroupBy(x => x.Model.Currency);
-            //List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
             List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("N2") + " " + g.Key.CodeLetter).ToList();
             totals.ForEach(x => collection.Add(x));
             return collection;
@@ -678,9 +344,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         get
         {
             var collection = new ObservableCollection<string>();
-            //var groups = _allPaymentMethods.Where(x => x.IsCash == false).GroupBy(x => x.Currency);
             var groups = _pmModels.Where(x => x.Model.IsCash == false).GroupBy(x => x.Model.Currency);
-            //List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
             List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("N2") + " " + g.Key.CodeLetter).ToList();
             totals.ForEach(x => collection.Add(x));
             return collection;
@@ -691,9 +355,7 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         get
         {
             var collection = new ObservableCollection<string>();
-            //var groups = _allPaymentMethods.GroupBy(x => x.Currency);
             var groups = _pmModels.GroupBy(x => x.Model.Currency);
-            //List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
             List<string> totals = groups.Select(g => g.Sum(x => x.CurrentBalance).ToString("N2") + " " + g.Key.CodeLetter).ToList();
             totals.ForEach(x => collection.Add(x));
             return collection;
@@ -832,7 +494,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             var collection = new ObservableCollection<string>();
             var groups = Loans.Where(x => x.LoanGiver == "Me").GroupBy(x => x.Model.LoanPaymentMethod.Currency);
-            //List<string> totals = groups.Select(g => g.Sum(x => x.LoanBalance).ToString("0.00") + " " + g.Key.CodeLetter).ToList();
             List<string> totals = groups.Select(g => g.Sum(x => x.LoanBalance).ToString("N2") + " " + g.Key.CodeLetter).ToList();
             totals.ForEach(x => collection.Add(x));
             return collection;
@@ -844,7 +505,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             var collection = new ObservableCollection<string>();
             var groups = Loans.Where(x => x.LoanReceiver == "Me").GroupBy(x => x.Model.LoanPaymentMethod.Currency);
-            //List<string> totals = groups.Select(g => g.Sum(x => x.LoanBalance).ToString("-0.00") + " " + g.Key.CodeLetter).ToList();
             List<string> totals = groups.Select(g => (g.Sum(x => x.LoanBalance)*-1).ToString("N2") + " " + g.Key.CodeLetter).ToList();
             totals.ForEach(x => collection.Add(x));
             return collection;
@@ -857,7 +517,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         if (SelectedOperationType.Equals("Expense") && !(_isNewCategoryASubcategory))
         {
-            //var newCat = _allCategoriesExp.FirstOrDefault(x => x.Title.ToLower().Equals(_titleOfNewCategory.ToLower()));
             var newCat = _categoryExpModels.FirstOrDefault(x => x.Model.Title.ToLower().Equals(_titleOfNewCategory.ToLower()));
             if (newCat != null)
             {
@@ -871,7 +530,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         }
         else if (SelectedOperationType.Equals("Expense") && _isNewCategoryASubcategory)
         {
-            //var mainCat = _allCategoriesExp.FirstOrDefault(x => x.Title.ToLower().Equals(SelectedMainCategoryExpForSub.Title.ToLower()));
             var mainCat = _categoryExpModels.FirstOrDefault(x => x.Model.Title.ToLower().Equals(SelectedMainCategoryExpForSub.Title.ToLower()));
             if (mainCat != null)
             {
@@ -889,7 +547,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         }
         else
         {
-            //var newCat = _allCategoriesInc.FirstOrDefault(x => x.Title.ToLower().Equals(_titleOfNewCategory.ToLower()));
             var newCat = _categoryIncModels.FirstOrDefault(x => x.Model.Title.ToLower().Equals(_titleOfNewCategory.ToLower()));
             if (newCat != null)
             {
@@ -907,12 +564,10 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         if (SelectedOperationType.Equals("Expense") && !(_isNewCategoryASubcategory))
         {
             var newCategory = new CategoriesExp { Title = _titleOfNewCategory };
-            //_db.CategoriesExps.Add(newCategory);
             _repo.Add(newCategory);
         }
         else if (SelectedOperationType.Equals("Expense") && _isNewCategoryASubcategory)
         {
-            //var mainCat = _allCategoriesExp.FirstOrDefault(x => x.Title.Equals(SelectedMainCategoryExpForSub.Title));
             var mainCat = _categoryExpModels.FirstOrDefault(x => x.Model.Title.Equals(SelectedMainCategoryExpForSub.Title));
             if (mainCat != null)
             {
@@ -922,10 +577,8 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         else
         {
             var newCategory = new CategoriesInc { Title = _titleOfNewCategory };
-            //_db.CategoriesIncs.Add(newCategory);
             _repo.Add(newCategory);
         }
-        //_db.SaveChanges();
         UpdateCategories();
         OnPropertyChanged(nameof(CategoriesExp));
         OnPropertyChanged(nameof(CategoriesExpItems));
@@ -935,7 +588,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }, x => _validNameOfNewCategory);
     public ICommand CheckTitleOfNewProvider => new RelayCommand(x =>
     {
-        //var newProvider = _allProviders.FirstOrDefault(x => x.Title.ToLower().Equals(_titleOfNewProvider.ToLower()));
         var newProvider = _providerModels.FirstOrDefault(x => x.Model.Title.ToLower().Equals(_titleOfNewProvider.ToLower()));
         if (newProvider != null)
         {
@@ -951,8 +603,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         var newProvider = new Provider { Title = _titleOfNewProvider, Description = _descriptionOfNewProvider};
         newProvider.ProviderTypes = _selectedProviderType.Model;
-        //_db.Providers.Add(newProvider);
-        //_db.SaveChanges();
         _repo.Add(newProvider);
         UpdateProviders();
         OnPropertyChanged(nameof(Providers));
@@ -964,22 +614,15 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         window.Left = Application.Current.MainWindow.Left;
         window.Top = Application.Current.MainWindow.Top + 450 - 5;
         window.ShowDialog();
-        // update all transactions from selectedPaymentMethod
-        // check for changes
 
-        //var pmFromDb = _db.PaymentMethods.Include(x => x.Currency).FirstOrDefault(x => x.Id == _selectedPaymentMethod.Id);
         var pmFromDb = _repo.GetPMById(_selectedPaymentMethod.Id);
         if (pmFromDb != null)
         {
-            //var pmLocal = _allPaymentMethods.FirstOrDefault(y => y.Id == pmFromDb.Id);
-            //var pmViewModel = _pmModels.FirstOrDefault(y => y.Id == pmFromDb.Id);
             var pmLocal = _pmModels.FirstOrDefault(y => y.Id == pmFromDb.Id);
             if (pmLocal != null)
             {
                 pmLocal = new PaymentMethodViewModel(pmFromDb);
                 OnPropertyChanged(nameof(PaymentMethods));
-                //_allPaymentMethods.Remove(_allPaymentMethods.FirstOrDefault(y => y.Id == pm.Id));
-                //_allPaymentMethods.Add(pm);
             }
         }
 
@@ -994,15 +637,11 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
 		var pmFromDb = _repo.GetPMById(_selectedPaymentMethod.Id);
 		if (pmFromDb != null)
 		{
-			//var pmLocal = _allPaymentMethods.FirstOrDefault(y => y.Id == pmFromDb.Id);
-			//var pmViewModel = _pmModels.FirstOrDefault(y => y.Id == pmFromDb.Id);
 			var pmLocal = _pmModels.FirstOrDefault(y => y.Id == pmFromDb.Id);
 			if (pmLocal != null)
 			{
 				pmLocal = new PaymentMethodViewModel(pmFromDb);
 				OnPropertyChanged(nameof(PaymentMethods));
-				//_allPaymentMethods.Remove(_allPaymentMethods.FirstOrDefault(y => y.Id == pm.Id));
-				//_allPaymentMethods.Add(pm);
 			}
 		}
 
@@ -1065,8 +704,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         try
         {
-            //_db.Remove(_selectedRecurringCharge.Model);
-            //_db.SaveChanges();
             _repo.Remove(_selectedRecurringCharge.Model);
 
             UpdateRecuringCharges();
@@ -1081,7 +718,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }, x => _selectedRecurringCharge != null);
     public ICommand EditRecurringCharge => new RelayCommand(x =>
     {
-        //var window = new EditRecurringCharge(SelectedRecurringCharge.Model, _db);
         var window = new EditRecurringCharge(SelectedRecurringCharge.Model);
         window.Left = Application.Current.MainWindow.Left + 800 - 10;
         window.Top = Application.Current.MainWindow.Top;
@@ -1090,7 +726,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }, x => _selectedRecurringCharge != null);
     public ICommand EditLoan => new RelayCommand(x =>
     {
-        //var window = new EditLoan(SelectedLoan.Model, _db);
         var window = new EditLoan(SelectedLoan.Model);
         window.Left = Application.Current.MainWindow.Left + 800 - 10;
         window.Top = Application.Current.MainWindow.Top;
@@ -1099,17 +734,9 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }, x => _selectedLoan != null);
     public ICommand EditLoanPayback => new RelayCommand(x =>
     {
-        // get loan from payback
-        //if (_selectedLoan.LoanPaybacks.Count > 0)
-        //{
-        //    var paybackList = _allGivingLoans.FirstOrDefault(x => x.Id == _selectedLoan.Model.Id).ReceivingLoans.ToList();
-        //    var paybackLoan = paybackList.FirstOrDefault( x=> x.Id == _selectedLoan.Model.Id);
-        //}
-
         var window = new EditLoan(SelectedLoanPayback, SelectedLoan.Model);
         window.Left = Application.Current.MainWindow.Left;
         window.Top = Application.Current.MainWindow.Top + 450 - 5;
-        //var window = new EditLoan(SelectedLoanPayback, SelectedLoan.Model, _db);
         window.ShowDialog();
         // update loans
     }, x => !_selectedLoanPayback.Equals(default(LoanPayback)));   //LoanPayback is struct
@@ -1147,20 +774,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     #region UpdateData
     public void UpdateCategories()
     {
-        //if (_autoUpdate)
-        //{
-        //    _allCategoriesExp.Clear();
-        //    _allCategoriesInc.Clear();
-        //    CategoriesExp.Clear();
-        //    CategoriesInc.Clear();
-        //    Task.Run(async () =>
-        //    {
-        //        //_allCategoriesExp = await LoadCategoriesExpAsync();
-        //        _allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
-        //        //_allCategoriesInc = await LoadCategoriesIncAsync();
-        //        _allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
-        //    }).Wait();
-        //}
         CategoriesExp.Clear();
         CategoriesInc.Clear();
         _repo.UpdateCategories();
@@ -1169,19 +782,9 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     }
     public void UpdateProviders()
     {
-
-        //_allProviders.Clear();
-        //Providers.Clear();
-        //Task.Run(async () =>
-        //{
-        //    //_allProviders = await LoadProvidersAsync();
-        //    _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
-        //}).Wait();
-
         Providers.Clear();
         _repo.UpdateProviders();
         _providerModels = _repo.Providers;
-
 
     }
     public void UpdatePaymentMethods(bool force = false)
@@ -1434,7 +1037,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             if (_filterSelectedCurrencyExp == null)
             {
-                //if(_allCurrencies == null)
                 if (_currencyModels == null)
                 {
                     return _filterSelectedCurrencyExp = new CurrencyViewModel();
@@ -1627,7 +1229,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         {
             if (_filterSelectedCurrencyInc == null)
             {
-                //if (_allCurrencies == null)
                 if (_currencyModels == null)
                 {
                     return _filterSelectedCurrencyInc = new CurrencyViewModel();
@@ -1718,9 +1319,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         get
         {
             var collection = new ChartValues<int>();
-            //var groups =  Expenses.GroupBy(x => x.CategoryId);
-            //var groups = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
-            //IEnumerable<IGrouping<int, ExpenseViewModel>>? res;
 
             var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date);
             if (_filterSelectedCurrencyExp != null)
@@ -1740,21 +1338,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
                 filter = filter.Where(x => x.Category.Id == _filterSelectedCategoryExp.Id);
             }
             var groups = filter.GroupBy(x => x.CategoryId);
-            // REDO
-
-            //if (_filterSelectedPaymentMethod != null && _filterSelectedProvider ==null)
-            //{
-            //    //res = groups.Where(x => x.Key).Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
-            //    groups = Expenses.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
-            //}
-            //else if (_filterSelectedPaymentMethod == null && _filterSelectedProvider != null)
-            //{
-            //    groups = Expenses.Where(x => x.Provider.Id == _filterSelectedProvider.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
-            //}
-            //else if(_filterSelectedPaymentMethod != null && _filterSelectedProvider != null)
-            //{
-            //    groups = Expenses.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.Provider.Id == _filterSelectedProvider.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
-            //}
 
             foreach (var group in groups)
             {
@@ -1763,17 +1346,11 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(LabelsExp));
             return collection;
         }
-        //set
-        //{
-
-        //}
     }
     public ObservableCollection<string> LabelsExp
     {
         get
         {
-            //var collection = new ObservableCollection<string>(Expenses.GroupBy(x => x.Category.Title).Select(g => g.Key));
-            //var collection = new ObservableCollection<string>();
             var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date);
             if (_filterSelectedPaymentMethodExp != null)
             {
@@ -1811,9 +1388,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
         get
         {
             var collection = new SeriesCollection();
-            
-            //var groups = Expenses.GroupBy(x => x.CategoryId);
-            //var groups = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
 
             var filter = Expenses.Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date);
             if (_filterSelectedCurrencyExp != null)
@@ -1834,22 +1408,11 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             }
             var groups = filter.GroupBy(x => x.CategoryId);
 
-
-            //if (_filterSelectedPaymentMethod != null)
-            //{
-            //    groups = Expenses.Where(x => x.PaymentMethod.Id == _filterSelectedPaymentMethod.Id).Where(x => x.DateOfExpense.Date >= _beginDateExp.Date && x.DateOfExpense.Date <= _endDateExp.Date).GroupBy(x => x.CategoryId);
-            //}
-
             foreach (var group in groups)
             {
                 var pie = new PieSeries
                 {
-                    //Title = group.Key.ToString(), //.Title,
                     Title = Expenses.FirstOrDefault(x => x.CategoryId==group.Key).Category.Title,
-                    //Values = new ChartValues<int>
-                    //    {
-                    //        group.Count(),
-                    //    },
                     Values = new ChartValues<decimal>
                         {
                             group.Sum(x => x.Amount),
@@ -1900,7 +1463,6 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         get
         {
-            //var collection = new ObservableCollection<string>(Incomes.GroupBy(x => x.Category.Title).Select(g => g.Key));
             var filter = Incomes.Where(x => x.DateOfIncome.Date >= _beginDateInc.Date && x.DateOfIncome.Date <= _endDateInc.Date);
             if (_filterSelectedPaymentMethodInc != null)
             {
@@ -1979,39 +1541,4 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
     Func<ChartPoint, string> labelPoint = chartPoint =>
         string.Format("{0:#.00} ({1:P2})", chartPoint.Y, chartPoint.Participation);
     #endregion
-
-
-
-    //TEST
-    public ObservableCollection<string> TestScroll
-    {
-        get
-        {
-            var collection = new ObservableCollection<string> { "some text1", "some text2", "some text3", "some text4", "some text5", "some text6", "some text7", "some text8", "some text9", "some text10", "some text11", "some text12", "some text13", "some text14", "some text15", "some text16", "some text17" };
-            return collection;
-        }
-    }
-    //public decimal TotalInCash
-    //{
-    //    get
-    //    {
-    //        return _allPaymentMethods.Where(x => x.IsCash == true).Sum(x => x.CurrentBalance);
-    //    }
-    //}
-
-    //public decimal TotalInCashless
-    //{
-    //    get
-    //    {
-    //        return _allPaymentMethods.Where(x => x.IsCash == false).Sum(x => x.CurrentBalance);
-    //    }
-    //}
-
-    //public decimal TotalMoney
-    //{
-    //    get
-    //    {
-    //        return _allPaymentMethods.Sum(x => x.CurrentBalance);
-    //    }
-    //}
 }

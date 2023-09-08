@@ -16,11 +16,6 @@ namespace WpfApp9_MyFinances.ViewModels
         {
             Model = type;
         }
-        //public ProviderTypeViewModel(ProviderType type, Brush color)
-        //{
-        //    Model = type;
-        //    _color = color;
-        //}
         public ProviderType Model { get; set; }
         public int Id { get => Model.Id; }
         public string Title
@@ -32,14 +27,10 @@ namespace WpfApp9_MyFinances.ViewModels
                 OnPropertyChanged(nameof(Title));
             }
         }
-        //private Brush _color;
         public Brush Color
         {
             get
             {
-                //return _color;
-                //// TODO
-                //return Brushes.Green;
                 var type = Title.ToLower();
                 switch (type)
                 {

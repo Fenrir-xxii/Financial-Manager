@@ -20,110 +20,8 @@ namespace WpfApp9_MyFinances.ViewModels;
 
 public class AddTransactionViewModel : NotifyPropertyChangedBase
 {
-    //public AddTransactionViewModel() 
-    //{
-    //    _db = new Database3MyFinancesContext();
-    //    _allPaymentMethods = new List<PaymentMethod>();
-    //    _allCategoriesExp = new List<CategoriesExp>();
-    //    _allCategoriesInc = new List<CategoriesInc>();
-    //    _allProviders= new List<Provider>();
-    //    _expenseTransaction = new ExpenseViewModel { DateOfExpense=DateTime.Now};
-    //    _incomeTransaction= new IncomeViewModel { DateOfIncome = DateTime.Now };
-    //    _transferTransaction = new TransferViewModel { DateOfTransfer = DateTime.Now};
-    //    _exchangeTransaction = new ExchangeViewModel { DateOfExchange = DateTime.Now};
-    //    _operationTypes = new List<string> { _expenseTransaction.OperationTypeName, _incomeTransaction.OperationTypeName, _transferTransaction.OperationTypeName, _exchangeTransaction.OperationTypeName };
-    //    _isSaveExpButtonEnabled = false;
-
-    //    Task.Run(async () =>
-    //    {
-    //        //Thread t0 = new Thread(async () =>
-    //        //{
-    //        //    _allPaymentMethods = await LoadPaymentMethodsAsync();
-    //        //    Parallel.ForEach(_allPaymentMethods, p =>
-    //        //    {
-    //        //        PaymentMethods.Add(new PaymentMethodViewModel(p));
-    //        //    });
-    //        //    OnPropertyChanged(nameof(PaymentMethods));
-    //        //});
-    //        //t0.Start();
-    //        //Thread t1 = new Thread(async () =>
-    //        //{
-    //        //    _allCategoriesExp = await LoadCategoriesExpAsync();
-    //        //    Parallel.ForEach(_allCategoriesExp, c =>
-    //        //    {
-    //        //        CategoriesExp.Add(new CategoryExpViewModel(c));
-    //        //    });
-
-    //        //    _allCategoriesInc = await LoadCategoriesIncAsync();
-    //        //    Parallel.ForEach(_allCategoriesInc, c =>
-    //        //    {
-    //        //        CategoriesInc.Add(new CategoryIncViewModel(c));
-    //        //    });
-
-    //        //    _allProviders = await LoadProvidersAsync();
-    //        //    Parallel.ForEach(_allProviders, p =>
-    //        //    {
-    //        //        Providers.Add(new ProviderViewModel(p));
-    //        //    });
-    //        //    OnPropertyChanged(nameof(CategoriesExp));
-    //        //    OnPropertyChanged(nameof(CategoriesInc));
-    //        //    OnPropertyChanged(nameof(Providers));
-    //        //});
-
-    //        //t1.Start();
-    //        //t0.Join();
-    //        //t1.Join();
-
-    //        //_allPaymentMethods = await LoadPaymentMethodsAsync();
-    //        //_allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
-    //        //_allCategoriesExp = await LoadCategoriesExpAsync();
-    //        //_allCategoriesExp.ForEach(c => CategoriesExp.Add(new CategoryExpViewModel(c)));
-    //        //_allCategoriesInc = await LoadCategoriesIncAsync();
-    //        //_allCategoriesInc.ForEach(c => CategoriesInc.Add(new CategoryIncViewModel(c)));
-    //        //_allProviders = await LoadProvidersAsync();
-    //        //_allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));    
-
-    //        //OnPropertyChanged(nameof(PaymentMethods));
-    //        //OnPropertyChanged(nameof(CategoriesExp));
-    //        //OnPropertyChanged(nameof(CategoriesInc));
-    //        //OnPropertyChanged(nameof(Providers));
-
-    //            _allPaymentMethods = await LoadPaymentMethodsAsync();
-    //            Parallel.ForEach(_allPaymentMethods, p =>
-    //            {
-    //                PaymentMethods.Add(new PaymentMethodViewModel(p));
-    //            });
-    //            OnPropertyChanged(nameof(PaymentMethods));
-
-    //            _allCategoriesExp = await LoadCategoriesExpAsync();
-    //            Parallel.ForEach(_allCategoriesExp, c =>
-    //            {
-    //                CategoriesExp.Add(new CategoryExpViewModel(c));
-    //            });
-
-    //            _allCategoriesInc = await LoadCategoriesIncAsync();
-    //            Parallel.ForEach(_allCategoriesInc, c =>
-    //            {
-    //                CategoriesInc.Add(new CategoryIncViewModel(c));
-    //            });
-
-    //            _allProviders = await LoadProvidersAsync();
-    //            Parallel.ForEach(_allProviders, p =>
-    //            {
-    //                Providers.Add(new ProviderViewModel(p));
-    //            });
-    //            OnPropertyChanged(nameof(CategoriesExp));
-    //            OnPropertyChanged(nameof(CategoriesInc));
-    //            OnPropertyChanged(nameof(Providers));
-    //    });
-    //}
     public AddTransactionViewModel()
     {
-        //_db = new Database3MyFinancesContext();
-        //_allPaymentMethods = new List<PaymentMethod>();
-        //_allCategoriesExp = new List<CategoriesExp>();
-        //_allCategoriesInc = new List<CategoriesInc>();
-        //_allProviders = new List<Provider>();
         _expenseTransaction = new ExpenseViewModel { DateOfExpense = DateTime.Now };
         _incomeTransaction = new IncomeViewModel { DateOfIncome = DateTime.Now };
         _transferTransaction = new TransferViewModel { DateOfTransfer = DateTime.Now };
@@ -138,45 +36,9 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         _providerModels = _repo.Providers;
 
     }
-    //private Database3MyFinancesContext _db;
     private DbRepo _repo;
-    //#region LoadAsync
-    //public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
-    //{
-    //    return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.PaymentMethods.Include(x => x.Currency).ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<CategoriesExp>> LoadCategoriesExpAsync()
-    //{
-    //    return await _db.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.CategoriesExps.Include(x => x.SubcategoriesExps).ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<CategoriesInc>> LoadCategoriesIncAsync()
-    //{
-    //    return await _db.CategoriesIncs.ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.CategoriesIncs.ToListAsync();
-    //    //}
-    //}
-    //public async Task<List<Provider>> LoadProvidersAsync()
-    //{
-    //    return await _db.Providers.ToListAsync();
-    //    //using (var context = new Database3MyFinancesContext())
-    //    //{
-    //    //    return await context.Providers.ToListAsync();
-    //    //}
-    //}
-    //#endregion
 
     #region ViewModelData
-    //private List<PaymentMethod> _allPaymentMethods;
     private List<PaymentMethodViewModel> _pmModels;
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
     {
@@ -185,12 +47,6 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             var collection = new ObservableCollection<PaymentMethodViewModel>(_pmModels);
 
             return collection;
-            //var collection = new ObservableCollection<PaymentMethodViewModel>();
-            //foreach (var pay in _allPaymentMethods)
-            //{
-            //    collection.Add(new PaymentMethodViewModel(pay));
-            //}
-            //return collection;
         }
         set
         {
@@ -217,18 +73,6 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
     {
         get
         {
-            //var collection = new ObservableCollection<PaymentMethodViewModel>();
-            //if(SelectedPaymentMethod != null)
-            //{
-            //    foreach (var pay in _allPaymentMethods)
-            //    {
-            //        if(pay.Id != SelectedPaymentMethod.Model.Id && pay.CurrencyId == SelectedPaymentMethod.Model.CurrencyId)  // transfers only of same currency
-            //        {
-            //            collection.Add(new PaymentMethodViewModel(pay));
-            //        }
-            //    }
-            //}
-            //return collection;
             var collection = new ObservableCollection<PaymentMethodViewModel>();
             if (SelectedPaymentMethod != null)
             {
@@ -247,18 +91,6 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
     {
         get
         {
-            //var collection = new ObservableCollection<PaymentMethodViewModel>();
-            //if (SelectedPaymentMethod != null)
-            //{
-            //    foreach (var pay in _allPaymentMethods)
-            //    {
-            //        if (pay.CurrencyId != SelectedPaymentMethod.Model.CurrencyId) 
-            //        {
-            //            collection.Add(new PaymentMethodViewModel(pay));
-            //        }
-            //    }
-            //}
-            //return collection;
             var collection = new ObservableCollection<PaymentMethodViewModel>();
             if (SelectedPaymentMethod != null)
             {
@@ -295,19 +127,12 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             //OnPropertyChanged(nameof(PlannedBalance));
         }
     }
-    //private List<CategoriesExp> _allCategoriesExp;
     private List<CategoryExpViewModel> _categoryExpModels;
     public ObservableCollection<CategoryExpViewModel> CategoriesExp
     {
         get
         {
             return new ObservableCollection<CategoryExpViewModel>(_categoryExpModels);
-            //var collection = new ObservableCollection<CategoryExpViewModel>();
-            //foreach (var category in _allCategoriesExp)
-            //{
-            //    collection.Add(new CategoryExpViewModel(category));
-            //}
-            //return collection;
         }
         set
         {
@@ -327,7 +152,6 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IsSaveExpButtonEnabled));
         }
     }
-    //private List<SubcategoryExpViewModel> _subCategoriesExp;
     public ObservableCollection<SubcategoryExpViewModel> SubCategoriesExp
     {
         get
@@ -351,19 +175,12 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(IsSaveExpButtonEnabled));
         }
     }
-    //private List<CategoriesInc> _allCategoriesInc;
     private List<CategoryIncViewModel> _categoryIncModels;
     public ObservableCollection<CategoryIncViewModel> CategoriesInc
     {
         get
         {
             return new ObservableCollection<CategoryIncViewModel>(_categoryIncModels);
-            //var collection = new ObservableCollection<CategoryIncViewModel>();
-            //foreach (var category in _allCategoriesInc)
-            //{
-            //    collection.Add(new CategoryIncViewModel(category));
-            //}
-            //return collection;
         }
         set
         {
@@ -381,19 +198,12 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(SelectedCategoryInc));
         }
     }
-    //private List<Provider> _allProviders;
     private List<ProviderViewModel> _providerModels;
     public ObservableCollection<ProviderViewModel> Providers
     {
         get
         {
             return new ObservableCollection<ProviderViewModel>(_providerModels);
-            //var collection = new ObservableCollection<ProviderViewModel>();
-            //foreach (var provider in _allProviders)
-            //{
-            //    collection.Add(new ProviderViewModel(provider));
-            //}
-            //return collection;
         }
         set
         {
@@ -635,15 +445,6 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PlannedBalanceReceiverExc));
         }
     }
-    //private bool _isValid(DependencyObject obj)
-    //{
-    //    return !Validation.GetHasError(obj) && LogicalTreeHelper.GetChildren(obj).OfType<DependencyObject>().All(_isValid);
-    //}
-    //public bool IsSaveButtonEnabled;
-    //private void _save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-    //{
-    //    IsSaveButtonEnabled = e.CanExecute = _isValid(sender as DependencyObject);
-    //}
     private bool _isSaveExpButtonEnabled;
     public bool IsSaveExpButtonEnabled
     {
@@ -757,15 +558,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         }
         try
         {
-            //_repo.Add(ExpenseTransaction.Model);
-            //_repo.UpdatePMCurrentBalance(ExpenseTransaction.PaymentMethodId);
             _repo.Add(ExpenseTransaction.Model, ExpenseTransaction.PaymentMethodId);
-            //if(newBalance != null)
-            //{
-            //    ExpenseTransaction.PaymentMethod.CurrentBalance = newBalance.Value;
-            //}
-            //_db.Add(ExpenseTransaction.Model);
-            //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             foreach (Window item in Application.Current.Windows)
             {
@@ -776,13 +569,6 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        
-        //foreach (Window item in Application.Current.Windows)
-        //{
-        //    if (item.DataContext == this) item.Close();
-        //}
-        //Application.Current.Windows[];
-        //Application.Current.Windows[windowId].Close();
     }, x => IsSaveExpButtonEnabled);
     public ICommand SaveTransactionInc => new RelayCommand(x =>
     {
@@ -792,10 +578,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
 
         try
         {
-            //_repo.Add(IncomeTransaction.Model);
             _repo.Add(IncomeTransaction.Model, IncomeTransaction.PaymentMethodId);
-            //_db.Add(IncomeTransaction.Model);
-            //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             foreach (Window item in Application.Current.Windows)
             {
@@ -806,11 +589,6 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        
-        //foreach (Window item in Application.Current.Windows)
-        //{
-        //    if (item.DataContext == this) item.Close();
-        //}
     }, x => IsSaveIncButtonEnabled);
     public ICommand SaveTransactionTransf => new RelayCommand(x =>
     {
@@ -819,10 +597,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
 
         try
         {
-            //_repo.Add(TransferTransaction.Model);
             _repo.Add(TransferTransaction.Model, TransferTransaction.FromId, TransferTransaction.ToId);
-            //_db.Add(TransferTransaction.Model);
-            //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             foreach (Window item in Application.Current.Windows)
             {
@@ -833,11 +608,6 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-       
-        //foreach (Window item in Application.Current.Windows)
-        //{
-        //    if (item.DataContext == this) item.Close();
-        //}
     }, x => IsSaveTfrButtonEnabled);
     public ICommand SaveTransactionExc => new RelayCommand(x =>
     {
@@ -848,10 +618,7 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
 
         try
         {
-            //_repo.Add(ExchangeTransaction.Model);
             _repo.Add(ExchangeTransaction.Model, ExchangeTransaction.FromId, ExchangeTransaction.ToId);
-            //_db.Add(ExchangeTransaction.Model);
-            //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             foreach (Window item in Application.Current.Windows)
             {
@@ -862,11 +629,6 @@ public class AddTransactionViewModel : NotifyPropertyChangedBase
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-        //foreach (Window item in Application.Current.Windows)
-        //{
-        //    if (item.DataContext == this) item.Close();
-        //}
     }, x => IsSaveExcButtonEnabled);
     public ICommand CancelTransaction => new RelayCommand(x =>
     {

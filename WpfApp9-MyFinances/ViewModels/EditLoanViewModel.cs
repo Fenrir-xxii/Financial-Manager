@@ -18,31 +18,13 @@ namespace WpfApp9_MyFinances.ViewModels;
 public class EditLoanViewModel : NotifyPropertyChangedBase
 {
     public EditLoanViewModel() { }
-    //public EditLoanViewModel(Loan loan, Database3MyFinancesContext db)
-    //{
-    //    _db = db;
-    //    _isGivingLoanAPayback = false;
-    //    _isReceivingLoanAPayback = false;
-    //    Init();
-    //    if (loan.LoanGiver.Equals("Me"))
-    //    {
-    //        //var a = _allGivingLoans.FirstOrDefault(x => x.Id == loan.Id);
-    //        GivingLoanModel = new GivingLoanViewModel(_allGivingLoans.FirstOrDefault(x => x.Id == loan.Id));
-    //    }
-    //    else
-    //    {
-    //        ReceivingLoanModel = new ReceivingLoanViewModel(_allReceivingLoans.FirstOrDefault(x => x.Id == loan.Id));
-    //    }
-    //}
     public EditLoanViewModel(Loan loan)
     {
-        //_db = db;
         _isGivingLoanAPayback = false;
         _isReceivingLoanAPayback = false;
         Init();
         if (loan.LoanGiver.Equals("Me"))
         {
-            //var a = _allGivingLoans.FirstOrDefault(x => x.Id == loan.Id);
             GivingLoanModel = new GivingLoanViewModel(_allGivingLoans.FirstOrDefault(x => x.Id == loan.Id));
         }
         else
@@ -50,33 +32,8 @@ public class EditLoanViewModel : NotifyPropertyChangedBase
             ReceivingLoanModel = new ReceivingLoanViewModel(_allReceivingLoans.FirstOrDefault(x => x.Id == loan.Id));
         }
     }
-    //public EditLoanViewModel(LoanPayback payback, Loan loan, Database3MyFinancesContext db)
-    //{
-    //    _db = db;
-    //    _isGivingLoanAPayback = true;
-    //    _isReceivingLoanAPayback = true;
-    //    Init();
-    //    if (loan.LoanGiver.Equals("Me"))
-    //    {
-    //        var list = _allGivingLoans.FirstOrDefault(x => x.Id == loan.Id).ReceivingLoans.ToList();
-    //        var paybackLoanModel = _allReceivingLoans.FirstOrDefault(x => x.Id == payback.Id);
-    //        ReceivingLoanModel = new ReceivingLoanViewModel(paybackLoanModel);
-    //        _selectedGivingLoan = new GivingLoanViewModel(_allGivingLoans.FirstOrDefault(x => x.Id == loan.Id));
-    //        OnPropertyChanged(nameof(SelectedGivingLoan));
-    //    }
-    //    else
-    //    {
-    //        var list = _allReceivingLoans.FirstOrDefault(x => x.Id == loan.Id).GivingLoans.ToList();
-    //        var paybackLoanModel = _allGivingLoans.FirstOrDefault(x => x.Id == payback.Id);
-    //        GivingLoanModel = new GivingLoanViewModel(paybackLoanModel);
-    //        _selectedReceivingLoan = new ReceivingLoanViewModel(_allReceivingLoans.FirstOrDefault(x => x.Id == loan.Id));
-    //        OnPropertyChanged(nameof(SelectedReceivingLoan));
-    //    }
-
-    //}
     public EditLoanViewModel(LoanPayback payback, Loan loan)
     {
-        //_db = db;
         _isGivingLoanAPayback = true;
         _isReceivingLoanAPayback = true;
         Init();
@@ -99,35 +56,9 @@ public class EditLoanViewModel : NotifyPropertyChangedBase
 
     }
     private DbRepo _repo;
-    //private Database3MyFinancesContext _db;
     public ReceivingLoanViewModel ReceivingLoanModel { get; set; }
     public GivingLoanViewModel GivingLoanModel { get; set; }
     #region Methods
-    //public void Init()
-    //{
-    //    _allPaymentMethods = new List<PaymentMethod>();
-    //    _allProviders = new List<Provider>();
-    //    _allReceivingLoans = new List<ReceivingLoan>();
-    //    _allGivingLoans = new List<GivingLoan>();
-    //    _isSaveButtonEnabled = false;
-
-    //    Task.Run(async () =>
-    //    {
-    //        _allPaymentMethods = await LoadPaymentMethodsAsync();
-    //        _allPaymentMethods.ForEach(p => PaymentMethods.Add(new PaymentMethodViewModel(p)));
-    //        _allProviders = await LoadProvidersAsync();
-    //        _allProviders.ForEach(p => Providers.Add(new ProviderViewModel(p)));
-    //        _allGivingLoans = await LoadGivingLoanAsync();
-    //        _allGivingLoans.ForEach(l => GivingLoans.Add(new GivingLoanViewModel(l)));
-    //        _allReceivingLoans = await LoadReceivingLoanAsync();
-    //        _allReceivingLoans.ForEach(l => ReceivingLoans.Add(new ReceivingLoanViewModel(l)));
-    //        OnPropertyChanged(nameof(PaymentMethods));
-    //        OnPropertyChanged(nameof(Providers));
-    //        OnPropertyChanged(nameof(GivingLoans));
-    //        OnPropertyChanged(nameof(ReceivingLoans));
-
-    //    }).Wait();
-    //}
     public void Init()
     {
         _repo = DbRepo.Instance;
@@ -140,41 +71,13 @@ public class EditLoanViewModel : NotifyPropertyChangedBase
     }
     #endregion
 
-    #region LoadAsync
-    //public async Task<List<PaymentMethod>> LoadPaymentMethodsAsync()
-    //{
-    //    return await _db.PaymentMethods.Include(x => x.Currency).ToListAsync();
-    //}
-    //public async Task<List<Provider>> LoadProvidersAsync()
-    //{
-    //    return await _db.Providers.ToListAsync();
-    //}
-    //public async Task<List<GivingLoan>> LoadGivingLoanAsync()
-    //{
-    //    return await _db.GivingLoans.Include(x => x.ReceivingLoan).ToListAsync();
-    //}
-    //public async Task<List<ReceivingLoan>> LoadReceivingLoanAsync()
-    //{
-    //    return await _db.ReceivingLoans.Include(x => x.GivingLoan).ToListAsync();
-    //}
-    #endregion
-    
     #region ViewModelData
-    //private List<PaymentMethod> _allPaymentMethods;
     private List<PaymentMethodViewModel> _pmModels;
     public ObservableCollection<PaymentMethodViewModel> PaymentMethods
     {
         get
         {
-            var collection = new ObservableCollection<PaymentMethodViewModel>(_pmModels);
-
-            return collection;
-            //var collection = new ObservableCollection<PaymentMethodViewModel>();
-            //foreach (var pay in _allPaymentMethods)
-            //{
-            //    collection.Add(new PaymentMethodViewModel(pay));
-            //}
-            //return collection;
+            return new ObservableCollection<PaymentMethodViewModel>(_pmModels);
         }
         set
         {
@@ -182,19 +85,12 @@ public class EditLoanViewModel : NotifyPropertyChangedBase
             OnPropertyChanged(nameof(PaymentMethods));
         }
     }
-    //private List<Provider> _allProviders;
     private List<ProviderViewModel> _providerModels;
     public ObservableCollection<ProviderViewModel> Providers
     {
         get
         {
             return new ObservableCollection<ProviderViewModel>(_providerModels);
-            //var collection = new ObservableCollection<ProviderViewModel>();
-            //foreach (var provider in _allProviders)
-            //{
-            //    collection.Add(new ProviderViewModel(provider));
-            //}
-            //return collection;
         }
         set
         {
@@ -208,7 +104,6 @@ public class EditLoanViewModel : NotifyPropertyChangedBase
         get
         {
             var collection = new ObservableCollection<GivingLoanViewModel>();  // to do pick only ones that are open
-            //var list = _allGivingLoans.Where(x => x.ReceivingLoan == null).Where(x => x.IsLoanClosed == false).ToList();
             var list = _allGivingLoans.Where(x => x.ReceivingLoan == null).ToList();
             if (_isReceivingLoanAPayback)
             {
@@ -241,7 +136,6 @@ public class EditLoanViewModel : NotifyPropertyChangedBase
         get
         {
             var collection = new ObservableCollection<ReceivingLoanViewModel>();
-            //var list = _allReceivingLoans.Where(x => x.GivingLoan == null).Where(x => x.IsLoanClosed == false).ToList();
             var list = _allReceivingLoans.Where(x => x.GivingLoan == null).ToList();
             if (_isGivingLoanAPayback)
             {
@@ -278,7 +172,6 @@ public class EditLoanViewModel : NotifyPropertyChangedBase
             {
                 var w = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive);
                 (w as AddLoan).IsGLoanClosedCheckBox.IsChecked = false;
-                //(w as AddLoan).IsLoanClosedCheckBox.IsEnabled = false;
             }
             _isGivingLoanAPayback = value;
             OnPropertyChanged(nameof(IsGivingLoanAPayback));
@@ -295,7 +188,6 @@ public class EditLoanViewModel : NotifyPropertyChangedBase
             {
                 var w = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive);
                 (w as AddLoan).IsRLoanClosedCheckBox.IsChecked = false;
-                //(w as AddLoan).IsLoanClosedCheckBox.IsEnabled = false;
             }
             _isReceivingLoanAPayback = value;
             OnPropertyChanged(nameof(IsReceivingLoanAPayback));
@@ -352,10 +244,7 @@ public class EditLoanViewModel : NotifyPropertyChangedBase
 
         try
         {
-            //_repo.Update(GivingLoanModel.Model);
             _repo.Update(GivingLoanModel.Model, GivingLoanModel.PaymentMethodId);
-            //_db.Update(GivingLoanModel.Model);
-            //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             foreach (Window item in Application.Current.Windows)
             {
@@ -366,11 +255,6 @@ public class EditLoanViewModel : NotifyPropertyChangedBase
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-        //foreach (Window item in Application.Current.Windows)
-        //{
-        //    if (item.DataContext == this) item.Close();
-        //}
     }, x => IsSaveButtonEnabled);
     public ICommand DeleteLoan => new RelayCommand(x =>
     {
@@ -404,10 +288,7 @@ public class EditLoanViewModel : NotifyPropertyChangedBase
 
         try
         {
-            //_repo.Update(ReceivingLoanModel.Model);
             _repo.Update(ReceivingLoanModel.Model, ReceivingLoanModel.PaymentMethodId);
-            //_db.Update(ReceivingLoanModel.Model);
-            //_db.SaveChanges();
             MessageBox.Show("Operation has been saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             foreach (Window item in Application.Current.Windows)
             {
@@ -418,11 +299,6 @@ public class EditLoanViewModel : NotifyPropertyChangedBase
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-        //foreach (Window item in Application.Current.Windows)
-        //{
-        //    if (item.DataContext == this) item.Close();
-        //}
     }, x => IsSaveButtonEnabled);
     public ICommand Cancel => new RelayCommand(x =>
     {
