@@ -1205,6 +1205,57 @@
                         </TabControl>
                     </Grid>
                 </TabItem>
+                <TabItem Header="General">
+                    <Grid>
+                        <Grid.Resources>
+                            <Style x:Key="CleanSeparator" TargetType="lvc:Separator">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" TextWrapping="Wrap">
+            Y
+                        </TextBlock>
+                        <lvc:CartesianChart Grid.Row="2">
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis Foreground="DodgerBlue" Title="Blue Axis"/>
+                                <!--<lvc:Axis Foreground="IndianRed" Title="Red Axis" Position="RightTop">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator Style="{StaticResource CleanSeparator}"></lvc:Separator>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>-->
+                                <!--<lvc:Axis Foreground="DarkOliveGreen" Title="Green Axis" Position="RightTop">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator Style="{StaticResource CleanSeparator}"></lvc:Separator>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>-->
+                            </lvc:CartesianChart.AxisY>
+                            <lvc:CartesianChart.Series>
+                                <lvc:LineSeries Values="{Binding Path=IncomesChartValue}" />
+                                <!--Scales at blue axis, Axis[0]-->
+                                <lvc:LineSeries Values="{Binding Path=ExpensesChartValue}" />
+                                <!--Scales at red axis, Axis[1]-->
+                                <!--<lvc:LineSeries Values="{Binding Path=IncomesChartValue}"  ScalesYAt="1"/>-->
+                                <!--Scales at green axis, Axis[2]-->
+                            </lvc:CartesianChart.Series>
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Title="&#x0a;Month" Labels="{Binding LabelsExpenses}" Foreground="White">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator StrokeThickness="0" StrokeDashArray="0">
+                                            <lvc:Separator.Stroke>
+                                                <SolidColorBrush Color="#404F56" />
+                                            </lvc:Separator.Stroke>
+                                        </lvc:Separator>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                        </lvc:CartesianChart>
+                    </Grid>
+                </TabItem>
             </TabControl>
         </TabItem>
         <TabItem Header="Categories">

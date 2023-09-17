@@ -1425,10 +1425,40 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
-    #endregion
+	public ChartValues<decimal> ExpensesChartValue
+	{
+		get
+		{
+			var collection = new ChartValues<decimal>();
 
-    #region Incomes
-    public ChartValues<int> CategoriesIncChartValue
+			var filter = Expenses;
+			
+			var groups = filter.GroupBy(x => x.DateOfExpense.Month);
+
+			foreach (var group in groups)
+			{
+				collection.Add(group.Sum(x => x.Amount));
+			}
+			OnPropertyChanged(nameof(LabelsExpenses));
+			return collection;
+		}
+	}
+	public ObservableCollection<string> LabelsExpenses
+	{
+		get
+		{
+			var filter = Expenses;
+		
+			//var collection = new ObservableCollection<string>(filter.GroupBy(x => x.DateOfExpense.Month).Select(g => g.Key.ToString("")));
+			var collection = new ObservableCollection<string>(filter.GroupBy(x => x.DateOfExpense.Month).Select(g => new DateTime(DateTime.Now.Year, g.Key, 01).ToString("MMM")));
+
+			return collection;
+		}
+	}
+	#endregion
+
+	#region Incomes
+	public ChartValues<int> CategoriesIncChartValue
     {
         get
         {
@@ -1536,8 +1566,38 @@ public class MainWindowViewModel : NotifyPropertyChangedBase
             return collection;
         }
     }
-    #endregion
-    public Func<double, string> Formatter { get; set; } = value => String.Format("{0:0.##}", value).ToString();
+	public ChartValues<decimal> IncomesChartValue
+	{
+		get
+		{
+			var collection = new ChartValues<decimal>();
+
+			var filter = Incomes;
+
+			var groups = filter.GroupBy(x => x.DateOfIncome.Month);
+
+			foreach (var group in groups)
+			{
+				collection.Add(group.Sum(x => x.Amount));
+			}
+			OnPropertyChanged(nameof(LabelsIncomes));
+			return collection;
+		}
+	}
+	public ObservableCollection<string> LabelsIncomes
+	{
+		get
+		{
+			var filter = Incomes;
+
+			//var collection = new ObservableCollection<string>(filter.GroupBy(x => x.DateOfIncome.Month).Select(g => g.Key.ToString("")));
+			var collection = new ObservableCollection<string>(filter.GroupBy(x => x.DateOfIncome.Month).Select(g => new DateTime(DateTime.Now.Year, g.Key, 01).ToString("MMM")));
+
+			return collection;
+		}
+	}
+	#endregion
+	public Func<double, string> Formatter { get; set; } = value => String.Format("{0:0.##}", value).ToString();
     Func<ChartPoint, string> labelPoint = chartPoint =>
         string.Format("{0:#.00} ({1:P2})", chartPoint.Y, chartPoint.Participation);
     #endregion
