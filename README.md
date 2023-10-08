@@ -5,6 +5,7 @@ You can also create recurring charges with specified periodicity.
 It has very detailed statistics with filters in the form of reports (linear and column graphs).  
 
 Some screens:
+
 ![alt text](WpfApp9-MyFinances/screens/Screenshot_01.png "main_menu_1")
 
 ![alt text](WpfApp9-MyFinances/screens/Screenshot_02.png "main_menu_2")
