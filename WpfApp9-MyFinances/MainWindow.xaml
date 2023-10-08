@@ -1221,6 +1221,11 @@
             Y
                         </TextBlock>
                         <lvc:CartesianChart Grid.Row="2">
+                            <lvc:CartesianChart.DataTooltip>
+                                <lvc:DefaultTooltip Background="Black">
+
+                                </lvc:DefaultTooltip>
+                            </lvc:CartesianChart.DataTooltip>
                             <lvc:CartesianChart.AxisY>
                                 <lvc:Axis Foreground="DodgerBlue" Title="Blue Axis"/>
                                 <!--<lvc:Axis Foreground="IndianRed" Title="Red Axis" Position="RightTop">
